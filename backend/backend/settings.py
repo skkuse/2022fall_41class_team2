@@ -1,4 +1,6 @@
 from pathlib import Path
+import os
+import environ
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -14,6 +16,15 @@ SECRET_KEY = 'django-insecure-t#jq!w2f&_8txyh#o!@xc*$h69#)l34xfpn$98j#z@yz&k(-q1
 DEBUG = True
 
 ALLOWED_HOSTS = ['127.0.0.1', '[::1]', 'localhost']
+
+
+# Environment variables definition
+
+env = environ.Env(
+    DEBUG=(bool, False)
+)
+
+environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 
 
 # Application definition
