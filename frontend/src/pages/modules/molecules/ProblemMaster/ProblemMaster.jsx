@@ -1,6 +1,6 @@
 // PROPOSED_COMPONENTS
-import ProblemDesc from "../../../atoms/Assignment/ProblemSection/ProblemDesc";
-import Constraints from "../../../atoms/Assignment/ProblemSection/Constraints";
+import ProblemDesc from "../../atoms/Assignment/ProblemSection/ProblemDesc";
+import Constraints from "../../atoms/Assignment/ProblemSection/Constraints";
 
 function ProblemMaster(props) {
     return <div>
