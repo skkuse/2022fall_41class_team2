@@ -1,10 +1,27 @@
+import datetime
 import os
+
+from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+
 from authentication.utils import handle_get, handle_post
+from authentication.models import User
+from authentication.serializers import UserSerializer
 
 BASE_URI = 'http://localhost:8000/'
 GITHUB_CALLBACK_URI = 'http://localhost:8000/auth/github/callback/'
+
+
+@api_view(['GET'])
+def user_detail(request, pk):
+    try:
+        user = User.objects.get(pk=pk)
+    except User.DoesNotExist:
+        return Response(status=status.HTTP_400_BAD_REQUEST)
+
+    serializer = UserSerializer(user)
+    return Response(serializer.data)
 
 
 @api_view(['GET', 'POST'])
@@ -19,10 +36,32 @@ def github_callback(request):
     )
     access_token = token_response.get('access_token')
 
-    info_response = handle_get(
+    profile_response = handle_get(
         f'https://api.github.com/user',
         headers={'Authorization': f'Bearer {access_token}'},
     )
-    # TODO save user
+    name = profile_response.get('name')
+    email = profile_response.get('email')
+    nickname = profile_response.get('login')
+    profile_image_url = profile_response.get('avatar_url')
+    github_api_url = profile_response.get('url')
 
-    return Response({'haha': True})
+    if User.objects.filter(email=email).exists():
+        User.objects.update(
+            last_login=datetime.datetime.now(),
+            name=name,
+            profile_image_url=profile_image_url,
+            github_api_url=github_api_url,
+        )
+    else:
+        User.objects.create(
+            name=name,
+            email=email,
+            nickname=nickname,
+            profile_image_url=profile_image_url,
+            github_api_url=github_api_url,
+        )
+
+    user = User.objects.get(email=email)
+    serializer = UserSerializer(user)
+    return Response(serializer.data)

@@ -5,5 +5,6 @@ from authentication import views
 urlpatterns = []
 
 urlpatterns += [
-    path('github/callback/', views.github_callback, name='github_callback'),
+    path('<int:pk>/', views.user_detail, name='user-detail'),
+    path('github/callback/', views.github_callback, name='github-callback'),
 ]

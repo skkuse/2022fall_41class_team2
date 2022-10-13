@@ -6,7 +6,7 @@ from rest_framework.exceptions import APIException
 
 def handle_request(method, url=None, **kwargs):
     response = requests.request(method, url, **kwargs)
-    if response.ok:
+    if not response.ok:
         raise APIException(detail=response.reason, code=response.status_code)
 
     content = response.json()
