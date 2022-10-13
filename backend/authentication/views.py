@@ -2,8 +2,11 @@ import datetime
 import os
 
 from rest_framework import status
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
+from rest_framework.permissions import AllowAny
+from rest_framework.authtoken.models import Token
+from rest_framework.exceptions import APIException
 
 from authentication.utils import handle_get, handle_post
 from authentication.models import User
@@ -20,11 +23,15 @@ def user_detail(request, pk):
     except User.DoesNotExist:
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
+    if not user.__eq__(request.user):
+        raise APIException(detail='Authentication is not matched', code=status.HTTP_401_UNAUTHORIZED)
+
     serializer = UserSerializer(user)
     return Response(serializer.data)
 
 
 @api_view(['GET', 'POST'])
+@permission_classes([AllowAny])
 def github_callback(request):
     client_id = os.environ['GITHUB_CLIENT_ID']
     client_secret = os.environ['GITHUB_CLIENT_SECRET']
@@ -63,5 +70,8 @@ def github_callback(request):
         )
 
     user = User.objects.get(email=email)
-    serializer = UserSerializer(user)
-    return Response(serializer.data)
+    auth_token = Token.objects.get_or_create(user=user)
+    return Response({
+        'user_id': user.id,
+        'auth_token': auth_token[0].key,
+    })

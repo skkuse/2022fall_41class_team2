@@ -30,7 +30,7 @@ class User(AbstractBaseUser):
 
     USERNAME_FIELD = 'nickname'
     EMAIL_FIELD = 'email'
-    REQUIRED_FIELDS = ['email', 'nickname']
+    REQUIRED_FIELDS = ['email']
 
     class Meta:
         ordering = ['nickname', 'created_at']
