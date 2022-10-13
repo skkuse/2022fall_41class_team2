@@ -46,6 +46,9 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     'allauth.socialaccount.providers.github',
 
+    'drf_spectacular',  # package name: drf-spectacular
+    'drf_spectacular_sidecar',  # package name: drf-spectacular-sidecar
+
     # Custom Apps
     'authentication',
 ]
@@ -53,8 +56,12 @@ INSTALLED_APPS = [
 AUTH_USER_MODEL = 'authentication.User'
 
 REST_FRAMEWORK = {
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
     'DEFAULT_RENDERER_CLASSES': [
         'backend.renderer.CustomRenderer',
+    ],
+    'DEFAULT_PARSER_CLASSES': [
+        'rest_framework.parsers.JSONParser',
     ],
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.TokenAuthentication',
@@ -63,6 +70,26 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAuthenticated',
     ),
     'EXCEPTION_HANDLER': 'backend.handler.custom_exception_handler',
+}
+
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'SE2022f Project',
+    'DESCRIPTION': 'SE2022f Project',
+    'VERSION': '0.0.1',
+
+    'SERVE_INCLUDE_SCHEMA': True,
+    'SERVE_AUTHENTICATION': [
+        'rest_framework.authentication.TokenAuthentication',
+    ],
+    'SERVE_PERMISSIONS': [
+        'rest_framework.permissions.AllowAny',
+        'rest_framework.permissions.IsAuthenticated',
+    ],
+
+    'SWAGGER_UI_DIST': 'SIDECAR',
+    'SWAGGER_UI_FAVICON_HREF': 'SIDECAR',
+
+    'REDOC_DIST': 'SIDECAR',
 }
 
 MIDDLEWARE = [

@@ -1,12 +1,14 @@
 import datetime
 import os
 
-from rest_framework import status
+from rest_framework import status, fields
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
 from rest_framework.authtoken.models import Token
 from rest_framework.exceptions import APIException
+
+from drf_spectacular.utils import extend_schema, OpenApiParameter, inline_serializer
 
 from authentication.utils import handle_get, handle_post
 from authentication.models import User
@@ -16,10 +18,17 @@ BASE_URI = 'http://localhost:8000/'
 GITHUB_CALLBACK_URI = 'http://localhost:8000/auth/github/callback/'
 
 
+@extend_schema(
+    description='Get a User Details',
+    request=None,
+    responses={
+        200: UserSerializer,
+    },
+)
 @api_view(['GET'])
-def user_detail(request, pk):
+def user_detail(request, user_id):
     try:
-        user = User.objects.get(pk=pk)
+        user = User.objects.get(pk=user_id)
     except User.DoesNotExist:
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
@@ -30,6 +39,22 @@ def user_detail(request, pk):
     return Response(serializer.data)
 
 
+@extend_schema(
+    description='OAuth 2.0 Github Callback',
+    parameters=[
+        OpenApiParameter(name='code', required=True, type=str),
+    ],
+    request=None,
+    responses={
+        200: inline_serializer(
+            name='user_auth',
+            fields={
+                'user_id': fields.CharField(),
+                'auth_token': fields.CharField(),
+            },
+        ),
+    },
+)
 @api_view(['GET', 'POST'])
 @permission_classes([AllowAny])
 def github_callback(request):
