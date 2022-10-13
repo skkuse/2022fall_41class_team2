@@ -44,6 +44,7 @@ REST_FRAMEWORK = {
     'DEFAULT_RENDERER_CLASSES': [
         'backend.renderer.CustomRenderer',
     ],
+    'EXCEPTION_HANDLER': 'backend.handler.custom_exception_handler',
 }
 
 MIDDLEWARE = [
