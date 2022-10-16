@@ -1,4 +1,3 @@
-import datetime
 import os
 
 from rest_framework import status, fields
@@ -72,30 +71,21 @@ def github_callback(request):
         f'https://api.github.com/user',
         headers={'Authorization': f'Bearer {access_token}'},
     )
-    name = profile_response.get('name')
     email = profile_response.get('email')
     nickname = profile_response.get('login')
+    name = profile_response.get('name')
     profile_image_url = profile_response.get('avatar_url')
     github_api_url = profile_response.get('url')
 
-    if User.objects.filter(email=email).exists():
-        User.objects.update(
-            last_login=datetime.datetime.now(),
-            name=name,
-            profile_image_url=profile_image_url,
-            github_api_url=github_api_url,
-        )
-    else:
-        User.objects.create(
-            name=name,
-            email=email,
-            nickname=nickname,
-            profile_image_url=profile_image_url,
-            github_api_url=github_api_url,
-        )
-
-    user = User.objects.get(email=email)
+    user = User.objects.update_or_create_user(
+        email=email,
+        nickname=nickname,
+        name=name,
+        profile_image_url=profile_image_url,
+        github_api_url=github_api_url,
+    )
     auth_token = Token.objects.get_or_create(user=user)
+
     return Response({
         'user_id': user.id,
         'auth_token': auth_token[0].key,

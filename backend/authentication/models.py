@@ -1,25 +1,36 @@
 from django.db import models
+from django.utils import timezone
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 
 
 class UserManager(BaseUserManager):
-    def create_user(self, email=None, nickname=None, **extra_fields):
+
+    def update_or_create_user(self, email=None, nickname=None, **extra):
         if not email:
             raise ValueError('must have user email field')
         if not nickname:
             raise ValueError('must have user nickname field')
-        user = self.model(
-            email=email,
-            nickname=nickname,
-            **extra_fields,
-        )
-        user.save()
+
+        if self.filter(email=email).exists():
+            self.update(
+                last_login=timezone.now(),
+                **extra,
+            )
+        else:
+            self.create(
+                email=email,
+                nickname=nickname,
+                last_login=timezone.now(),
+                **extra,
+            )
+
+        user = self.get(email=email)
         return user
 
 
 class User(AbstractBaseUser):
     created_at = models.DateTimeField(auto_now_add=True, editable=False)
-    last_login = models.DateTimeField(auto_now=True)
+    last_login = models.DateTimeField(default=timezone.now)
     name = models.CharField(max_length=255)
     email = models.CharField(max_length=255, unique=True, db_index=True)
     nickname = models.CharField(max_length=255, unique=True, db_index=True)
