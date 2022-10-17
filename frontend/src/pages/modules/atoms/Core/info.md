@@ -1,0 +1,1 @@
+# Frontend-backend communication을 담당하는 component　집합
