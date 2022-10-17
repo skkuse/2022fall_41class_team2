@@ -4,12 +4,11 @@ from rest_framework import status, fields
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
-from rest_framework.authtoken.models import Token
 from rest_framework.exceptions import APIException
 
 from drf_spectacular.utils import extend_schema, OpenApiParameter, inline_serializer
 
-from authentication.utils import handle_get, handle_post
+from authentication.utils import handle_get, handle_post, get_tokens_for_user
 from authentication.models import User
 from authentication.serializers import UserSerializer
 
@@ -49,7 +48,8 @@ def user_detail(request, user_id):
             name='user_auth',
             fields={
                 'user_id': fields.CharField(),
-                'auth_token': fields.CharField(),
+                'access': fields.CharField(),
+                'refresh': fields.CharField(),
             },
         ),
     },
@@ -71,22 +71,18 @@ def github_callback(request):
         f'https://api.github.com/user',
         headers={'Authorization': f'Bearer {access_token}'},
     )
-    email = profile_response.get('email')
-    nickname = profile_response.get('login')
-    name = profile_response.get('name')
-    profile_image_url = profile_response.get('avatar_url')
-    github_api_url = profile_response.get('url')
 
     user = User.objects.update_or_create_user(
-        email=email,
-        nickname=nickname,
-        name=name,
-        profile_image_url=profile_image_url,
-        github_api_url=github_api_url,
+        email=profile_response.get('email'),
+        nickname=profile_response.get('login'),
+        name=profile_response.get('name'),
+        profile_image_url=profile_response.get('avatar_url'),
+        github_api_url=profile_response.get('url'),
     )
-    auth_token = Token.objects.get_or_create(user=user)
+    tokens = get_tokens_for_user(user=user)
 
     return Response({
         'user_id': user.id,
-        'auth_token': auth_token[0].key,
+        'access': tokens[0],
+        'refresh': tokens[1],
     })

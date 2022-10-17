@@ -1,5 +1,4 @@
 import json
-
 from datetime import datetime, timezone
 from unittest.mock import patch
 from django.utils import timezone
@@ -68,6 +67,8 @@ class Test(TestCase):
 
         client = APIClient()
         response = client.post('/auth/github/callback/?code=abc123')
-        auth_token = response.data.get('auth_token')
+        access_token = response.data.get('access')
+        refresh_token = response.data.get('refresh')
 
-        self.assertIsNotNone(auth_token)
+        self.assertIsNotNone(access_token)
+        self.assertIsNotNone(refresh_token)
