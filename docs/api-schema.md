@@ -4,8 +4,9 @@
 
 | Component  | Method    | API                                   | Function                                     |
 | ---------- | --------- | ------------------------------------- | -------------------------------------------- |
-| Auth       | GET, POST | /auth/github/callback/                | Github OAuth 로그인 요청 콜백                |
-|            | GET       | /auth/{user_id}/                      | 유저 세부 정보 조회                          |
+| Auth       | GET       | /auth/{user_id}/                      | 유저 세부 정보 조회                          |
+|            | GET, POST | /auth/github/callback/                | Github OAuth 로그인 요청 콜백                |
+|            | POST      | /auth/refresh/                        | Access Token 재발급                          |
 | Lecture    | GET       | /lectures/                            | 모든 강의 목록 조회                          |
 |            | POST      | /lectures/                            | 신규 강의 등록                               |
 |            | GET       | /lectures/{lecture_id}/               | 강의 세부 정보 조회                          |
@@ -33,14 +34,6 @@
 
 ## Auth
 
-### POST /auth/github/callback/
-
-Github OAuth 로그인 요청 콜백
-
-- Request: `code`
-
-- Response: `user_id`, `auth_token`
-
 ### GET /auth/{user_id}/
 
 유저 세부 정보 조회
@@ -48,6 +41,22 @@ Github OAuth 로그인 요청 콜백
 - Request: `auth (required)`
 
 - Response: `user_id`, `created_at`, `last_login`, `name`, `email`, `nickname`, `profile_image_url`, `github_api_url`
+
+### POST /auth/github/callback/
+
+Github OAuth 로그인 요청 콜백
+
+- Request: `code`
+
+- Response: `user_id`, `access`, `refresh`
+
+### POST /auth/refresh/
+
+Acesss Token 재발급
+
+- Request: `refresh`
+
+- Response: `access`
 
 ## Lecture
 
