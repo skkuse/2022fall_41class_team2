@@ -13,6 +13,8 @@ class UserManager(BaseUserManager):
 
         if self.filter(email=email).exists():
             self.update(
+                email=email,
+                nickname=nickname,
                 last_login=timezone.now(),
                 **extra,
             )
