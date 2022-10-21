@@ -17,7 +17,7 @@ CREATE TABLE `users` (
 
 CREATE TABLE `enrollments` (
   `enrollment_id` int PRIMARY KEY AUTO_INCREMENT,
-  `user_id` int,
+  `student_id` int,
   `lecture_id` int,
   `created_at` timestamp DEFAULT (now())
 );
@@ -33,8 +33,8 @@ CREATE TABLE `assignments` (
   `answer_code` varchar(255)
 );
 
-CREATE TABLE `test_cases` (
-  `test_case_id` int PRIMARY KEY AUTO_INCREMENT,
+CREATE TABLE `testcases` (
+  `testcase_id` int PRIMARY KEY AUTO_INCREMENT,
   `assignment_id` int,
   `created_at` timestamp DEFAULT (now()),
   `input` varchar(255),
@@ -44,7 +44,7 @@ CREATE TABLE `test_cases` (
 
 CREATE TABLE `repo` (
   `repo_id` int PRIMARY KEY AUTO_INCREMENT,
-  `user_id` int,
+  `author_id` int,
   `assignment_id` int,
   `created_at` timestamp DEFAULT (now()),
   `modified_at` timestamp DEFAULT (now()),
@@ -89,15 +89,15 @@ CREATE TABLE `readability_result` (
 
 ALTER TABLE `lectures` ADD FOREIGN KEY (`instructor_id`) REFERENCES `users` (`user_id`);
 
-ALTER TABLE `enrollments` ADD FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`);
+ALTER TABLE `enrollments` ADD FOREIGN KEY (`student_id`) REFERENCES `users` (`user_id`);
 
 ALTER TABLE `enrollments` ADD FOREIGN KEY (`lecture_id`) REFERENCES `lectures` (`lecture_id`);
 
 ALTER TABLE `assignments` ADD FOREIGN KEY (`lecture_id`) REFERENCES `lectures` (`lecture_id`);
 
-ALTER TABLE `test_cases` ADD FOREIGN KEY (`assignment_id`) REFERENCES `assignments` (`assignment_id`);
+ALTER TABLE `testcases` ADD FOREIGN KEY (`assignment_id`) REFERENCES `assignments` (`assignment_id`);
 
-ALTER TABLE `repo` ADD FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`);
+ALTER TABLE `repo` ADD FOREIGN KEY (`author_id`) REFERENCES `users` (`user_id`);
 
 ALTER TABLE `repo` ADD FOREIGN KEY (`assignment_id`) REFERENCES `assignments` (`assignment_id`);
 

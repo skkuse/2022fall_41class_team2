@@ -52,6 +52,12 @@ INSTALLED_APPS = [
 
     # Custom Apps
     'authentication',
+    'lecture',
+    'enrollment',
+    'assignment',
+    'testcase',
+    'repo',
+    'output',
 ]
 
 AUTH_USER_MODEL = 'authentication.User'
