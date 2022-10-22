@@ -76,7 +76,7 @@ Acesss Token 재발급
 
 - Request: `auth (required)`, `name`
 
-- Response: `lecture_id`
+- Response: `lecture_id`, `name`, `instructor`, `is_instructor`, `is_student`
 
 ### GET /lectures/{lecture_id}/
 
@@ -86,7 +86,7 @@ Acesss Token 재발급
 
 - Request: `auth (optional)`
 
-- Response: `lecture_id`, `name`
+- Response: `lecture_id`, `name`, `instructor`, `is_instructor`, `is_student`
 
 ### DELETE /lectures/{lecture_id}/
 
@@ -98,7 +98,7 @@ Acesss Token 재발급
 
 - Request: `auth (required)`
 
-- Response: `lecture_id`
+- Response: None
 
 ## Enrollment
 
