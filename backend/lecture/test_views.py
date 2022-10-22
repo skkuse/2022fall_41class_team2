@@ -179,17 +179,17 @@ class TestLectureRetrieveOrDestroy(TestCase):
         self.assertFalse(result.get('is_instructor'))
         self.assertFalse(result.get('is_student'))
 
-    def test_lecture_destroy(self):
-        user = User.objects.get(email=self.mock_instructor_email)
+    def test_lecture_destroy_with_instructor(self):
+        instructor = User.objects.get(email=self.mock_instructor_email)
         lecture = Lecture.objects.get(name=self.mock_lecture_name_2)
 
         client = APIClient()
-        client.force_authenticate(user=user)
-        response = client.delete('/lectures/' + str(lecture.id) + '/')
+        client.force_authenticate(user=instructor)
+        response = client.delete(f'/lectures/{lecture.id}/')
 
         self.assertEqual(response.status_code, 204)
 
-    def test_lecture_destroy_when_not_instructor(self):
+    def test_lecture_destroy_with_non_instructor(self):
         another_user = User.objects.create(
             name='another-user-name',
             email='another-email@email.com',
@@ -202,6 +202,14 @@ class TestLectureRetrieveOrDestroy(TestCase):
 
         client = APIClient()
         client.force_authenticate(user=another_user)
-        response = client.delete('/lectures/' + str(lecture.id) + '/')
+        response = client.delete(f'/lectures/{lecture.id}/')
+
+        self.assertEqual(response.status_code, 401)
+
+    def test_lecture_destroy_without_auth(self):
+        lecture = Lecture.objects.get(name=self.mock_lecture_name_2)
+
+        client = APIClient()
+        response = client.delete(f'/lectures/{lecture.id}/')
 
         self.assertEqual(response.status_code, 401)
