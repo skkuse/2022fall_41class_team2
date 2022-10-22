@@ -31,3 +31,7 @@ urlpatterns += [
 urlpatterns += [
     path('auth/', include('authentication.urls'), name='auth'),
 ]
+
+urlpatterns += [
+    path('lectures/', include('lecture.urls'), name='lectures'),
+]
