@@ -6,7 +6,7 @@ from lecture.models import Lecture
 class InstructorSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['id', 'name', 'email']
+        fields = ['id', 'name', 'email', 'profile_image_url']
 
 
 class LectureSerializer(serializers.ModelSerializer):
@@ -16,7 +16,7 @@ class LectureSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Lecture
-        fields = ['id', 'name', 'instructor', 'is_instructor', 'is_student']  # TODO enrollments
+        fields = ['id', 'name', 'instructor', 'is_instructor', 'is_student']
 
     def get_is_instructor(self, lecture) -> bool:
         user = self.context.get('request').user
