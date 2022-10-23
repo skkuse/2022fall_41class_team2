@@ -41,7 +41,7 @@ class TestLecture(TestCase):
         )
 
         result = lecture.delete()
-        user = User.objects.get(email=self.mock_instructor_email)
+        after_user = User.objects.get(email=self.mock_instructor_email)
 
         self.assertEqual(result[1].get('id'), lecture.id)
-        self.assertIsNotNone(user)
+        self.assertIsNotNone(after_user)

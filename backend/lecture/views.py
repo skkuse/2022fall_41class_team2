@@ -1,8 +1,10 @@
 from rest_framework import generics, status
 from rest_framework.response import Response
+from rest_framework.exceptions import ParseError
 from drf_spectacular.utils import extend_schema_view, extend_schema
 from lecture.models import Lecture
 from lecture.serializers import LectureSerializer
+from backend.exceptions import InternalServerError
 
 
 @extend_schema_view(
@@ -33,7 +35,7 @@ class LectureListOrCreate(generics.ListCreateAPIView):
         return Lecture.objects.all()
 
     def perform_create(self, serializer):
-        serializer.save(instructor=self.request.user)
+        return serializer.save(instructor=self.request.user)
 
 
 @extend_schema_view(
@@ -44,6 +46,8 @@ class LectureListOrCreate(generics.ListCreateAPIView):
             request=None,
             responses={
                 200: LectureSerializer,
+                400: None,
+                500: None,
             },
         ),
         extend_schema(
@@ -62,13 +66,18 @@ class LectureRetrieveOrDestroy(generics.RetrieveDestroyAPIView):
     serializer_class = LectureSerializer
 
     def get_object(self):
-        lecture_id = self.kwargs.get(self.lookup_field)
-        return Lecture.objects.get(pk=lecture_id)
+        try:
+            lecture_id = self.kwargs.get(self.lookup_field)
+            return Lecture.objects.get(pk=lecture_id)
+        except Lecture.DoesNotExist:
+            raise ParseError
+        except Lecture.MultipleObjectsReturned:
+            raise InternalServerError
 
     def delete(self, request, *args, **kwargs):
         instance = self.get_object()
 
-        if instance.instructor_id == request.user.id:
+        if instance.instructor == request.user:
             self.perform_destroy(instance)
             return Response(status=status.HTTP_204_NO_CONTENT)
         else:

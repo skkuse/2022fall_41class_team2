@@ -179,6 +179,22 @@ class TestLectureRetrieveOrDestroy(TestCase):
         self.assertFalse(result.get('is_instructor'))
         self.assertFalse(result.get('is_student'))
 
+    def test_lecture_retrieve_with_non_exist_lecture(self):
+        non_lecture_id = 99
+
+        client = APIClient()
+        response = client.get(f'/lectures/{non_lecture_id}/')
+
+        self.assertEqual(response.status_code, 400)
+
+    def test_lecture_retrieve_with_non_proper_field(self):
+        non_proper_field = "abc"
+
+        client = APIClient()
+        response = client.get(f'/lectures/{non_proper_field}/')
+
+        self.assertEqual(response.status_code, 404)
+
     def test_lecture_destroy_with_instructor(self):
         instructor = User.objects.get(email=self.mock_instructor_email)
         lecture = Lecture.objects.get(name=self.mock_lecture_name_2)
