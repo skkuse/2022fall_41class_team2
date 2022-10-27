@@ -11,7 +11,7 @@ class Assignment(models.Model):
     question = models.CharField(max_length = 255, blank = True, default = '')
     constraints = models.CharField(max_length = 255, blank = True, default = '')
     skeleton_code = models.CharField(max_length = 255, blank = True, default = '')
-    answer_code = models.CharField(max_length = 255, blank = True, default = '')
+    #answer_code = models.CharField(max_length = 255, blank = True, default = '')
     
     class Meta:
         ordering = ['lecture_id']
