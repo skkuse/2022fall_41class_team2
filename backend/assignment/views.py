@@ -12,7 +12,7 @@ from rest_framework.response import Response
         extend_schema(
             description = 'Get all Assignment information of a specific lecture',
             methods = ['GET'],
-            request = Assignment.lecture_id,
+            request = 'user_auth',
             responses = {200: AssignmentSerializer(many = True)},
         ),
         extend_schema(
@@ -58,16 +58,6 @@ class AssignmentListOrCreate(generics.ListCreateAPIView):
 
 class AssignmentRetrieveOrDestroy(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
-    lookup_field = 'assignment_id'
     queryset = Assignment.objects.all()
     serializer_class = AssignmentSerializer
-
-    def get_object(self):
-        assignment_id = self.kwargs.get(self.lookup_field)
-        return Assignment.objects.get(pk=assignment_id)
-
-    def delete(self, request, *args, **kwargs):
-        instance = self.get_object
-        self.perform_destroy(instance)
-        return Response(status = status.HTTP_204_NO_CONTENT)
 
