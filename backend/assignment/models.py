@@ -5,7 +5,7 @@ from django.db import models
 
 class Assignment(models.Model):
 
-    lecture_id = models.ForeignKey('lecture.Lecture', on_delete=models.PROTECT, related_name='assignments')
+    lecture = models.ForeignKey('lecture.Lecture', on_delete=models.PROTECT, related_name='assignments')
     name = models.CharField(max_length = 255, blank = True, default='')
     deadline = models.DateField('Date', blank = True, null = True)
     question = models.CharField(max_length = 255, blank = True, default = '')
@@ -14,4 +14,4 @@ class Assignment(models.Model):
     #answer_code = models.CharField(max_length = 255, blank = True, default = '')
     
     class Meta:
-        ordering = ['lecture_id']
+        ordering = ['lecture']

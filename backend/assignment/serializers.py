@@ -6,7 +6,7 @@ class AssignmentSerializer(serializers.ModelSerializer):
     deadline = fields.DateField(input_formats =['%Y-%m-%dT%H:%M:%S.%fZ'])
     class Meta:
         model = Assignment
-        fields = ['lecture_id', 'name', 'deadline', 'question', 
+        fields = ['lecture', 'name', 'deadline', 'question', 
                   'constraints', 'skeleton_code']
     # Create and Return a new "Assignment" instance given the validated data
     def create(self, validated_data):
@@ -14,7 +14,7 @@ class AssignmentSerializer(serializers.ModelSerializer):
     
     # Update and return an existing "Assignment" instance given the validated data
     def update(self, instance, validated_data):
-        instance.lecture_id = validated_data.get('lecture_id', instance.lecture_id)
+        instance.lecture= validated_data.get('lecture', instance.lecture)
         instance.name = validated_data.get('name', instance.name)
         instance.deadline = validated_data.get('deadline', instance.deadline)
         instance.question = validated_data.get('question', instance.question)
