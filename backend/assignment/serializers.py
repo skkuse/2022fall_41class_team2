@@ -1,8 +1,15 @@
 from dataclasses import fields
 from rest_framework import serializers, fields
 from assignment.models import Assignment
+from lecture.models import Lecture
+
+class LectureSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Lecture
+        fields = ['id', 'name', 'instructor']
 
 class AssignmentSerializer(serializers.ModelSerializer):
+    lecture = LectureSerializer(read_only = True)
     deadline = fields.DateField(input_formats =['%Y-%m-%d'])
     class Meta:
         model = Assignment
