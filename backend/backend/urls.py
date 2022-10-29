@@ -32,5 +32,6 @@ urlpatterns += [
 
 urlpatterns += [
     path('auth/', include('authentication.urls'), name='auth'),
+    path('assignments/', include('assignment.urls'), name = 'assignment')
 ]
 

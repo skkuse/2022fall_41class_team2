@@ -5,6 +5,8 @@ from assignment.models import Assignment
 from assignment.serializers import AssignmentSerializer
 from rest_framework import generics, permissions, status
 from rest_framework.response import Response
+from lecture.models import Lecture
+from rest_framework.exceptions import PermissionDenied
 
 
 @extend_schema_view(
@@ -28,12 +30,29 @@ from rest_framework.response import Response
 )
 
 class AssignmentListOrCreate(generics.ListCreateAPIView):
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
-    queryset = Assignment.objects.all()
+    # doing .all will fetch all assignments from all lectures -- need to filter
+    # need to do some sort of checking with student's enrolled lectures and fetch the appropriate lecture
+    # SELECT LECTURE_ID FROM LECTURES WHERE NAME = "YOUR INPUTTED LECTURE NAME";
+    # SELECT * FROM ASSIGNMENTS WHERE LECTURE_ID = "THE LECTURE ID FROM PREVIOUS LINE"; 
+    # specified_lecture = Lecture.objects.get(name = )
+    # queryset = specified_lecture.Assignment_set.all()
+    # queryset = Assignment.objects.all()
     serializer_class = AssignmentSerializer
 
+    def get_queryset(self):
+        lecture_id = self.request.data.get('lecture_id')
+        print(lecture_id)
+        return Assignment.objects.filter(lecture_id = lecture_id).all()
+
     def perform_create(self, serializer):
-        serializer.save(instructor = self.request.user)
+        lecture_id = self.request.data.get('lecture_id')
+        lecture = Lecture.objects.get(pk = lecture_id)
+        print(lecture)
+        if(lecture.instructor == self.request.user):
+            serializer.save(lecture = lecture)
+        else:
+            raise PermissionDenied
+
 
 @extend_schema_view(
     list=[
@@ -57,7 +76,8 @@ class AssignmentListOrCreate(generics.ListCreateAPIView):
 
 
 class AssignmentRetrieveOrDestroy(generics.RetrieveUpdateDestroyAPIView):
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    # again doing .all will destroy all assignments from all lectures
+    # needs a check 
     queryset = Assignment.objects.all()
     serializer_class = AssignmentSerializer
 
