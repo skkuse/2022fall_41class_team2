@@ -1,19 +1,34 @@
 import React from "react";
+
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
-import {LandingPage} from './modules/pages/LandingPage/LandingPage'
-import {NotFoundPage} from './modules/pages/NotFoundPage/NotFoundPage'
-import {SettingPage} from './modules/pages/SettingPage/SettingPage'
+import {LandingPage} from './pages/LandingPage/LandingPage'
+import {NotFoundPage} from './pages/NotFoundPage/NotFoundPage'
+import {SettingPage} from './pages/SettingPage/SettingPage'
+import { LoginPage } from "./pages/LoginPage/LoginPage";
+import { AuthProvider, PrivateRoute, LoginRoute } from "./service/AuthProvider";
 
 const ProjectRoutes = () => {
   return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<LandingPage />} />
-        <Route path="/settings" element={<SettingPage />} />
-        <Route path="*" element={<NotFoundPage />} />
-      </Routes>
-    </Router>
+    <AuthProvider>
+      <Router>
+        <Routes>
+          <Route path="/" element={<PrivateRoute />} >
+            <Route path="/" element={<LandingPage />} />
+            <Route path="/settings" element={<SettingPage />} />
+          </Route>
+
+
+          <Route path="/login" element={<LoginRoute />} >
+            <Route path="/login" element={<LoginPage />} />
+          </Route>
+
+          <Route path="*" element={<NotFoundPage />} />
+
+        </Routes>
+      </Router>
+    </AuthProvider>
+
   );
 };
 

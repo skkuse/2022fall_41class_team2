@@ -1,26 +1,41 @@
 import axios from "axios";
-
+import {removeItem} from "../service/localStorage"
 // const DOMAIN = "https://www.youtube.com";
 axios.defaults.withCredentials = true; // 쿠키 데이터를 전송받기 위해
 
-const apiClient = axios.create({
-    // baseURL: DOMAIN   // 환경변수로 지정한 BASE_URL을 사용
-    // baseURL: DOMAIN,
-    headers: {
-      'Content-Type': 'application/json',
-    },
-});
+class API_CLIENT {
+  constructor() {
+    this.apiClient = axios.create({
+      // baseURL: DOMAIN,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+  }
 
-const { get, post, put, delete: destroy } = apiClient;
-export { get, post, put, destroy };
+  get(url) {
+    this.apiClient.get(url).then((val) => {
+      this.auth(val.status);
+    })
+  }
 
+  post(url, data) {
+    this.apiClient.post(url, data).then((val) => {
+      this.auth(val.status);
+    })
+  }
 
-// export const request = (method:string, url:string, data?:object) => {
-//     return axios({
-//         method,
-//         url: DOMAIN + url,
-//         data,
-//     })
-//     .then((res) => alert(res.data))
-//     .catch((err) => console.log(err));
-// };
+  auth(status) {
+    switch (status) {
+      case 403:
+        removeItem("user");
+        break;
+    
+      default:
+        setItemWithExpireTime("user",true,1000*60*60);
+        break;
+    }
+  }
+}
+
+export const apiClient = API_CLIENT();
