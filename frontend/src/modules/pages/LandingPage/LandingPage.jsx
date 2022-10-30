@@ -2,9 +2,9 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
-import { Column, Row, Img, Text, Line, Stack } from "../atoms";
+import { Column, Row, Img, Text, Line, Stack } from "../../atoms";
 
-const LandingPage = () => {
+export const LandingPage = () => {
   // test
   // return <h1>hello world</h1>;
 
@@ -121,4 +121,3 @@ const LandingPage = () => {
     </>
   );
 };
-export default LandingPage;

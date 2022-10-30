@@ -1,18 +1,17 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
-import Settings from "./modules/pages/Settings";
-import LandingPage from "./modules/pages/Home";
-import NotFound from "./modules/pages/NotFound";
-
+import {LandingPage} from './modules/pages/LandingPage/LandingPage'
+import {NotFoundPage} from './modules/pages/NotFoundPage/NotFoundPage'
+import {SettingPage} from './modules/pages/SettingPage/SettingPage'
 
 const ProjectRoutes = () => {
   return (
     <Router>
       <Routes>
         <Route path="/" element={<LandingPage />} />
-        <Route path="*" element={<NotFound />} />
-        <Route path="settings" element={<Settings />} />
+        <Route path="/settings" element={<SettingPage />} />
+        <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </Router>
   );
