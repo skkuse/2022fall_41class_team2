@@ -1,11 +1,9 @@
 import {combineReducers} from "redux";
 import { BottomNavigationBarReducer } from "./BottomNavigationBarReducer";
+import {LoginReducer} from "./LoginReducer";
 
 const rootReducer = combineReducers({
-  // adminReducer,
-  // userNameReducer,
-  // counterReducer,
-  // BottomNavigationBarReducer,
+  LoginReducer
 });
 
 export default rootReducer;
