@@ -1,12 +1,12 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
-import Settings from "./modules/pages/Settings";
-import LandingPage from "./modules/pages/Home";
+import Settings from "./modules/pages/SettingsPage";
+import LandingPage from "./modules/pages/LandingPage";
 import NotFound from "./modules/pages/NotFound";
 
 
-const ProjectRoutes = () => {
+const CodingCatRoutes = () => {
   return (
     <Router>
       <Routes>
@@ -18,4 +18,4 @@ const ProjectRoutes = () => {
   );
 };
 
-export default ProjectRoutes;
+export default CodingCatRoutes;

@@ -4,6 +4,8 @@ import { Link } from "react-router-dom";
 
 import { Column, Row, Img, Text, Line, Stack } from "../atoms";
 
+import LandingPageBanner from "../organisms/LandingPageBanner";
+
 const LandingPage = () => {
   // test
   // return <h1>hello world</h1>;
@@ -22,6 +24,8 @@ const LandingPage = () => {
                   alt="settings"
                 />
 
+
+                {/* Login and register */}
                 <Text
                   className="cursor-pointer hover:font-medium xl:ml-[1007px] 2xl:ml-[1133px] 3xl:ml-[1359px] lg:ml-[805px] mt-[4px] text-gray_700 w-[auto]"
                   variant="body7"

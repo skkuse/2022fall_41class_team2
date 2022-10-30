@@ -1,6 +1,6 @@
 import React from "react";
 
-import SettingsIcon from "../atoms/SettingsIcon";
+import SettingsIcon from "../../atoms/Buttons/SettingsIcon";
 
 import { Link } from "react-router-dom";
 
