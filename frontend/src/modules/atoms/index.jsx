@@ -7,6 +7,10 @@ import { Row } from "./Row";
 import { Stack } from "./Stack";
 import { Text } from "./Text";
 
+import { SettingsIcon } from "./Icons/SettingsIcon/SettingsIcon";
+import { LoginIcon } from "./Icons/LoginIcon/LoginIcon";
+import { BannerIcon } from "./Icons";
+
 export {
   Column,
   Img,
@@ -14,4 +18,7 @@ export {
   Row,
   Stack,
   Text,
+  SettingsIcon,
+  LoginIcon,
+  BannerIcon,
 };

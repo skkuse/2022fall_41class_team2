@@ -1,4 +1,4 @@
-// 헤드 섹션-과제명
+/* // 헤드 섹션-과제명
 // TODO: 과제 제목 표시, 과제 이동 버튼 구현 필
 
 
@@ -16,4 +16,4 @@ function Assignment(props) {
     return <h1>Assignment component</h1>
 }
 
-export default Assignment;
+export default Assignment; */
