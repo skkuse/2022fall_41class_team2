@@ -17,7 +17,6 @@ class UserManager(BaseUserManager):
 
         if self.filter(oauth_id=oauth_id).exists():
             self.update(
-                nickname=nickname,
                 last_login=timezone.now(),
                 **extra,
             )
