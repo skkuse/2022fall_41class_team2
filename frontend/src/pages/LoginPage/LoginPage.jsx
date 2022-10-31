@@ -25,8 +25,8 @@ const LoginBoxWrapper = styled.div`
 export const LoginPage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const client_id = "4c3bebb649e5fd4d455f";
-  const callback_uri = `http://${window.location.host}/login/redirect`;
+  const client_id = process.env.REACT_APP_GITHUB_CLIENT_ID;
+  const callback_uri = `http://${window.location.host}/auth/github`;
   console.log(callback_uri);
 
   return (

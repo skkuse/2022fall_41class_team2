@@ -33,7 +33,7 @@ export const PrivateRoute = ({children, ...props}) => {
     return (
         currentUser?  <Outlet/> 
         // :  <LoginPage /> 
-        : <Navigate to={"/login"}/> 
+        : <Navigate to={"/auth/login"}/> 
     );
 }
 

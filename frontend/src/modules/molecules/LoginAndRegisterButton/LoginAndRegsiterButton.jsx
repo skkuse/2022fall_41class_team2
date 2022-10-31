@@ -4,7 +4,7 @@ import { LoginIcon } from "../../atoms";
 export const LoginAndRegisterButton = ({ className, ...restProps }) => {
   return (
     <Link
-      to="/login"
+      to="/auth/login"
       className={`${className} common-login-and-register-button`}
       style={{ textDecoration: "none" }}
       {...restProps}
