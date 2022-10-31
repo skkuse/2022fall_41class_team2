@@ -7,7 +7,7 @@ import { NotFoundPage } from "./pages/NotFoundPage/NotFoundPage";
 import { SettingPage } from "./pages/SettingPage/SettingPage";
 import { LoginPage } from "./pages/LoginPage/LoginPage";
 import { LoginRedirectPage } from "./pages/LoginPage/LoginRedirectPage";
-
+import { MainPage } from "./pages/MainPage/MainPage";
 import { AuthProvider, PrivateRoute, LoginRoute } from "./service/AuthProvider";
 
 const CodingCatRoutes = () => {
@@ -19,6 +19,7 @@ const CodingCatRoutes = () => {
         <Route path="/settings" element={<SettingPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/login/redirect" element={<LoginRedirectPage />} />
+        <Route path="main" element={<MainPage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </Router>

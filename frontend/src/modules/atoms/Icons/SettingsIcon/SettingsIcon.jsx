@@ -12,7 +12,8 @@ const Wrapper = styled.div`
   top: 0.83%;
   bottom: 97.22%;
   width: 100%;
-  height: auto;  
+  height: auto;
+  flex: 1;
 `;
 
 export const SettingsIcon = (props) => {
@@ -21,7 +22,7 @@ export const SettingsIcon = (props) => {
       <Wrapper>
         <Img
           src="images/img_settings.svg"
-          className="settings settings-icon"
+          
           alt="settings"
         />
       </Wrapper>
