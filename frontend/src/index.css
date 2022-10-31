@@ -71,7 +71,8 @@
 html,body {
     width: 100%;
     height: 100%;
-    max-width: 767px;
+    /* ! max width 삭제 */
+    /* max-width: 767px; */
     margin: 0px;
     padding: 0px;
 }

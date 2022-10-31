@@ -6,12 +6,13 @@ import { Img } from "../..";
 import styled from "styled-components";
 
 const Wrapper = styled.div`
-  position: absolute;
+  // ! position 삭제
+  /* position: absolute;
   left: 1.04%;
   right: 97.86%;
   top: 0.83%;
   bottom: 97.22%;
-  width: 100%;
+  width: 100%; */
   height: auto;
   flex: 1;
 `;
