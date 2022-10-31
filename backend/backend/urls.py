@@ -2,6 +2,7 @@ from django.contrib import admin
 from django.urls import path, include
 from rest_framework.permissions import AllowAny
 from drf_spectacular.views import SpectacularAPIView, SpectacularRedocView, SpectacularSwaggerView
+from backend.handler import custom_404_handler, custom_500_handler
 
 
 
@@ -16,6 +17,9 @@ class CustomRedocView(SpectacularRedocView):
 class CustomSwaggerView(SpectacularSwaggerView):
     permission_classes = [AllowAny]
 
+
+handler404 = custom_404_handler
+handler500 = custom_500_handler
 
 urlpatterns = []
 
@@ -35,3 +39,6 @@ urlpatterns += [
     path('assignments/', include('assignment.urls'), name = 'assignment')
 ]
 
+urlpatterns += [
+    path('lectures/', include('lecture.urls'), name='lectures'),
+]

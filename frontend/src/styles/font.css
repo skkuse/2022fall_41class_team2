@@ -1,0 +1,30 @@
+@font-face {
+  font-style: bold;
+  src: url("../assets/fonts/GmarketSansTTFBold.ttf");
+  font-family: "Gmarket Sans TTF";
+  font-weight: 700;
+}
+@font-face {
+  font-style: normal;
+  src: url("../assets/fonts/GmarketSansTTFMedium.ttf");
+  font-family: "Gmarket Sans TTF";
+  font-weight: 500;
+}
+@font-face {
+  font-style: bold;
+  src: url("../assets/fonts/RobotoRomanBold.ttf");
+  font-family: "Roboto";
+  font-weight: 700;
+}
+@font-face {
+  font-style: normal;
+  src: url("../assets/fonts/RobotoRomanRegular.ttf");
+  font-family: "Roboto";
+  font-weight: 400;
+}
+@font-face {
+  font-style: normal;
+  src: url("../assets/fonts/InterRegular.ttf");
+  font-family: "Inter";
+  font-weight: 400;
+}
