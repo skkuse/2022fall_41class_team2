@@ -12,7 +12,7 @@ from authentication.serializers import UserSerializer
 CLIENT_ID = os.environ['GITHUB_CLIENT_ID']
 CLIENT_SECRET = os.environ['GITHUB_CLIENT_SECRET']
 BASE_URI = os.environ['BASE_URI']
-GITHUB_CALLBACK_URI = BASE_URI + 'auth/github/callback/'
+GITHUB_CALLBACK_URI = os.environ['GITHUB_CALLBACK_URI']
 
 
 @extend_schema(
