@@ -7,11 +7,6 @@ import { Row } from "./Row";
 import { Stack } from "./Stack";
 import { Text } from "./Text";
 
-export {
-  Column,
-  Img,
-  Line,
-  Row,
-  Stack,
-  Text,
-};
+import { SettingsIcon } from "./Buttons/SettingsIcon/SettingsIcon";
+
+export { Column, Img, Line, Row, Stack, Text, SettingsIcon };

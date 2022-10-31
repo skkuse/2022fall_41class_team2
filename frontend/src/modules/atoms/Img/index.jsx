@@ -1,10 +1,8 @@
 import React from "react";
 
-
-
 export const Img = ({
   className,
-  src = "../../../assets/images/defaultNoData.JPG",
+  src = "images/defaultNoData.JPG",
   alt = "OOPS NO IMAGE",
   ...restProps
 }) => {

@@ -1,16 +1,17 @@
 import React from "react";
 
-import SettingsIcon from "../../atoms/Buttons/SettingsIcon";
+import { SettingsIcon } from "./../../atoms";
 
 import { Link } from "react-router-dom";
 
-
-const SettingsButton = ({ className, ...restProps }) => {
+export const SettingsButton = ({ className, ...restProps }) => {
   return (
-    <Link to="/settings" className={`${className} common-settings-button`} {...restProps}>
+    <Link
+      to="/settings"
+      className={`${className} common-settings-button`}
+      {...restProps}
+    >
       <SettingsIcon />
     </Link>
   );
-}
-
-export default SettingsButton
+};
