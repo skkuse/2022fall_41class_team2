@@ -57,7 +57,7 @@ export const LandingPageBanner = ({ className, ...restProps }) => {
           {/* TODO: Redux 사용 로그인 state 반영 */}
         </div>
       </TopContainer>
-      <LowerContainer style={{ marginTop: "10px" }}>
+      <LowerContainer style={{ marginTop: "10px", marginBottom: "20px" }}>
         <div style={{ marginLeft: "120px" }}>
           <LandingPageBannerButton>문제</LandingPageBannerButton>
         </div>

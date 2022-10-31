@@ -1,5 +1,11 @@
 import React from "react";
 
+import styled from "styled-components";
+
+const Image = styled.img`
+  alignself: center;
+`;
+
 export const Img = ({
   className,
   src = "images/defaultNoData.JPG",
@@ -7,7 +13,7 @@ export const Img = ({
   ...restProps
 }) => {
   return (
-    <img
+    <Image
       className={`${className} common-image`}
       src={src}
       alt={alt}
