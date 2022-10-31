@@ -1,11 +1,9 @@
 import React from "react";
 import styled from "styled-components";
 
-import { SettingsButton } from "./../../molecules";
-import { LoginAndRegisterButton } from "./../../molecules";
-import { LandingPageBannerButton } from "./../../molecules";
-
-import { Text } from "../../atoms";
+import { SettingsButton } from "../../molecules";
+import { LoginAndRegisterButton } from "../../molecules";
+import { LandingPageBannerButton } from "../../molecules";
 
 const BannerContainer = styled.div`
   display: flex;

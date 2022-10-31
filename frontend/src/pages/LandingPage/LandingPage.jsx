@@ -1,9 +1,8 @@
 // Landing page
 import React from "react";
-import { Link } from "react-router-dom";
 
-import { Column, Row, Img, Text, Line, Stack } from "../../modules/atoms";
-import { LandingPageBanner } from "../../modules/organisms/LandingPageBanner/LandingPageBanner";
+import { LandingPageBanner } from "../../modules/organisms/LandingPageOrganism/LandingPageBanner";
+import { LandingPageScenery } from "../../modules/organisms/LandingPageOrganism/LandingPageScenery";
 
 export const LandingPage = () => {
   // test
@@ -15,6 +14,7 @@ export const LandingPage = () => {
       <LandingPageBanner />
 
       {/* Scenery */}
+      <LandingPageScenery />
     </>
   );
 };
