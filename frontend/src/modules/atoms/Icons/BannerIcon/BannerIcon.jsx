@@ -14,13 +14,7 @@ const Button = styled.div`
   
 `;
 
-export const BannerIcon = ({
-  children,
-  className,
-  variant,
-  as,
-  ...restProps
-}) => {
+export const BannerIcon = ({ children, className, ...restProps }) => {
   return (
     <div>
       <Button register className={`${className}`} {...restProps}>

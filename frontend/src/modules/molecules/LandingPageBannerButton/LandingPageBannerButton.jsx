@@ -5,7 +5,6 @@ import { BannerIcon } from "../../atoms";
 export const LandingPageBannerButton = ({
   children,
   className,
-  variant,
   as,
   ...restProps
 }) => {
@@ -16,9 +15,7 @@ export const LandingPageBannerButton = ({
       style={{ textDecoration: "none" }}
       {...restProps}
     >
-      <BannerIcon />
+      <BannerIcon children={children} className= {className} />
     </Link>
   );
 };
-
-
