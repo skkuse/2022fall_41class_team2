@@ -67,26 +67,21 @@ class AssignmentListOrCreate(generics.ListCreateAPIView):
 )
 
 
-class AssignmentRetrieveOrDestroy(generics.RetrieveUpdateDestroyAPIView):
+class AssignmentRetrieveOrDestroy(generics.RetrieveDestroyAPIView):
     serializer_class = AssignmentSerializer
-
-    def get_queryset(self):
-        lecture_id = self.request.data.get('lecture_id')
-        return Assignment.objects.filter(lecture_id = lecture_id).all()
+    lookup_field = 'id'
+    queryset = Assignment.objects.all()
 
     def get_object(self):
-        lecture_id = self.request.data.get('lecture_id')
-        queryset = self.filter_queryset(self.get_queryset())
-        obj = queryset.get(pk = Assignment.objects.get(lecture_id = lecture_id))
-        self.check_object_permissions(self.request.obj)
-        return obj
+        assignment_id = self.kwargs.get(self.lookup_field)
+        return Assignment.objects.get(pk = assignment_id)
 
-    def perform_destroy(self, serializer):
-        lecture_id = self.request.data.get('lecture_id')
-        lecture = Lecture.objects.get(pk = lecture_id)
-        if(lecture.instructor == self.request.user):
-            return serializer.delete(lecture = lecture)
+    def delete(self, request,  *args, **kwargs):
+        instance = self.get_object()
+
+        if instance.lecture.instructor == self.request.user:
+            self.perform_destroy(instance)
+            return Response(status=status.HTTP_204_NO_CONTENT)
         else:
             raise PermissionDenied
-
 
