@@ -35,7 +35,7 @@ class User(AbstractBaseUser):
     nickname = models.CharField(max_length=255, unique=True, db_index=True)
     oauth_id = models.CharField(max_length=255, unique=True, db_index=True)
     name = models.CharField(max_length=255, default="")
-    email = models.CharField(max_length=255, default="", unique=True)
+    email = models.CharField(max_length=255, default="",)
     profile_image_url = models.URLField(default="")
     github_api_url = models.URLField(default="")
     github_profile_url = models.URLField(default="")
