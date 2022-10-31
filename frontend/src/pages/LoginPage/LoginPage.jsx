@@ -1,3 +1,6 @@
+import styled from "styled-components";
+import { Helmet } from "react-helmet";
+
 import { useDispatch } from "react-redux";
 import { getItemWithExpireTime } from "../../service/localStorage";
 import React, {
@@ -11,6 +14,14 @@ import React, {
 import { AuthContext } from "../../App";
 import { Link, Navigate, Outlet, Route, useNavigate } from "react-router-dom";
 
+import { LoginBox } from "../../modules/organisms";
+
+const LoginBoxWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
 export const LoginPage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -19,19 +30,27 @@ export const LoginPage = () => {
   console.log(callback_uri);
 
   return (
-    <div>
-      <button
-        onClick={() => {
-          window.location.assign(
-            `https://github.com/login/oauth/authorize?client_id=${client_id}&redirect_uri=${callback_uri}`
-          );
+    <>
+      <Helmet
+        bodyAttributes={{
+          style:
+            "background : linear-gradient(108.07deg, #C5C4FF 1.15%, #4844DE 100.82%)",
         }}
-      >
-        {" "}
-        login{" "}
-      </button>
-    </div>
+      />
+      <div style={{}}>
+        <LoginBoxWrapper>
+          <LoginBox />
+          <button
+            onClick={() => {
+              window.location.assign(
+                `https://github.com/login/oauth/authorize?client_id=${client_id}&redirect_uri=${callback_uri}`
+              );
+            }}
+          >
+            login
+          </button>
+        </LoginBoxWrapper>
+      </div>
+    </>
   );
 };
-
-

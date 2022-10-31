@@ -1,5 +1,7 @@
 // organism indexer file
 
-import { LandingPageBanner } from "./LandingPageBanner/LandingPageBanner";
+import { LandingPageBanner } from "./LandingPageOrganism/LandingPageBanner";
+import { LandingPageScenery } from "./LandingPageOrganism/LandingPageScenery";
+import { LoginBox } from "./LoginBox/LoginBox";
 
-export { LandingPageBanner };
+export { LandingPageBanner, LandingPageScenery, LoginBox };

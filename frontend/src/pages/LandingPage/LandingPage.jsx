@@ -12,7 +12,6 @@ export const LandingPage = () => {
     <>
       {/* Banner */}
       <LandingPageBanner />
-
       {/* Scenery */}
       <LandingPageScenery />
     </>
