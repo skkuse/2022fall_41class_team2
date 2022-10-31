@@ -11,6 +11,10 @@ class UserManager(BaseUserManager):
         if not oauth_id:
             raise ValueError('must have user oauth id field')
 
+        for key in extra:
+            if not extra[key]:
+                extra[key] = str()
+
         if self.filter(oauth_id=oauth_id).exists():
             self.update(
                 nickname=nickname,
@@ -35,7 +39,7 @@ class User(AbstractBaseUser):
     nickname = models.CharField(max_length=255, unique=True, db_index=True)
     oauth_id = models.CharField(max_length=255, unique=True, db_index=True)
     name = models.CharField(max_length=255, default="")
-    email = models.CharField(max_length=255, default="",)
+    email = models.CharField(max_length=255, default="")
     profile_image_url = models.URLField(default="")
     github_api_url = models.URLField(default="")
     github_profile_url = models.URLField(default="")

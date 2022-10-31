@@ -43,6 +43,21 @@ class TestUserManager(TestCase):
         self.assertEqual(user.nickname, nickname)
         self.assertEqual(user.oauth_id, oauth_id)
 
+    def test_create_user_with_none_value(self):
+        nickname = 'new-nickname'
+        oauth_id = 'new-oauth-id'
+        email = None
+        name = None
+        profile_image_url = None
+        github_api_url = None
+        github_profile_url = None
+        user = User.objects.update_or_create_user(
+            nickname=nickname, oauth_id=oauth_id, email=email, name=name,
+            profile_image_url=profile_image_url, github_api_url=github_api_url, github_profile_url=github_profile_url,
+        )
+
+        self.assertIsNotNone(user)
+
     def test_create_user_with_richness(self):
         nickname = 'new-nickname'
         oauth_id = 'new-oauth-id'
