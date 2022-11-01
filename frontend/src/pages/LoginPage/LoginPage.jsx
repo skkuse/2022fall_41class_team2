@@ -11,7 +11,7 @@ const LoginBoxWrapper = styled.div`
   height: 100vh;
 `;
 
-export const LoginPage = () => {
+export const LoginPage = (loggedOn, ...restProps) => {
   return (
     <>
       <Helmet
@@ -21,7 +21,7 @@ export const LoginPage = () => {
         }}
       />
       <LoginBoxWrapper>
-        <LoginBox />
+        <LoginBox loggedOn={loggedOn} />
       </LoginBoxWrapper>
     </>
   );

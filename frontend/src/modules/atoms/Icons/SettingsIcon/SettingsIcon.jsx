@@ -15,7 +15,7 @@ export const SettingsIcon = (props) => {
   return (
     <div>
       <Wrapper>
-        <Img src="images/img_settings.svg" alt="settings" />
+        <Img src="/images/img_settings.svg" alt="settings" />
       </Wrapper>
     </div>
   );

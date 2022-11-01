@@ -110,7 +110,7 @@ const LoginButtonContainer = styled.div`
   cursor: pointer;
 `;
 
-export const LoginBox = ({ className, ...restProps }) => {
+export const LoginBox = ({ className, loggedOn, ...restProps }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const client_id = "4c3bebb649e5fd4d455f";
@@ -138,6 +138,7 @@ export const LoginBox = ({ className, ...restProps }) => {
           <Line></Line>
         </div>
         <div style={{ marginTop: "14px" }}>
+          {console.log(loggedOn)}
           <LoginButtonContainer
             onClick={() => {
               window.location.assign(

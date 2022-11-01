@@ -4,6 +4,7 @@ import styled from "styled-components";
 import { SettingsButton } from "../../molecules";
 import { LoginAndRegisterButton } from "../../molecules";
 import { LandingPageBannerButton } from "../../molecules";
+import { UserBox } from "../UserBox/UserBox";
 
 const BannerContainer = styled.div`
   display: flex;
@@ -35,7 +36,11 @@ const LowerContainer = styled.div`
   justify-content: space-between;
 `;
 
-export const LandingPageBanner = ({ className, ...restProps }) => {
+export const LandingPageBanner = ({
+  className,
+  loggedOn = false,
+  ...restProps
+}) => {
   return (
     <BannerContainer>
       {/* //! 마진은 아래 코드처럼 조립하는 부분에 div로 감싸서 직접 주세요 */}
@@ -52,9 +57,14 @@ export const LandingPageBanner = ({ className, ...restProps }) => {
         </div>
         {/* login and register button */}
         <div style={{ marginRight: "20px" }}>
-          {/* 로그인 전 */}
-          <LoginAndRegisterButton />
           {/* TODO: Redux 사용 로그인 state 반영 */}
+          {/* 로그인 전 */}
+          {(loggedOn = Boolean(loggedOn))}
+          {/* {console.log(loggedOn)} */}
+          <LoginAndRegisterButton />
+          {/* {!loggedOn && <LoginAndRegisterButton loggedOn={loggedOn} />} */}
+          {/* 로그인 후 */}
+          {/* {!!loggedOn && <UserBox />} */}
         </div>
       </TopContainer>
       <LowerContainer style={{ marginTop: "10px", marginBottom: "20px" }}>

@@ -18,7 +18,7 @@ const CodingCatRoutes = () => {
         <Route path="/" element={<LandingPage />} />
         <Route path="/settings" element={<SettingPage />} />
         <Route path="/login" element={<LoginPage />} />
-        <Route path="/login/redirect" element={<LoginRedirectPage />} />
+        <Route path="/login/redirect" element={<LandingPage />} />
         <Route path="main" element={<MainPage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>

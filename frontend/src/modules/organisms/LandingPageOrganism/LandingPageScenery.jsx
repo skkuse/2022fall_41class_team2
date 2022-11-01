@@ -43,21 +43,21 @@ export const LandingPageScenery = (props) => {
           </SubTitle>
         </div>
         <Img
-          src="images/Line_24.svg"
+          src="/images/Line_24.svg"
           className="illustrationOne1"
           alt="scenery1"
           style={{ marginTop: "34.33px" }}
         />
 
         <Img
-          src="images/Line_23.svg"
+          src="/images/Line_23.svg"
           className="illustrationOne2"
           alt="scenery2"
           style={{ marginTop: "17px" }}
         />
 
         <Img
-          src="images/img_illustration1_911X788.svg"
+          src="/images/img_illustration1_911X788.svg"
           className="illustrationOne3"
           alt="scenery3"
           style={{ marginTop: "17px", marginBottom: "78px" }}
