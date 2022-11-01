@@ -6,6 +6,7 @@ import { Line } from "./Line";
 import { Row } from "./Row";
 import { Stack } from "./Stack";
 import { Text } from "./Text";
+import { Button } from "./Button/Button";
 
 import { SettingsIcon } from "./Icons/SettingsIcon/SettingsIcon";
 import { LoginIcon } from "./Icons/LoginIcon/LoginIcon";
@@ -18,6 +19,7 @@ export {
   Row,
   Stack,
   Text,
+  Button,
   SettingsIcon,
   LoginIcon,
   BannerIcon,
