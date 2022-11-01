@@ -7,6 +7,7 @@ import styled from "styled-components";
 import { Text } from "./../../atoms";
 import { SettingsIcon } from "./../../atoms";
 import { ColorIcon } from "../../atoms/Icons";
+import { DropdownSelector } from "./../../atoms";
 
 /* Styled components */
 const Box = styled.div`
@@ -70,14 +71,14 @@ const BackgroundColorSelectorContainer = styled.div`
   font-weight: 400;
   font-size: 32px;
   line-height: 38px;
-  text-align: start;
+  text-align: center;
 
   color: #000000;
 
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  align-self: flex-start;
+  // align-self: flex-start;
 `;
 
 const SettingsSelectorContainer = styled.div`
@@ -101,11 +102,12 @@ const SettingsSelectorContainer = styled.div`
 `;
 
 const SettingsContainer = styled.div`
-  width: 299px;
+  width: 350px;
   height: 256px;
 
   display: flex;
   flex-direction: column;
+  justify-content: space-evenly;
 `;
 
 const LoginButtonContainer = styled.div`
@@ -128,6 +130,21 @@ const LoginButtonContainer = styled.div`
   cursor: pointer;
 `;
 
+const CodeEditorSelectorContainer = styled.div`
+  flex-direction: row;
+
+  justify-content: space-between;
+  text-align: center;
+  font-family: "Roboto";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 20px;
+  line-height: 23px;
+  text-align: center;
+
+  color: #000000;
+`;
+
 export const SettingsBox = ({ className, ...restProps }) => {
   return (
     <>
@@ -142,20 +159,42 @@ export const SettingsBox = ({ className, ...restProps }) => {
               <Exclamation>!</Exclamation>
             </div>
           </TitleContainer>
-          <SettingsContainer>
-            <BackgroundColorSelectorContainer>
-              <div style={{ marginTop: "20px" }}>
-                <Text>배경 색</Text>
+          <div style={{ marginTop: "58px" }}>
+            <SettingsContainer>
+              <BackgroundColorSelectorContainer>
+                <div style={{ justifyContent: "center" }}>
+                  <Text>배경 색</Text>
+                </div>
+                <div style={{ marginLeft: "90px" }}>
+                  <ColorIcon
+                    color="#ffffff"
+                    onClick={() => {
+                      restProps.theme = "#ffffff"; // TODO: setting theme props
+                    }}
+                  />
+                </div>
+                <ColorIcon
+                  color="#1a0505"
+                  onClick={() => {
+                    restProps.theme = "#1a0505"; // TODO: setting theme props
+                  }}
+                />
+              </BackgroundColorSelectorContainer>
+              <div style={{ marginTop: "60px" }}>
+                <SettingsSelectorContainer>
+                  <Text>코드 에디터</Text>
+                  <CodeEditorSelectorContainer>
+                    <Text>Language</Text>
+                    <DropdownSelector></DropdownSelector>
+                  </CodeEditorSelectorContainer>
+                  <CodeEditorSelectorContainer>
+                    <Text>Theme</Text>
+                    <DropdownSelector></DropdownSelector>
+                  </CodeEditorSelectorContainer>
+                </SettingsSelectorContainer>
               </div>
-              <ColorIcon color="#ffffff" />
-              <ColorIcon color="#1a0505" />
-            </BackgroundColorSelectorContainer>
-            <div style={{ marginTop: "70px" }}>
-              <SettingsSelectorContainer>
-                <Text>코드 에디터</Text>
-              </SettingsSelectorContainer>
-            </div>
-          </SettingsContainer>
+            </SettingsContainer>
+          </div>
           <div style={{ marginTop: "85px", marginBottom: "86px" }}>
             <Link
               to="/"
