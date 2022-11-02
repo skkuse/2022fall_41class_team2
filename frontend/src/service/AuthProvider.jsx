@@ -6,14 +6,14 @@ import { Link, Navigate, Outlet, Route } from "react-router-dom";
 
 export const AuthProvider = ({children}) => {
     
-    const [user, setUser] = useState(getItemWithExpireTime("user") ? true : false);
+    const [user, setUser] = useState(getItemWithExpireTime("user"));
     const dispatch = useDispatch();
 
     useEffect(()=>{
             console.log("get item : " + user);
-            getItemWithExpireTime("user")? setUser(true) : setUser(false);
+            setUser(getItemWithExpireTime("user"));
         },
-        [getItemWithExpireTime("user")]
+        []
     );
 
     return (
