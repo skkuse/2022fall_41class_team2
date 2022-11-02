@@ -9,15 +9,15 @@ import {setItemWithExpireTime} from "../service/localStorage";
 async function githubLoginAPI(payload) {
     console.log("code = " + payload);
     const result = await apiClient.get("/api/auth/github/callback/?code="+payload);
-
-    return result;
+    
+    return result.data.data;
 }
 
 function* githubLogin(action) {
     
     const result = yield call(githubLoginAPI, action.payload);
     if(result){
-        setItemWithExpireTime("user",true,1000*60*60);
+        setItemWithExpireTime("user",result,1000*60*60);
         yield put({
             type: LOGIN_SUCCESS,
             callback: action.callback
