@@ -8,9 +8,9 @@ import {setItemWithExpireTime} from "../service/localStorage";
 
 async function githubLoginAPI(payload) {
     console.log("code = " + payload);
-    // const result = await apiClient.get("/api/auth/github/callback/?code="+payload);
+    const result = await apiClient.get("/api/auth/github/callback/?code="+payload);
 
-    return true;
+    return result;
 }
 
 function* githubLogin(action) {

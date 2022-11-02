@@ -38,7 +38,6 @@ export const LoginRedirectPage = () => {
 
   return (
     <div>
-      <h1>redirect</h1>
     </div>
   );
 };
