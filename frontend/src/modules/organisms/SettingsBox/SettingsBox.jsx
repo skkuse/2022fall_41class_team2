@@ -6,6 +6,12 @@ import styled from "styled-components";
 import { Text } from "./../../atoms";
 import { SettingsIcon } from "./../../atoms";
 import { ColorIcon } from "../../atoms/Icons";
+import { useDispatch, useSelector } from "react-redux";
+import { useParams, useLocation, useNavigate } from "react-router-dom";
+
+import {SETTING_BACKGROUND_WHITE, SETTING_LANGUAGE_PYTHON,SETTING_LANGUAGE_JAVASCRIPT,SETTING_LANGUAGE_CPP,SETTING_LANGUAGE_JAVA,SETTING_LANGUAGE_C,SETTING_LANGUAGE_CSHARP,SETTING_THEME_VSCODE} from "../../../reducers/SettingReducer";
+
+import {settingChangeBg, settingChangeLg, settingChangeTh} from "../../../pages/SettingPage/SettingAction";
 
 /* Styled components */
 const Box = styled.div`
@@ -164,30 +170,42 @@ const StyledHtmlSelect = styled.select`
 `;
 
 export const SettingsBox = ({ className, ...restProps }) => {
+
+  const settingSelector = useSelector((state) =>
+    state.SettingReducer
+  );    
+  const navigate = useNavigate();
+
+
   /* Dropdown options */
+  // Background options
+  const [currentBack, setCurrentBack] = useState(settingSelector.backgroundColor);
+
   // Language options
-  const [currentLang, setCurrentLang] = useState("Python");
+  const [currentLang, setCurrentLang] = useState(settingSelector.language);
+  const dispatch = useDispatch();
+
   const onChangeLang = (e) => {
     setCurrentLang(e.target.value);
   };
   const optionsLang = [
-    { key: 1, value: "Python" },
-    { key: 2, value: "JavaScript" },
-    { key: 3, value: "C++" },
-    { key: 4, value: "Java" },
-    { key: 5, value: "C" },
-    { key: 6, value: "C#" },
+    { key: 1, value: SETTING_LANGUAGE_PYTHON },
+    { key: 2, value: SETTING_LANGUAGE_JAVASCRIPT },
+    { key: 3, value: SETTING_LANGUAGE_CPP },
+    { key: 4, value: SETTING_LANGUAGE_JAVA },
+    { key: 5, value: SETTING_LANGUAGE_C },
+    { key: 6, value: SETTING_LANGUAGE_CSHARP },
   ];
 
   // Theme options
-  const [currentTheme, setCurrentTheme] = useState("Default"); // TODO: adapt to Monaco library
+  const [currentTheme, setCurrentTheme] = useState(settingSelector.theme); // TODO: adapt to Monaco library
   const onChangeTheme = (e) => {
     setCurrentTheme(e.target.value);
   };
   const optionsTheme = [
-    { key: 1, value: "VS Code" },
-    { key: 2, value: "Dark" },
-    { key: 3, value: "Light" },
+    { key: 1, value: SETTING_THEME_VSCODE },
+    // { key: 2, value: "Dark" },
+    // { key: 3, value: "Light" },
   ];
 
   return (
@@ -259,11 +277,19 @@ export const SettingsBox = ({ className, ...restProps }) => {
           </div>
           <div style={{ marginTop: "85px", marginBottom: "86px" }}>
             <Link
+            onClick={() => {
+              dispatch(settingChangeBg(currentBack));
+              dispatch(settingChangeLg(currentLang));
+              dispatch(settingChangeTh(currentTheme));
+              // navigate("/");
+            }}
               to="/"
               className={`${className} common-login-and-register-button`}
               style={{ textDecoration: "none" }}
             >
-              <LoginButtonContainer>설정 완료</LoginButtonContainer>
+              <LoginButtonContainer
+              
+              >설정 완료</LoginButtonContainer>
             </Link>
           </div>
         </GeneralContainer>

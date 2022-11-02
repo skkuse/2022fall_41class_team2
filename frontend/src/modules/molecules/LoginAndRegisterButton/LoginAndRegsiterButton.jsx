@@ -3,7 +3,7 @@ import { LoginIcon } from "../../atoms";
 
 export const LoginAndRegisterButton = ({
   className,
-  loggedOn,
+  // loggedOn,
   ...restProps
 }) => {
   return (
@@ -11,7 +11,7 @@ export const LoginAndRegisterButton = ({
       to="/auth/login"
       className={`${className} common-login-and-register-button`}
       style={{ textDecoration: "none" }}
-      loggedOn={loggedOn}
+      // loggedOn={loggedOn}
       {...restProps}
     >
       <LoginIcon />

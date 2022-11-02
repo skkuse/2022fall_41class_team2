@@ -40,10 +40,10 @@ const LowerContainer = styled.div`
 
 export const LandingPageBanner = ({
   className,
-  loggedOn = false,
+  // loggedOn = false,
   ...restProps
 }) => {
-  const currentUser = useContext(AuthContext);
+  // const currentUser = useContext(AuthContext);
   
   return (
     <BannerContainer>
