@@ -1,3 +1,7 @@
+#root {
+  height: 100vh;
+}
+
 * {
   box-sizing: border-box;
 }
@@ -82,42 +86,42 @@ table {
 .react-datepicker-popper {
   z-index: 100000 !important;
 }
-.drawable-icon{
+.drawable-icon {
   position: absolute;
   margin: auto;
   z-index: 1000;
 }
-.input-wrap{
+.input-wrap {
   position: relative;
 }
-option{
+option {
   color: #000;
 }
-.table-wrap{
+.table-wrap {
   overflow: auto;
 }
-input:focus{
-  outline:none;
+input:focus {
+  outline: none;
 }
-.ReactModal__Body--open{
+.ReactModal__Body--open {
   overflow: hidden;
 }
-  .slider-indicator:first-child {
-    margin-left: 0;
+.slider-indicator:first-child {
+  margin-left: 0;
 }
 
 .slider-indicator:last-child {
-margin-right: 0;
+  margin-right: 0;
 }
 
-.rc-drawer-content-wrapper{
+.rc-drawer-content-wrapper {
   width: 100% !important;
 }
-.rc-drawer-right .rc-drawer-content-wrapper{
+.rc-drawer-right .rc-drawer-content-wrapper {
   display: flex;
   justify-content: flex-end;
 }
-.rc-drawer-left .rc-drawer-content-wrapper{
+.rc-drawer-left .rc-drawer-content-wrapper {
   display: flex;
   justify-content: flex-start;
 }
