@@ -29,7 +29,7 @@ export const LoginPage = () => {
         }}
       />
       <LoginBoxWrapper>
-        <LoginBox loggedOn={false} />
+        <LoginBox/>
       </LoginBoxWrapper>
     </>
   );

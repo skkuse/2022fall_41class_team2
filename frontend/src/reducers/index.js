@@ -1,9 +1,11 @@
 import {combineReducers} from "redux";
 import { BottomNavigationBarReducer } from "./BottomNavigationBarReducer";
 import {LoginReducer} from "./LoginReducer";
+import {SettingReducer} from "./SettingReducer";
 
 const rootReducer = combineReducers({
-  LoginReducer
+  LoginReducer,
+  SettingReducer
 });
 
 export default rootReducer;

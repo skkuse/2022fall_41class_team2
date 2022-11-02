@@ -14,11 +14,8 @@ async function githubLoginAPI(payload) {
 }
 
 function* githubLogin(action) {
-    console.log("github login");
     
     const result = yield call(githubLoginAPI, action.payload);
-    console.log("github login result2 : " + JSON.stringify(result));
-
     if(result){
         setItemWithExpireTime("user",true,1000*60*60);
         yield put({
