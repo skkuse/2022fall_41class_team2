@@ -1,13 +1,11 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
-
-/* OAuth library */
 
 /* Custom modules */
 import { Text } from "./../../atoms";
 import { SettingsIcon } from "./../../atoms";
 import { ColorIcon } from "../../atoms/Icons";
-import { DropdownSelector } from "./../../atoms";
 
 /* Styled components */
 const Box = styled.div`
@@ -82,9 +80,9 @@ const BackgroundColorSelectorContainer = styled.div`
 `;
 
 const SettingsSelectorContainer = styled.div`
-  width: 295px;
   height: 145px;
 
+  margin-right: 0px;
   font-family: "Roboto";
   font-style: normal;
   font-weight: 400;
@@ -131,6 +129,7 @@ const LoginButtonContainer = styled.div`
 `;
 
 const CodeEditorSelectorContainer = styled.div`
+  display: flex;
   flex-direction: row;
 
   justify-content: space-between;
@@ -145,7 +144,52 @@ const CodeEditorSelectorContainer = styled.div`
   color: #000000;
 `;
 
+const StyledHtmlSelect = styled.select`
+  width: 147px;
+  text-align: center;
+
+  font-family: "Roboto";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 19px;
+
+  padding: 0;
+  margin: 0 0 0 10px;
+  height: 25px !important;
+
+  background: #fff;
+  border: 2px solid #bfbfbf;
+  border-radius: 5px;
+`;
+
 export const SettingsBox = ({ className, ...restProps }) => {
+  /* Dropdown options */
+  // Language options
+  const [currentLang, setCurrentLang] = useState("Python");
+  const onChangeLang = (e) => {
+    setCurrentLang(e.target.value);
+  };
+  const optionsLang = [
+    { key: 1, value: "Python" },
+    { key: 2, value: "JavaScript" },
+    { key: 3, value: "C++" },
+    { key: 4, value: "Java" },
+    { key: 5, value: "C" },
+    { key: 6, value: "C#" },
+  ];
+
+  // Theme options
+  const [currentTheme, setCurrentTheme] = useState("Default"); // TODO: adapt to Monaco library
+  const onChangeTheme = (e) => {
+    setCurrentTheme(e.target.value);
+  };
+  const optionsTheme = [
+    { key: 1, value: "VS Code" },
+    { key: 2, value: "Dark" },
+    { key: 3, value: "Light" },
+  ];
+
   return (
     <>
       <Box>
@@ -185,11 +229,29 @@ export const SettingsBox = ({ className, ...restProps }) => {
                   <Text>코드 에디터</Text>
                   <CodeEditorSelectorContainer>
                     <Text>Language</Text>
-                    <DropdownSelector></DropdownSelector>
+                    <StyledHtmlSelect
+                      onChange={onChangeLang}
+                      value={currentLang}
+                    >
+                      {optionsLang.map((option) => (
+                        <option key={option.key} value={option.value}>
+                          {option.value}
+                        </option>
+                      ))}
+                    </StyledHtmlSelect>
                   </CodeEditorSelectorContainer>
                   <CodeEditorSelectorContainer>
                     <Text>Theme</Text>
-                    <DropdownSelector></DropdownSelector>
+                    <StyledHtmlSelect
+                      onChange={onChangeTheme}
+                      value={currentTheme}
+                    >
+                      {optionsTheme.map((option) => (
+                        <option key={option.key} value={option.value}>
+                          {option.value}
+                        </option>
+                      ))}
+                    </StyledHtmlSelect>
                   </CodeEditorSelectorContainer>
                 </SettingsSelectorContainer>
               </div>
