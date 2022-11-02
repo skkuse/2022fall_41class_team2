@@ -11,7 +11,7 @@ const Button = styled.div`
   height: auto;
   color: #5b5b5b;
   margin-left: auto;
-  margin-right : 284.95px
+  /* margin-right : 284.95px */
   flex: 1;
 `;
 

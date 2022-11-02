@@ -9,12 +9,11 @@ export const AuthProvider = ({children}) => {
     const [user, setUser] = useState(getItemWithExpireTime("user")? true : false);
     const dispatch = useDispatch();
 
-
     useEffect(()=>{
-        console.log("get item : " + user);
-
-        getItemWithExpireTime("user")? setUser(true) : setUser(false);
-    }, [getItemWithExpireTime("user")]);
+            console.log("get item : " + user);
+            getItemWithExpireTime("user")? setUser(true) : setUser(false);
+        },
+    );
 
     return (
         <AuthContext.Provider 
@@ -33,7 +32,7 @@ export const PrivateRoute = ({children, ...props}) => {
     return (
         currentUser?  <Outlet/> 
         // :  <LoginPage /> 
-        : <Navigate to={"/login"}/> 
+        : <Navigate to={"/auth/login"}/> 
     );
 }
 

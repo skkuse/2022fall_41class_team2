@@ -1,10 +1,12 @@
-import React from "react";
 import styled from "styled-components";
 
 import { SettingsButton } from "../../molecules";
 import { LoginAndRegisterButton } from "../../molecules";
 import { LandingPageBannerButton } from "../../molecules";
 import { UserBox } from "../UserBox/UserBox";
+import React, { useState, useEffect, ReactNode, FC, createContext, useContext } from "react";
+import {AuthContext} from "../../../App"
+import {getItemWithExpireTime} from "../../../service/localStorage";
 
 const BannerContainer = styled.div`
   display: flex;
@@ -41,30 +43,18 @@ export const LandingPageBanner = ({
   loggedOn = false,
   ...restProps
 }) => {
+  const currentUser = useContext(AuthContext);
+  
   return (
     <BannerContainer>
-      {/* //! 마진은 아래 코드처럼 조립하는 부분에 div로 감싸서 직접 주세요 */}
       <TopContainer style={{ marginTop: "10px" }}>
         {/* Settings icon */}
         <div style={{ marginLeft: "20px" }}>
-          {/* 
-              //! figpa 코드 추출 너무 믿지 마세요
-              //! position: absolute, right: 90% 이런식의 코드는 안좋은 코드 같아요
-              //! (실제로 position이 absolute여야 하는 경우에는 써도 되는데, 이렇게 레이아웃 잡을 떈 웬만하면 필요 없습니다)
-              //! 또한 SettingsButton의 width가 100%였는데, 조립 부품은 최대한 자기 넓이 만큼만 가져가는게 좋아요 (여기선 21px)
-          */}
           <SettingsButton />
         </div>
         {/* login and register button */}
         <div style={{ marginRight: "20px" }}>
-          {/* TODO: Redux 사용 로그인 state 반영 */}
-          {/* 로그인 전 */}
-          {(loggedOn = Boolean(loggedOn))}
-          {/* {console.log(loggedOn)} */}
-          <LoginAndRegisterButton />
-          {/* {!loggedOn && <LoginAndRegisterButton loggedOn={loggedOn} />} */}
-          {/* 로그인 후 */}
-          {/* {!!loggedOn && <UserBox />} */}
+          {!getItemWithExpireTime("user") && <LoginAndRegisterButton />}
         </div>
       </TopContainer>
       <LowerContainer style={{ marginTop: "10px", marginBottom: "20px" }}>

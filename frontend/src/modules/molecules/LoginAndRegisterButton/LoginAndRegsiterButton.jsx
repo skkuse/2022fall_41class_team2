@@ -8,7 +8,7 @@ export const LoginAndRegisterButton = ({
 }) => {
   return (
     <Link
-      to="/login"
+      to="/auth/login"
       className={`${className} common-login-and-register-button`}
       style={{ textDecoration: "none" }}
       loggedOn={loggedOn}
