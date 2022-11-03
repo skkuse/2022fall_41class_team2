@@ -127,11 +127,7 @@ export const LoginBox = ({ className, ...restProps }) => {
         </TitleContainer>
         <div style={{ marginTop: "71px" }}>
           <ImageContainer>
-            <Img
-              src="images/img_.png"
-              className="lg:h-[54px] xl:h-[67px] 2xl:h-[76px] 3xl:h-[91px] lg:mt-[35px] xl:mt-[44px] 2xl:mt-[49px] 3xl:mt-[59px] w-[22%]"
-              alt="SeventyOne"
-            />
+            <Img src="/images/img_.png" />
           </ImageContainer>
         </div>
         <div style={{ marginTop: "38px" }}>
