@@ -1,18 +1,23 @@
 import React from 'react';
-import ReactDOM from 'react-dom/client';
-import App from './App';
-import { Provider } from "react-redux";
-import { legacy_createStore as createStore, applyMiddleware} from 'redux'
-import {BrowserRouter as Router} from 'react-router-dom'
+import ReactDOM from 'react-dom';
+import "./styles/color.css";
+import "./styles/font.css";
+import "./styles/index.css";
+import "./styles/tailwind.css";
 
-import createSagaMiddleware from 'redux-saga'
-import rootReducer from './reducers/index.js';
-import rootSaga from './sagas/index';
+import App from './App';
+// import { Provider } from "react-redux";
+// import { legacy_createStore as createStore, applyMiddleware} from 'redux'
+
+
+// import createSagaMiddleware from 'redux-saga'
+// import rootReducer from './reducers/index.js';
+// import rootSaga from './sagas/index';
 
 import './index.css';
 // import configInfo from "./firebaseConfig.json";
-import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
+// import { initializeApp } from "firebase/app";
+// import { getAnalytics } from "firebase/analytics";
 
 // const firebaseConfig = {
 //   apiKey: configInfo.apiKey,
@@ -27,11 +32,11 @@ import { getAnalytics } from "firebase/analytics";
 // const app = initializeApp(firebaseConfig);
 // const analytics = getAnalytics(app);
 
-const sagaMiddleware = createSagaMiddleware();
+// const sagaMiddleware = createSagaMiddleware();
 
-const store = createStore(rootReducer, applyMiddleware(sagaMiddleware));
+// const store = createStore(rootReducer, applyMiddleware(sagaMiddleware));
 
-sagaMiddleware.run(rootSaga);
+// sagaMiddleware.run(rootSaga);
 
 const root = ReactDOM.createRoot(
   document.getElementById('root')
@@ -39,10 +44,8 @@ const root = ReactDOM.createRoot(
 
 root.render(
   <React.StrictMode>
-    <Provider store={store}>
-      <Router>
+    {/* <Provider store={store}> */}
         <App />
-      </Router>
-    </Provider>
+    {/* </Provider> */}
   </React.StrictMode>
 );

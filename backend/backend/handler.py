@@ -9,11 +9,28 @@ def custom_exception_handler(exc, context):
 
 
 def custom_404_handler(request, exception):
-    return JsonResponse({
-        'code': status.HTTP_404_NOT_FOUND,
-        'message': 'The resource was not found',
-        'data': {
-            'method': request.method,
-            'path': request.path,
+    return JsonResponse(
+        data={
+            'code': status.HTTP_404_NOT_FOUND,
+            'message': 'The resource was not found',
+            'data': {
+                'method': request.method,
+                'path': request.path,
+            },
         },
-    }, status=status.HTTP_404_NOT_FOUND)
+        status=status.HTTP_404_NOT_FOUND
+    )
+
+
+def custom_500_handler(request):
+    return JsonResponse(
+        data={
+            'code': status.HTTP_500_INTERNAL_SERVER_ERROR,
+            'message': 'Internal server error occurs',
+            'data': {
+                'method': request.method,
+                'path': request.path,
+            },
+        },
+        status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+    )
