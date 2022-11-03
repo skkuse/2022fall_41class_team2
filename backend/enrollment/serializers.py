@@ -9,7 +9,7 @@ class EnrollmentSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Enrollment
-        fields = ['enrollment_id', 'student_id', 'lecture_id', 'created_at']
+        fields = ['id', 'student_id', 'lecture_id', 'created_at']
 
 
         

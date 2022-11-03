@@ -32,7 +32,7 @@ class EnrollmentListOrCreate(generics.ListCreateAPIView):
         return Enrollment.objects.all()
 
     def perform_create(self, serializer):
-        serializer.save()
+        return serializer.save()
 
 @extend_schema(
     list=[

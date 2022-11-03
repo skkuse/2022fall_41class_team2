@@ -17,7 +17,7 @@ class TestEnrollment(TestCase):
     mock_lecture_name_2 = 'mock-lecture-name-2'
 
 
-    def test_enrollment(self):
+    def setUp(self):
         instructor = User.objects.create(
             name='mock-instructor-name',
             email=self.mock_instructor_email,
@@ -84,3 +84,30 @@ class TestEnrollment(TestCase):
         self.assertEqual(len(enrollment2), 2)
         self.assertEqual(len(enrollment3), 2)
         self.assertEqual(len(enrollment4), 2)
+
+
+    def test_enrollment_save(self):
+        student_1 = User.objects.get(email=self.mock_student_email_1)
+        lecture_2 = Lecture.objects.get(name=self.mock_lecture_name_2)
+        enrollment = Enrollment.objects.create(
+            student_id=student_1,
+            lecture_id=lecture_2
+        )
+
+        self.assertIsNotNone(enrollment.id)
+        self.assertEqual(enrollment.student_id, student_1)
+        self.assertEqual(enrollment.lecture_id, lecture_2)
+
+    def test_enrollment_remove(self):
+        student_1 = User.objects.get(email=self.mock_student_email_1)
+        lecture_2 = Lecture.objects.get(name=self.mock_lecture_name_2)
+        enrollment = Enrollment.objects.create(
+            student_id=student_1,
+            lecture_id=lecture_2
+        )
+
+        result = enrollment.delete()
+
+        self.assertEqual(result[1].get('id'), enrollment.id)
+        self.assertIsNotNone(student_1)
+        self.assertIsNotNone(lecture_2)
