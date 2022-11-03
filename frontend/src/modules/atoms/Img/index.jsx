@@ -1,15 +1,19 @@
 import React from "react";
 
+import styled from "styled-components";
 
+const Image = styled.img`
+  alignself: center;
+`;
 
 export const Img = ({
   className,
-  src = "../../../assets/images/defaultNoData.JPG",
+  src = "images/defaultNoData.JPG",
   alt = "OOPS NO IMAGE",
   ...restProps
 }) => {
   return (
-    <img
+    <Image
       className={`${className} common-image`}
       src={src}
       alt={alt}
