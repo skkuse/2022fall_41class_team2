@@ -3,7 +3,7 @@ import React from "react";
 import styled from "styled-components";
 
 const Image = styled.img`
-  alignself: center;
+  align-self: center;
 `;
 
 export const Img = ({
