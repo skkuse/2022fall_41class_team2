@@ -5,7 +5,6 @@ from drf_spectacular.views import SpectacularAPIView, SpectacularRedocView, Spec
 from backend.handler import custom_404_handler, custom_500_handler
 
 
-
 class CustomAPIView(SpectacularAPIView):
     permission_classes = [AllowAny]
 
@@ -31,14 +30,16 @@ urlpatterns += [
     path('schema/', CustomAPIView.as_view(), name='schema'),
     path('docs/redoc/', CustomRedocView.as_view(), name='redoc'),
     path('docs/swagger/', CustomSwaggerView.as_view(), name='swagger'),
-    path('', include('assignment.urls'))
 ]
 
 urlpatterns += [
     path('auth/', include('authentication.urls'), name='auth'),
-    path('assignments/', include('assignment.urls'), name = 'assignment')
 ]
 
 urlpatterns += [
     path('lectures/', include('lecture.urls'), name='lectures'),
+]
+
+urlpatterns += [
+    path('assignments/', include('assignment.urls'), name='assignment'),
 ]
