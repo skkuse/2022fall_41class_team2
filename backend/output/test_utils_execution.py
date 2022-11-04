@@ -1,5 +1,5 @@
 from django.test import TestCase
-from output.utils import setup_input, run
+from output.utils_execution import setup_input, run
 
 
 class Test(TestCase):
@@ -15,8 +15,8 @@ class Test(TestCase):
 
     def test_setup_input_with_white_spaces(self):
         raw = '''
-        
-        
+
+
 1
 2
 3   
@@ -37,11 +37,11 @@ class Test(TestCase):
 def solution():
     size = int(input())
     nums = [float(e) for e in input().split()]
-    
+
     ret = 0
     for num in nums:
         ret += num
-        
+
     print(ret)
     return ret
 '''
@@ -66,12 +66,12 @@ const input = (() => {
 
 let solution = () => {
     const size = input();
-    
+
     let ret = 0;
     let nums = input().split(\' \').forEach((val) => {
         ret += Number(val);
     });
-    
+
     console.log(ret);
     return ret;
 }
@@ -92,14 +92,14 @@ let solution = () => {
 void solution() {
     int size = 0;
     scanf(\"%d\", &size);
-    
+
     float ret = 0;
     while (size--) {
         float num = 0;
         scanf(\"%f\", &num);
         ret += num;
     }
-    
+
     printf(\"%.1f\\n\", ret);
 }
 '''
