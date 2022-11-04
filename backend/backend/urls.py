@@ -39,3 +39,7 @@ urlpatterns += [
 urlpatterns += [
     path('lectures/', include('lecture.urls'), name='lectures'),
 ]
+
+urlpatterns += [
+    path('outputs/', include('output.urls'), name='outputs')
+]
