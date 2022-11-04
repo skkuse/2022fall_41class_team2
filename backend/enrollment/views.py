@@ -10,7 +10,7 @@ from enrollment.serializers import EnrollmentSerializer
         extend_schema(
             description='Get all enrollment information of user',
             methods=['GET'],
-            request='user_auth',
+            request=None,
             responses={
                 200: EnrollmentSerializer(many=True),
             },
@@ -29,8 +29,14 @@ from enrollment.serializers import EnrollmentSerializer
 class EnrollmentListOrCreate(generics.ListCreateAPIView):
     serializer_class = EnrollmentSerializer
 
+    """
+    @seungho
+    You should not just return all enrollment instances
+    Please filter by lecture_id
+    """
     def get_queryset(self):
-        return Enrollment.objects.all()
+        # return Enrollment.objects.all()
+        return None
 
     def perform_create(self, serializer):
         return serializer.save()
@@ -41,7 +47,7 @@ class EnrollmentListOrCreate(generics.ListCreateAPIView):
         extend_schema(
             description='Get a enrollment information associated with user',
             methods=['GET'],
-            request='user_auth',
+            request=None,
             responses={
                 200: EnrollmentSerializer,
             },
@@ -49,7 +55,7 @@ class EnrollmentListOrCreate(generics.ListCreateAPIView):
         extend_schema(
             description='Delete a lecture when user is an instructor',
             methods=['DELETE'],
-            request='user_auth',
+            request=None,
             responses={
                 204: None,
                 401: None,
