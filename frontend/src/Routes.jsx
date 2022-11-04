@@ -9,6 +9,7 @@ import { LoginPage } from "./pages/LoginPage/LoginPage";
 import { LoginRedirectPage } from "./pages/LoginPage/LoginRedirectPage";
 import { MainPage } from "./pages/MainPage/MainPage";
 import { AuthProvider, PrivateRoute, LoginRoute } from "./service/AuthProvider";
+import { EditorPage } from "./pages/EditorPage/EditorPage";
 
 const CodingCatRoutes = () => {
   return (
@@ -31,7 +32,8 @@ const CodingCatRoutes = () => {
           <Route path="/" element={<LandingPage />} />
 
           <Route path="/" element={<PrivateRoute />} >
-            <Route path="/main" element={<MainPage />} />
+              <Route path="/main" element={<MainPage />} />
+              <Route path="editor/lecture/:lecture_id" element={<EditorPage />} />
             <Route path="/settings" element={<SettingPage />} />
           </Route>
 
