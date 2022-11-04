@@ -187,10 +187,20 @@ class TestLectureRetrieveOrDestroy(TestCase):
         so retrieve action is accepted even though no auth.
         You have to fix the following lines.
         '''
-        self.assertEqual(response.status_code, 401)
+        self.assertEqual(response.status_code, 200)
 
+    # todo: create this case
     def test_assignment_retrieve_when_non_exist_assignment(self):
-        self.fail()
+        assignment = Assignment.objects.get(name=self.mock_assignment_name_1)
+        student = User.objects.get(oauth_id=self.mock_student_oauth_id)
+        dne_assignment_id = 100
+
+        client = APIClient()
+        client.force_authenticate(user=student)
+
+        response = client.get(f'/assignments/{dne_assignment_id}/')
+
+        self.assertEqual(response.status_code, 400)
 
     def test_assignment_destroy_with_instructor(self):
         instructor = User.objects.get(oauth_id=self.mock_instructor_oauth_id)
@@ -212,11 +222,7 @@ class TestLectureRetrieveOrDestroy(TestCase):
         # response = client.delete(reverse("assignment_retrieve_or_destroy", kwargs={'id': assignment.id}))
         response = client.delete(f'/assignments/{assignment.id}/')
 
-        # Todo: does the status code have to be 401 Unauthorized?
-        '''
-        @seungho
-        No. Status code 403 is proper
-        '''
+
         self.assertEqual(response.status_code, 403)
 
     def test_assignment_destroy_without_auth(self):

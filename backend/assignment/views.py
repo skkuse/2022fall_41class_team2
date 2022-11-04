@@ -6,7 +6,9 @@ from rest_framework.exceptions import PermissionDenied
 from rest_framework.response import Response
 from assignment.models import Assignment
 from assignment.serializers import AssignmentSerializer
-
+from authentication.models import User
+from backend.exceptions import InternalServerError
+from rest_framework.exceptions import ParseError
 
 @extend_schema_view(
     list=[
@@ -69,8 +71,13 @@ class AssignmentRetrieveOrDestroy(generics.RetrieveDestroyAPIView):
     queryset = Assignment.objects.all()
 
     def get_object(self):
-        assignment_id = self.kwargs.get(self.lookup_field)
-        return Assignment.objects.get(pk=assignment_id)
+        try:
+            assignment_id = self.kwargs.get(self.lookup_field)
+            return Assignment.objects.get(pk=assignment_id)
+        except Assignment.DoesNotExist:
+            raise ParseError
+        except Assignment.MultipleObjectsReturned:
+            raise InternalServerError
 
     def delete(self, request, *args, **kwargs):
         instance = self.get_object()
