@@ -6,13 +6,15 @@ CREATE TABLE `lectures` (
 
 CREATE TABLE `users` (
   `user_id` int PRIMARY KEY AUTO_INCREMENT,
+  `nickname` varchar(255),
+  `oauth_id` varchar(255),
   `name` varchar(255),
   `eamil` varchar(255),
-  `nickname` varchar(255),
   `created_at` timestamp DEFAULT (now()),
   `last_login` timestamp DEFAULT (now()),
   `profile_image_url` varchar(255),
-  `github_api_url` varchar(255)
+  `github_api_url` varchar(255),
+  `github_profile_url` varchar(255)
 );
 
 CREATE TABLE `enrollments` (
@@ -29,8 +31,8 @@ CREATE TABLE `assignments` (
   `deadline` timestamp DEFAULT (now()),
   `question` varchar(255),
   `constraints` varchar(255),
-  `skeleton_code` varchar(255),
-  `answer_code` varchar(255)
+  `language, skeleton_code` json,
+  `language, answer_code` json
 );
 
 CREATE TABLE `testcases` (
@@ -48,7 +50,7 @@ CREATE TABLE `repo` (
   `assignment_id` int,
   `created_at` timestamp DEFAULT (now()),
   `modified_at` timestamp DEFAULT (now()),
-  `content` varchar(255),
+  `language, code` json,
   `result_id` int
 );
 
