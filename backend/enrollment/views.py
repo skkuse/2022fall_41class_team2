@@ -4,7 +4,8 @@ from drf_spectacular.utils import extend_schema_view, extend_schema
 from enrollment.models import Enrollment
 from enrollment.serializers import EnrollmentSerializer
 
-@extend_schema(
+
+@extend_schema_view(
     list=[
         extend_schema(
             description='Get all enrollment information of user',
@@ -34,7 +35,8 @@ class EnrollmentListOrCreate(generics.ListCreateAPIView):
     def perform_create(self, serializer):
         return serializer.save()
 
-@extend_schema(
+
+@extend_schema_view(
     list=[
         extend_schema(
             description='Get a enrollment information associated with user',

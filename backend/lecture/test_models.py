@@ -21,7 +21,7 @@ class TestLecture(TestCase):
         )
 
     def test_lecture_save(self):
-        lecture_name = "dummy-lecture-name"
+        lecture_name = 'dummy-lecture-name'
         instructor = User.objects.get(email=self.mock_instructor_email)
 
         lecture = Lecture.objects.create(
@@ -33,6 +33,16 @@ class TestLecture(TestCase):
         self.assertEqual(lecture.name, lecture_name)
         self.assertEqual(lecture.instructor, instructor)
 
+    def test_lecture_save_with_empty_lecture_name(self):
+        instructor = User.objects.get(email=self.mock_instructor_email)
+
+        lecture = Lecture.objects.create(
+            instructor=instructor
+        )
+
+        self.assertIsNotNone(lecture.id)
+        self.assertEqual(lecture.name, '')
+
     def test_lecture_remove(self):
         instructor = User.objects.get(email=self.mock_instructor_email)
         lecture = Lecture.objects.create(
@@ -41,7 +51,7 @@ class TestLecture(TestCase):
         )
 
         result = lecture.delete()
-        user = User.objects.get(email=self.mock_instructor_email)
+        after_user = User.objects.get(email=self.mock_instructor_email)
 
         self.assertEqual(result[1].get('id'), lecture.id)
-        self.assertIsNotNone(user)
+        self.assertIsNotNone(after_user)
