@@ -3,22 +3,27 @@ import React from "react";
 import styled from "styled-components";
 
 import { Text } from "../../modules/atoms";
+import { BannerIcon } from "../../modules/atoms/Icons";
+
 import { LandingPageBanner } from "../../modules/organisms/LandingPageOrganism/LandingPageBanner";
 
 import { useDispatch, useSelector } from "react-redux";
 
 const GeneralContainer = styled.div`
   display: flex;
-  flex-wrap: wrap;
   flex-direction: column;
   align-items: center;
-  justify-content: space-between;
 
-  width: 100%;
-  height: 100%;
+  margin-right: 0px;
+  width: 61%;
 `;
 
 const ListContainer = styled.div`
+  /* display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh; */
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -26,15 +31,20 @@ const ListContainer = styled.div`
   height: 100vh;
 `;
 
+const ButtonContainer = styled.div`
+  width: 61%;
+
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+`;
+
 const ListIndicatorBox = styled.div`
-  margin-top: 16px;
-  margin-left: 20px;
-  margin-bottom: 0px;
   width: 122px;
   height: 42px;
 
   background: #7977eb;
-  align-self: flex-start;
 
   font-family: "Gmarket Sans TTF";
   font-style: normal;
@@ -42,10 +52,6 @@ const ListIndicatorBox = styled.div`
   font-size: 19.4234px;
   line-height: 22px;
   text-align: center;
-
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
 
   color: #ffffff;
 `;
@@ -68,14 +74,43 @@ export const OverviewPage = (...restProps) => {
       <LandingPageBanner restProps={restProps} />
 
       {/* List design */}
-      <GeneralContainer>
-        <ListIndicatorBox>
-          <Text>강의 목록</Text>
-        </ListIndicatorBox>
-        <ListDivLine></ListDivLine>
-        {/* Lectures and assignments  */}
-        <ListContainer>ListContainer</ListContainer>
-      </GeneralContainer>
+      <div style={{ marginTop: "66px", display: "flex", flexDirection: "row" }}>
+        <GeneralContainer>
+          <div style={{ marginBottom: "15px" }}>
+            <ButtonContainer>
+              <ListIndicatorBox>
+                <BannerIcon
+                  style={{
+                    color: "white",
+                    fontWeight: "500",
+                    fontSize: "19.423px",
+                    lineHeight: "22px",
+                    textAlign: "center",
+                  }}
+                >
+                  강의 목록
+                </BannerIcon>
+              </ListIndicatorBox>
+              <ListIndicatorBox>
+                <BannerIcon
+                  style={{
+                    color: "white",
+                    fontWeight: "500",
+                    fontSize: "19.423px",
+                    lineHeight: "22px",
+                    textAlign: "center",
+                  }}
+                >
+                  정렬 기준
+                </BannerIcon>
+              </ListIndicatorBox>
+            </ButtonContainer>
+          </div>
+          <ListDivLine></ListDivLine>
+          {/* Lectures and assignments  */}
+          <ListContainer>ListContainer</ListContainer>
+        </GeneralContainer>
+      </div>
     </>
   );
 };
