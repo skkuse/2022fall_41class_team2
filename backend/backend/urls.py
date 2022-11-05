@@ -42,4 +42,5 @@ urlpatterns += [
 
 urlpatterns += [
     path('assignments/', include('assignment.urls'), name='assignment'),
+    path('outputs/', include('output.urls'), name='outputs')
 ]

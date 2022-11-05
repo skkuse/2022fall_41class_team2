@@ -6,15 +6,15 @@ import { Link, Navigate, Outlet, Route } from "react-router-dom";
 
 export const AuthProvider = ({children}) => {
     
-    const [user, setUser] = useState(getItemWithExpireTime("user")? true : false);
+    const [user, setUser] = useState(getItemWithExpireTime("user"));
     const dispatch = useDispatch();
 
-
     useEffect(()=>{
-        console.log("get item : " + user);
-
-        getItemWithExpireTime("user")? setUser(true) : setUser(false);
-    }, [getItemWithExpireTime("user")]);
+            console.log("get item : " + user);
+            setUser(getItemWithExpireTime("user"));
+        },
+        []
+    );
 
     return (
         <AuthContext.Provider 
@@ -27,13 +27,12 @@ export const AuthProvider = ({children}) => {
 
 export const PrivateRoute = ({children, ...props}) => {
     const currentUser = useContext(AuthContext);
-
     // console.log("++====================++" + currentUser + "++====================++");
 
     return (
-        currentUser?  <Outlet/> 
+        getItemWithExpireTime("user")?  <Outlet/> 
         // :  <LoginPage /> 
-        : <Navigate to={"/login"}/> 
+        : <Navigate to={"/auth/login"}/> 
     );
 }
 
@@ -41,7 +40,7 @@ export const LoginRoute = ({children, ...props}) => {
     let currentUser = useContext(AuthContext);
 
     return (
-        currentUser? 
+        getItemWithExpireTime("user")? 
         <Navigate to={"/"} /> : <Outlet/> 
     );
 }

@@ -7,7 +7,7 @@
 
 
 
-import ProblemMaster from "../molecules/ProblemMaster/ProblemMaster";
+import ProblemMaster from "../../molecules/ProblemMaster/ProblemMaster";
 
 function Problem(props) {
     

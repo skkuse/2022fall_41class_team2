@@ -9,40 +9,44 @@ import { LoginPage } from "./pages/LoginPage/LoginPage";
 import { LoginRedirectPage } from "./pages/LoginPage/LoginRedirectPage";
 import { MainPage } from "./pages/MainPage/MainPage";
 import { AuthProvider, PrivateRoute, LoginRoute } from "./service/AuthProvider";
+import { EditorPage } from "./pages/EditorPage/EditorPage";
 
 const CodingCatRoutes = () => {
   return (
     // UI Develeopment
-    <Router>
-      <Routes>
-        <Route path="/" element={<LandingPage />} />
-        <Route path="/settings" element={<SettingPage />} />
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/login/redirect" element={<LoginRedirectPage />} />
-        <Route path="main" element={<MainPage />} />
-        <Route path="*" element={<NotFoundPage />} />
-      </Routes>
-    </Router>
+    // <Router>
+    //   <Routes>
+    //     <Route path="/" element={<LandingPage />} />
+    //     <Route path="/settings" element={<SettingPage />} />
+    //     <Route path="/auth/login" element={<LoginPage />} />
+    //     <Route path="/auth/github" element={<LoginRedirectPage />} />
+    //     <Route path="main" element={<MainPage />} />
+    //     <Route path="*" element={<NotFoundPage />} />
+    //   </Routes>
+    // </Router>
 
     // OAuth2.0 in progress
-    // <AuthProvider>
-    //   <Router>
-    //     <Routes>
-    //       <Route path="/" element={<PrivateRoute />} >
-    //         <Route path="/" element={<LandingPage />} />
-    //         <Route path="/settings" element={<SettingPage />} />
-    //       </Route>
+    <AuthProvider>
+      <Router>
+        <Routes>
+          <Route path="/" element={<LandingPage />} />
 
-    //       <Route path="/login" element={<LoginRoute />} >
-    //         <Route path="/login" element={<LoginPage />} />
-    //         <Route path="/login/redirect" element={<LoginRedirectPage />} />
-    //       </Route>
+          <Route path="/" element={<PrivateRoute />} >
+              <Route path="/main" element={<MainPage />} />
+              <Route path="editor/lecture/:lecture_id" element={<EditorPage />} />
+            <Route path="/settings" element={<SettingPage />} />
+          </Route>
 
-    //       <Route path="*" element={<NotFoundPage />} />
+          <Route path="/auth" element={<LoginRoute />} >
+            <Route path="/auth/login" element={<LoginPage />} />
+            <Route path="/auth/github" element={<LoginRedirectPage />} />
+          </Route>
 
-    //     </Routes>
-    //   </Router>
-    // </AuthProvider>
+          <Route path="*" element={<NotFoundPage />} />
+
+        </Routes>
+      </Router>
+    </AuthProvider>
   );
 };
 
