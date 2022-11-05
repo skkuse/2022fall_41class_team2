@@ -10,12 +10,12 @@ export const LandingPageBannerButton = ({
 }) => {
   return (
     <Link
-      to="/main"
+      to="/overview"
       className={`${className} common-login-and-register-button`}
       style={{ textDecoration: "none" }}
       {...restProps}
     >
-      <BannerIcon children={children} className= {className} />
+      <BannerIcon children={children} className={className} />
     </Link>
   );
 };

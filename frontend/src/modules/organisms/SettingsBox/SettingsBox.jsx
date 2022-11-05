@@ -9,9 +9,22 @@ import { ColorIcon } from "../../atoms/Icons";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams, useLocation, useNavigate } from "react-router-dom";
 
-import {SETTING_BACKGROUND_WHITE, SETTING_LANGUAGE_PYTHON,SETTING_LANGUAGE_JAVASCRIPT,SETTING_LANGUAGE_CPP,SETTING_LANGUAGE_JAVA,SETTING_LANGUAGE_C,SETTING_LANGUAGE_CSHARP,SETTING_THEME_VSCODE} from "../../../reducers/SettingReducer";
+import {
+  SETTING_BACKGROUND_WHITE,
+  SETTING_LANGUAGE_PYTHON,
+  SETTING_LANGUAGE_JAVASCRIPT,
+  SETTING_LANGUAGE_CPP,
+  SETTING_LANGUAGE_JAVA,
+  SETTING_LANGUAGE_C,
+  SETTING_LANGUAGE_CSHARP,
+  SETTING_THEME_VSCODE,
+} from "../../../reducers/SettingReducer";
 
-import {settingChangeBg, settingChangeLg, settingChangeTh} from "../../../pages/SettingPage/SettingAction";
+import {
+  settingChangeBg,
+  settingChangeLg,
+  settingChangeTh,
+} from "../../../pages/SettingPage/SettingAction";
 
 /* Styled components */
 const Box = styled.div`
@@ -70,11 +83,11 @@ const Exclamation = styled.div`
 `;
 
 const BackgroundColorSelectorContainer = styled.div`
-  font-family: "Roboto";
+  font-family: "Gmarket Sans TTF";
   font-style: normal;
   font-weight: 400;
   font-size: 32px;
-  line-height: 38px;
+  line-height: 37px;
   text-align: center;
 
   color: #000000;
@@ -89,11 +102,11 @@ const SettingsSelectorContainer = styled.div`
   height: 145px;
 
   margin-right: 0px;
-  font-family: "Roboto";
+  font-family: "Gmarket Sans TTF";
   font-style: normal;
   font-weight: 400;
   font-size: 32px;
-  line-height: 38px;
+  line-height: 37px;
   text-align: start;
 
   color: #000000;
@@ -140,9 +153,9 @@ const CodeEditorSelectorContainer = styled.div`
 
   justify-content: space-between;
   text-align: center;
-  font-family: "Roboto";
+  font-family: "Gmarket Sans TTF";
   font-style: normal;
-  font-weight: 400;
+  font-weight: 500;
   font-size: 20px;
   line-height: 23px;
   text-align: center;
@@ -154,11 +167,11 @@ const StyledHtmlSelect = styled.select`
   width: 147px;
   text-align: center;
 
-  font-family: "Roboto";
+  font-family: "Gmarket Sans TTF";
   font-style: normal;
-  font-weight: 400;
+  font-weight: 300;
   font-size: 16px;
-  line-height: 19px;
+  line-height: 18px;
 
   padding: 0;
   margin: 0 0 0 10px;
@@ -170,16 +183,14 @@ const StyledHtmlSelect = styled.select`
 `;
 
 export const SettingsBox = ({ className, ...restProps }) => {
-
-  const settingSelector = useSelector((state) =>
-    state.SettingReducer
-  );    
+  const settingSelector = useSelector((state) => state.SettingReducer);
   const navigate = useNavigate();
-
 
   /* Dropdown options */
   // Background options
-  const [currentBack, setCurrentBack] = useState(settingSelector.backgroundColor);
+  const [currentBack, setCurrentBack] = useState(
+    settingSelector.backgroundColor
+  );
 
   // Language options
   const [currentLang, setCurrentLang] = useState(settingSelector.language);
@@ -277,19 +288,17 @@ export const SettingsBox = ({ className, ...restProps }) => {
           </div>
           <div style={{ marginTop: "85px", marginBottom: "86px" }}>
             <Link
-            onClick={() => {
-              dispatch(settingChangeBg(currentBack));
-              dispatch(settingChangeLg(currentLang));
-              dispatch(settingChangeTh(currentTheme));
-              // navigate("/");
-            }}
+              onClick={() => {
+                dispatch(settingChangeBg(currentBack));
+                dispatch(settingChangeLg(currentLang));
+                dispatch(settingChangeTh(currentTheme));
+                // navigate("/");
+              }}
               to="/"
               className={`${className} common-login-and-register-button`}
               style={{ textDecoration: "none" }}
             >
-              <LoginButtonContainer
-              
-              >설정 완료</LoginButtonContainer>
+              <LoginButtonContainer>설정 완료</LoginButtonContainer>
             </Link>
           </div>
         </GeneralContainer>
