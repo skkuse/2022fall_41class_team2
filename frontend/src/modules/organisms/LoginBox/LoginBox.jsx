@@ -69,7 +69,7 @@ const ImageContainer = styled.div`
 `;
 
 const DescContainer = styled.div`
-  width: 131px;
+  /* width: 131px; */
   heigth: 14px;
 
   font-family: "Roboto";

@@ -7,6 +7,8 @@ import { UserBox } from "../UserBox/UserBox";
 import React, { useState, useEffect, ReactNode, FC, createContext, useContext } from "react";
 import {AuthContext} from "../../../App"
 import {getItemWithExpireTime} from "../../../service/localStorage";
+import { apiClient } from './../../../api/axios';
+import { UserDisplay } from './../../molecules/UserDisplay/UserDisplay';
 
 const BannerContainer = styled.div`
   display: flex;
@@ -38,12 +40,20 @@ const LowerContainer = styled.div`
   justify-content: space-between;
 `;
 
-export const LandingPageBanner = ({
-  className,
-  // loggedOn = false,
-  ...restProps
-}) => {
-  // const currentUser = useContext(AuthContext);
+export const LandingPageBanner = ({className}) => {
+
+  // * 유저 정보 가져오기
+  const [userData, setUserData] = useState(null);
+
+  useEffect(() => {
+    let user = getItemWithExpireTime("user");
+    if(user) {
+      apiClient.get(`/api/auth/${user.id}/`).then((val) => {
+        console.log(val.data.data);
+        setUserData(val.data.data);
+      })
+    }
+  }, []);
   
   return (
     <BannerContainer>
@@ -54,7 +64,12 @@ export const LandingPageBanner = ({
         </div>
         {/* login and register button */}
         <div style={{ marginRight: "20px" }}>
-          {!getItemWithExpireTime("user") && <LoginAndRegisterButton />}
+          {
+            userData ? 
+            <UserDisplay userData={userData}/>
+            :
+            !getItemWithExpireTime("user") && <LoginAndRegisterButton />
+          }
         </div>
       </TopContainer>
       <LowerContainer style={{ marginTop: "10px", marginBottom: "20px" }}>

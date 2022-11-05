@@ -24,7 +24,7 @@ class API_CLIENT {
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
-          'Authorization': `Token ${token}`
+          'Authorization': `Bearer ${token}`
         },
       });
     }
@@ -48,12 +48,12 @@ class API_CLIENT {
 
   auth(status) {
     switch (status) {
-      case 403:
+      case 401 || 403:
         removeItem("user");
         break;
     
       default:
-        setItemWithExpireTime("user",true,1000*60*60);
+        setItemWithExpireTime(getItemWithExpireTime("user"),true,1000*60*60);
         break;
     }
   }
