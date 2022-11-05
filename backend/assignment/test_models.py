@@ -268,7 +268,6 @@ for i in range(n):
             skeleton_code=skeleton_code,
             answer_code=answer_code,
         )
-        print("Assignment name: ", assignment.name)
         self.assertIsNotNone(assignment.id)
         self.assertEqual(assignment.name, '')
 
