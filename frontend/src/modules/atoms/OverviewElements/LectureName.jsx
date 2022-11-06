@@ -3,7 +3,7 @@
 
 import styled from "styled-components";
 
-export const LectureName = styled.div`
+export const LectureNameStyle = styled.div`
   font-family: "Gmarket Sans TTF";
   font-style: normal;
   font-weight: 500;
@@ -14,7 +14,11 @@ export const LectureName = styled.div`
   border-radius: 10px;
 
   width: 140px;
-  
+
   color: #000000;
-  background: $bgcolor;
+  background: ${(props) => props.background};
 `;
+
+export const LectureName = ({ name, background, ...resProps }) => {
+  return <LectureNameStyle background={background}>{name}</LectureNameStyle>;
+};

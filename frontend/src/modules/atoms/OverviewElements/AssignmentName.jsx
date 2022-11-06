@@ -1,7 +1,7 @@
 // 과제명
 import styled from "styled-components";
 
-export const AssignmentName = styled.div`
+const AssignmentNameStyle = styled.div`
   font-family: "Gmarket Sans TTF";
   font-style: normal;
   font-weight: 500;
@@ -14,5 +14,13 @@ export const AssignmentName = styled.div`
   width: 550px;
   height: 68px;
   color: #000000;
-  background: $bgcolor;
+  background: ${(props) => props.background};
 `;
+
+export const AssignmentName = ({ assignment, background }) => {
+  return (
+    <AssignmentNameStyle background={background}>
+      {assignment}
+    </AssignmentNameStyle>
+  );
+};
