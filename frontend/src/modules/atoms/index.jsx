@@ -13,6 +13,8 @@ import { SettingsIcon } from "./Icons/SettingsIcon/SettingsIcon";
 import { LoginIcon } from "./Icons/LoginIcon/LoginIcon";
 import { BannerIcon } from "./Icons";
 
+import { AssignmentName, Deadline, LectureName, TimerIcon } from "./OverviewElements";
+
 export {
   Column,
   Img,
