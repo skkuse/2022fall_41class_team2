@@ -41,5 +41,9 @@ urlpatterns += [
 ]
 
 urlpatterns += [
+    path('assignments/', include('assignment.urls'), name='assignment'),
+]
+
+urlpatterns += [
     path('outputs/', include('output.urls'), name='outputs')
 ]
