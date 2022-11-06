@@ -1,4 +1,4 @@
-from rest_framework import serializers, fields
+from rest_framework import serializers
 from assignment.models import Assignment
 from lecture.models import Lecture
 from authentication.models import User
@@ -7,7 +7,7 @@ from authentication.models import User
 class InstructorSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['id', 'name', 'email', 'profile_image_url']
+        fields = ['id', 'nickname', 'name', 'email', 'profile_image_url']
 
 
 class LectureSerializer(serializers.ModelSerializer):

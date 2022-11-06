@@ -1,14 +1,13 @@
-from django.shortcuts import render
 from drf_spectacular.utils import extend_schema, extend_schema_view
 from lecture.models import Lecture
-from rest_framework import generics, permissions, status
+from rest_framework import generics, status
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.response import Response
 from assignment.models import Assignment
 from assignment.serializers import AssignmentSerializer
-from authentication.models import User
 from backend.exceptions import InternalServerError
 from rest_framework.exceptions import ParseError
+
 
 @extend_schema_view(
     list=[
@@ -16,7 +15,9 @@ from rest_framework.exceptions import ParseError
             description='Get all Assignment information of a specific lecture',
             methods=['GET'],
             request=None,
-            responses={200: AssignmentSerializer(many=True)},
+            responses={
+                200: AssignmentSerializer(many=True)
+            },
         ),
         extend_schema(
             description='Create a new Assignment',
@@ -52,7 +53,9 @@ class AssignmentListOrCreate(generics.ListCreateAPIView):
             description='Get Assignment information',
             methods=['GET'],
             request=None,
-            responses={200: AssignmentSerializer},
+            responses={
+                200: AssignmentSerializer
+            },
         ),
         extend_schema(
             description='Delete Assignment',

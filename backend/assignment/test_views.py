@@ -31,7 +31,7 @@ class TestAssignmentListOrCreate(TestCase):
         assignment = Assignment.objects.create(
             lecture=lecture,
             name=self.mock_assignment_name,
-            deadline=datetime(year=2022, month=12, day=31),
+            deadline=datetime(year=2022, month=12, day=31, tzinfo=timezone.utc),
             question="what's 9 + 10",
             constraints='constraints: no constraints',
             skeleton_code='from libmemes import 9_10',
@@ -128,7 +128,7 @@ class TestLectureRetrieveOrDestroy(TestCase):
         assignment1 = Assignment.objects.create(
             lecture=lecture,
             name=self.mock_assignment_name_1,
-            deadline=datetime(year=2022, month=12, day=1),
+            deadline=datetime(year=2022, month=12, day=1, tzinfo=timezone.utc),
             question="question 1: what's 9 + 10",
             constraints='constraints: no constraints',
             skeleton_code='from libmemes import 9_10',
@@ -137,7 +137,7 @@ class TestLectureRetrieveOrDestroy(TestCase):
         assignment2 = Assignment.objects.create(
             lecture=lecture,
             name=self.mock_assignment_name_2,
-            deadline=datetime(year=2022, month=12, day=2),
+            deadline=datetime(year=2022, month=12, day=2, tzinfo=timezone.utc),
             question="question 2: what's 9 + 10",
             constraints='constraints: 1 constraint',
             skeleton_code='from libmemes2 import 9Plus10',
@@ -150,11 +150,6 @@ class TestLectureRetrieveOrDestroy(TestCase):
 
         client = APIClient()
         client.force_authenticate(user=instructor)
-        '''
-        @seungho
-        What is `reverse()` for?
-        '''
-        # response = client.get(reverse("assignment_retrieve_or_destroy", kwargs={'id': assignment.id}))
         response = client.get(f'/assignments/{assignment.id}/')
         result = response.data
 
@@ -167,7 +162,6 @@ class TestLectureRetrieveOrDestroy(TestCase):
 
         client = APIClient()
         client.force_authenticate(user=student)
-        # response = client.get(reverse("assignment_retrieve_or_destroy", kwargs={'id': assignment.id}))
         response = client.get(f'/assignments/{assignment.id}/')
         result = response.data
 
@@ -178,20 +172,12 @@ class TestLectureRetrieveOrDestroy(TestCase):
         assignment = Assignment.objects.get(name=self.mock_assignment_name_1)
 
         client = APIClient()
-        # response = client.get(reverse("assignment_retrieve_or_destroy", kwargs={'id': assignment.id}))
         response = client.get(f'/assignments/{assignment.id}/')
 
-        '''
-        @seungho
-        Our default permission class is `AuthenticatedOrReadOnly`,
-        so retrieve action is accepted even though no auth.
-        You have to fix the following lines.
-        '''
         self.assertEqual(response.status_code, 200)
 
     # todo: create this case
     def test_assignment_retrieve_when_non_exist_assignment(self):
-        assignment = Assignment.objects.get(name=self.mock_assignment_name_1)
         student = User.objects.get(oauth_id=self.mock_student_oauth_id)
         dne_assignment_id = 100
 
@@ -208,7 +194,6 @@ class TestLectureRetrieveOrDestroy(TestCase):
 
         client = APIClient()
         client.force_authenticate(user=instructor)
-        # response = client.delete(reverse("assignment_retrieve_or_destroy", kwargs={'id': assignment.id}))
         response = client.delete(f'/assignments/{assignment.id}/')
 
         self.assertEqual(response.status_code, 204)
@@ -219,9 +204,7 @@ class TestLectureRetrieveOrDestroy(TestCase):
 
         client = APIClient()
         client.force_authenticate(user=student)
-        # response = client.delete(reverse("assignment_retrieve_or_destroy", kwargs={'id': assignment.id}))
         response = client.delete(f'/assignments/{assignment.id}/')
-
 
         self.assertEqual(response.status_code, 403)
 
@@ -229,7 +212,6 @@ class TestLectureRetrieveOrDestroy(TestCase):
         assignment = Assignment.objects.get(name=self.mock_assignment_name_1)
 
         client = APIClient()
-        # response = client.delete(reverse("assignment_retrieve_or_destroy", kwargs={'id': assignment.id}))
         response = client.delete(f'/assignments/{assignment.id}/')
 
         self.assertEqual(response.status_code, 401)
