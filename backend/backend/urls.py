@@ -41,6 +41,10 @@ urlpatterns += [
 ]
 
 urlpatterns += [
+    path('enrollments/', include('enrollment.urls'), name='enrollments'),
+]
+
+urlpatterns += [
     path('assignments/', include('assignment.urls'), name='assignment'),
 ]
 
