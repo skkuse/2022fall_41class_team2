@@ -1,8 +1,12 @@
+from rest_framework.exceptions import ParseError
+from lecture.models import Lecture
 from rest_framework import generics, status
 from rest_framework.response import Response
 from drf_spectacular.utils import extend_schema_view, extend_schema
 from enrollment.models import Enrollment
 from enrollment.serializers import EnrollmentSerializer
+from rest_framework.exceptions import NotAuthenticated, PermissionDenied
+from backend.exceptions import InternalServerError
 
 
 @extend_schema_view(
@@ -29,17 +33,29 @@ from enrollment.serializers import EnrollmentSerializer
 class EnrollmentListOrCreate(generics.ListCreateAPIView):
     serializer_class = EnrollmentSerializer
 
-    """
-    @seungho
-    You should not just return all enrollment instances
-    Please filter by lecture_id
-    """
     def get_queryset(self):
-        # return Enrollment.objects.all()
-        return None
+        user = self.request.user
+        if user.is_anonymous:
+            raise NotAuthenticated
+
+        return Enrollment.objects.filter(student=user).all()
 
     def perform_create(self, serializer):
-        return serializer.save()
+        try:
+            lecture_id = self.request.data.get('lecture_id')
+            lecture = Lecture.objects.get(pk=lecture_id)
+        except Lecture.DoesNotExist:
+            raise ParseError
+        except Lecture.MultipleObjectsReturned:
+            raise InternalServerError
+
+        user = self.request.user
+        if Enrollment.objects.filter(lecture=lecture, student=user).exists():
+            raise ParseError
+        if lecture.instructor == user:
+            raise ParseError
+
+        return serializer.save(student=user, lecture=lecture)
 
 
 @extend_schema_view(
@@ -55,7 +71,7 @@ class EnrollmentListOrCreate(generics.ListCreateAPIView):
         extend_schema(
             description='Delete a lecture when user is an instructor',
             methods=['DELETE'],
-            request=None,
+            request='user_auth',
             responses={
                 204: None,
                 401: None,
@@ -64,14 +80,30 @@ class EnrollmentListOrCreate(generics.ListCreateAPIView):
     ]
 )
 class EnrollmentRetrieveOrDestroy(generics.RetrieveDestroyAPIView):
-    lookup_field = 'enrollment_id'
     serializer_class = EnrollmentSerializer
+    lookup_field = 'enrollment_id'
 
     def get_object(self):
         enrollment_id = self.kwargs.get(self.lookup_field)
-        return Enrollment.objects.get(pk=enrollment_id)
+        try:
+            enrollment = Enrollment.objects.get(pk=enrollment_id)
+        except Enrollment.DoesNotExist:
+            raise ParseError
+        except Enrollment.MultipleObjectsReturned:
+            raise InternalServerError
+
+        if not enrollment.student == self.request.user:
+            raise PermissionDenied
+
+        return enrollment
 
     def delete(self, request, *args, **kwargs):
         instance = self.get_object()
-        self.perform_destroy(instance)
-        return Response(status=status.HTTP_204_NO_CONTENT)
+
+        try:
+            self.perform_destroy(instance)
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        except Enrollment.DoesNotExist:
+            raise ParseError
+        except Enrollment.MultipleObjectsReturned:
+            raise InternalServerError

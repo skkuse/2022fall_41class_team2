@@ -4,20 +4,14 @@ from lecture.models import Lecture
 from authentication.models import User
 
 
-class StudentSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = ['id', 'nickname', 'name', 'email', 'profile_image_url']
-
-
-class InstructorSerializer(serializers.ModelSerializer):
+class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['id', 'nickname', 'name', 'email', 'profile_image_url']
 
 
 class LectureSerializer(serializers.ModelSerializer):
-    instructor = InstructorSerializer(read_only=True)
+    instructor = UserSerializer(read_only=True)
     is_instructor = serializers.SerializerMethodField()
     is_student = serializers.SerializerMethodField()
 
@@ -41,13 +35,8 @@ class LectureSerializer(serializers.ModelSerializer):
 
 
 class EnrollmentSerializer(serializers.ModelSerializer):
-    student = StudentSerializer(read_only=True)
+    student = UserSerializer(read_only=True)
     lecture = LectureSerializer(read_only=True)
-    """
-    @seungho
-    Why do you declare following line?
-    """
-    # serializers.PrimaryKeyRelatedField(many=True, queryset=Enrollment.objects.all())
 
     class Meta:
         model = Enrollment
