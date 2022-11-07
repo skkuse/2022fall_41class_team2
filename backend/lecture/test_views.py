@@ -9,20 +9,28 @@ from rest_framework.test import APIClient
 
 
 class TestLectureListOrCreate(TestCase):
-    mock_instructor_oauth_id = 'mock-instructor-oauth-id'
-    mock_student_oauth_id = 'mock-student-oauth-id'
+    mock_instructor_email = 'mock-instructor@email.com'
+    mock_student_email = 'mock-student@email.com'
     mock_lecture_name_1 = 'mock-lecture-name-1'
     mock_lecture_name_2 = 'mock-lecture-name-2'
 
     @patch('django.utils.timezone.now', return_value=datetime(2022, 1, 1, 1, 1, 1, tzinfo=timezone.utc))
     def setUp(self, mock_now) -> None:
         instructor = User.objects.create(
+            name='mock-instructor-name',
+            email=self.mock_instructor_email,
             nickname='mock-instructor-nickname',
-            oauth_id=self.mock_instructor_oauth_id,
+            profile_image_url='https://mock-profile-image-url.com',
+            github_api_url='https://mock-github-api-url.com',
+            last_login=timezone.now(),
         )
         student = User.objects.create(
+            name='mock-student-name',
+            email=self.mock_student_email,
             nickname='mock-student-nickname',
-            oauth_id=self.mock_student_oauth_id,
+            profile_image_url='https://mock-profile-image-url.com',
+            github_api_url='https://mock-github-api-url.com',
+            last_login=timezone.now(),
         )
         lecture_1 = Lecture.objects.create(
             name=self.mock_lecture_name_1,
@@ -38,7 +46,7 @@ class TestLectureListOrCreate(TestCase):
         )
 
     def test_lecture_list_with_instructor(self):
-        instructor = User.objects.get(oauth_id=self.mock_instructor_oauth_id)
+        instructor = User.objects.get(email=self.mock_instructor_email)
 
         client = APIClient()
         client.force_authenticate(user=instructor)
@@ -52,7 +60,7 @@ class TestLectureListOrCreate(TestCase):
         self.assertFalse(result[1].get('is_student'))
 
     def test_lecture_list_with_student(self):
-        student = User.objects.get(oauth_id=self.mock_student_oauth_id)
+        student = User.objects.get(email=self.mock_student_email)
 
         client = APIClient()
         client.force_authenticate(user=student)
@@ -78,7 +86,7 @@ class TestLectureListOrCreate(TestCase):
 
     def test_lecture_create(self):
         another_lecture_name = 'another-lecture-name'
-        instructor = User.objects.get(oauth_id=self.mock_instructor_oauth_id)
+        instructor = User.objects.get(email=self.mock_instructor_email)
 
         client = APIClient()
         client.force_authenticate(user=instructor)
@@ -98,20 +106,28 @@ class TestLectureListOrCreate(TestCase):
 
 
 class TestLectureRetrieveOrDestroy(TestCase):
-    mock_instructor_oauth_id = 'mock-instructor-oauth-id'
-    mock_student_oauth_id = 'mock-student-oauth-id'
+    mock_instructor_email = 'mock-instructor@email.com'
+    mock_student_email = 'mock-student@email.com'
     mock_lecture_name_1 = 'mock-lecture-name-1'
     mock_lecture_name_2 = 'mock-lecture-name-2'
 
     @patch('django.utils.timezone.now', return_value=datetime(2022, 1, 1, 1, 1, 1, tzinfo=timezone.utc))
     def setUp(self, mock_now) -> None:
         instructor = User.objects.create(
+            name='mock-instructor-name',
+            email=self.mock_instructor_email,
             nickname='mock-instructor-nickname',
-            oauth_id=self.mock_instructor_oauth_id,
+            profile_image_url='https://mock-profile-image-url.com',
+            github_api_url='https://mock-github-api-url.com',
+            last_login=timezone.now(),
         )
         student = User.objects.create(
+            name='mock-student-name',
+            email=self.mock_student_email,
             nickname='mock-student-nickname',
-            oauth_id=self.mock_student_oauth_id,
+            profile_image_url='https://mock-profile-image-url.com',
+            github_api_url='https://mock-github-api-url.com',
+            last_login=timezone.now(),
         )
         lecture_1 = Lecture.objects.create(
             name=self.mock_lecture_name_1,
@@ -127,7 +143,7 @@ class TestLectureRetrieveOrDestroy(TestCase):
         )
 
     def test_lecture_retrieve_with_instructor(self):
-        instructor = User.objects.get(oauth_id=self.mock_instructor_oauth_id)
+        instructor = User.objects.get(email=self.mock_instructor_email)
         lecture = Lecture.objects.get(name=self.mock_lecture_name_2)
 
         client = APIClient()
@@ -140,7 +156,7 @@ class TestLectureRetrieveOrDestroy(TestCase):
         self.assertFalse(result.get('is_student'))
 
     def test_lecture_retrieve_with_student(self):
-        student = User.objects.get(oauth_id=self.mock_student_oauth_id)
+        student = User.objects.get(email=self.mock_student_email)
         lecture = Lecture.objects.get(name=self.mock_lecture_name_1)
 
         client = APIClient()
@@ -180,7 +196,7 @@ class TestLectureRetrieveOrDestroy(TestCase):
         self.assertEqual(response.status_code, 404)
 
     def test_lecture_destroy_with_instructor(self):
-        instructor = User.objects.get(oauth_id=self.mock_instructor_oauth_id)
+        instructor = User.objects.get(email=self.mock_instructor_email)
         lecture = Lecture.objects.get(name=self.mock_lecture_name_2)
 
         client = APIClient()
@@ -191,8 +207,12 @@ class TestLectureRetrieveOrDestroy(TestCase):
 
     def test_lecture_destroy_with_non_instructor(self):
         another_user = User.objects.create(
+            name='another-user-name',
+            email='another-email@email.com',
             nickname='another-nickname',
-            oauth_id='another-oauth-id',
+            profile_image_url='https://another-profile-image-url.com',
+            github_api_url='https://another-github-api-url.com',
+            last_login=timezone.now(),
         )
         lecture = Lecture.objects.get(name=self.mock_lecture_name_2)
 
