@@ -1,16 +1,17 @@
 from rest_framework import serializers
-from authentication.models import User
+from enrollment.models import Enrollment
 from lecture.models import Lecture
+from authentication.models import User
 
 
-class InstructorSerializer(serializers.ModelSerializer):
+class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['id', 'nickname', 'name', 'email', 'profile_image_url']
 
 
 class LectureSerializer(serializers.ModelSerializer):
-    instructor = InstructorSerializer(read_only=True)
+    instructor = UserSerializer(read_only=True)
     is_instructor = serializers.SerializerMethodField()
     is_student = serializers.SerializerMethodField()
 
@@ -31,3 +32,12 @@ class LectureSerializer(serializers.ModelSerializer):
             return False
         else:
             return lecture.enrollments.filter(student=user).exists()
+
+
+class EnrollmentSerializer(serializers.ModelSerializer):
+    student = UserSerializer(read_only=True)
+    lecture = LectureSerializer(read_only=True)
+
+    class Meta:
+        model = Enrollment
+        fields = ['id', 'student', 'lecture', 'created_at']
