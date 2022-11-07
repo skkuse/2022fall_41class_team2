@@ -8,7 +8,9 @@ import { SettingPage } from "./pages/SettingPage/SettingPage";
 import { LoginPage } from "./pages/LoginPage/LoginPage";
 import { LoginRedirectPage } from "./pages/LoginPage/LoginRedirectPage";
 import { MainPage } from "./pages/MainPage/MainPage";
+import { OverviewPage } from "./pages/OverviewPage/OverviewPage";
 import { AuthProvider, PrivateRoute, LoginRoute } from "./service/AuthProvider";
+import { EditorPage } from "./pages/EditorPage/EditorPage";
 
 const CodingCatRoutes = () => {
   return (
@@ -30,18 +32,19 @@ const CodingCatRoutes = () => {
         <Routes>
           <Route path="/" element={<LandingPage />} />
 
-          <Route path="/" element={<PrivateRoute />} >
+          <Route path="/" element={<PrivateRoute />}>
             <Route path="/main" element={<MainPage />} />
+            <Route path="/overview" element={<OverviewPage />} />
+            <Route path="editor/lecture/:lecture_id" element={<EditorPage />} />
             <Route path="/settings" element={<SettingPage />} />
           </Route>
 
-          <Route path="/auth" element={<LoginRoute />} >
+          <Route path="/auth" element={<LoginRoute />}>
             <Route path="/auth/login" element={<LoginPage />} />
             <Route path="/auth/github" element={<LoginRedirectPage />} />
           </Route>
 
           <Route path="*" element={<NotFoundPage />} />
-
         </Routes>
       </Router>
     </AuthProvider>

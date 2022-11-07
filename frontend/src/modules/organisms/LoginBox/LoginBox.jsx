@@ -1,4 +1,6 @@
 import styled from "styled-components";
+import { usePopper } from "react-popper";
+import { useRef } from "react";
 
 /* OAuth library */
 import { useDispatch } from "react-redux";
@@ -26,7 +28,9 @@ const Box = styled.div`
   justify-content: space-between;
   width: 469px;
   height: 488px;
-  background: #ffffff;
+  background: #f9f9f9;
+  box-shadow: -2px 8px 99px rgba(0, 0, 0, 0.25);
+  border-radius: 90px;
   padding: 0 0;
 `;
 
@@ -69,7 +73,8 @@ const ImageContainer = styled.div`
 `;
 
 const DescContainer = styled.div`
-  width: 131px;
+
+  /* width: 131px; */
   heigth: 14px;
 
   font-family: "Roboto";
@@ -82,6 +87,9 @@ const DescContainer = styled.div`
   text-align: center;
 
   color: #2d2d2d;
+
+  display: flex;
+  align-items: center;
 `;
 
 const Line = styled.div`
@@ -110,7 +118,30 @@ const LoginButtonContainer = styled.div`
   cursor: pointer;
 `;
 
+const VisiblePop = styled.div`
+  font-family: "Gmarket Sans TTF";
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 10px;
+`;
+
+const InvisiblePop = styled.div`
+  visibility: hidden;
+  pointer-events: none;
+`;
 export const LoginBox = ({ className, ...restProps }) => {
+  const boxRef = useRef();
+  const tooltipRef = useRef();
+
+  const [isHovering, setIsHovering] = useState(false);
+
+  const { styles, attributes } = usePopper(boxRef.current, tooltipRef.current);
+  const handleMouseOverAndOut = () => {
+    // using popper, pop the description
+    setIsHovering(!isHovering);
+  };
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -125,14 +156,34 @@ export const LoginBox = ({ className, ...restProps }) => {
           <Text>Coding CAT</Text>
           <Exclamation>!</Exclamation>
         </TitleContainer>
-        <div style={{ marginTop: "71px" }}>
+        <div style={{ marginTop: "48px" }}>
           <ImageContainer>
             <Img src="/images/img_.png" />
           </ImageContainer>
         </div>
-        <div style={{ marginTop: "38px" }}>
-          <DescContainer>오직 깃허브만 연동됩니다.</DescContainer>
-          <Line></Line>
+        <div style={{ marginTop: "28px", marginBottom: "31px" }}>
+          <DescContainer
+            ref={boxRef}
+            onMouseOver={handleMouseOverAndOut}
+            onMouseOut={handleMouseOverAndOut}
+          >
+            {isHovering ? (
+              <VisiblePop
+                ref={tooltipRef}
+                style={styles.popper}
+                {...attributes.popper}
+              >
+                로그인은 오직 깃허브로만 가능합니다.
+              </VisiblePop>
+            ) : (
+              <InvisiblePop
+                ref={tooltipRef}
+                style={styles.popper}
+                {...attributes.popper}
+              ></InvisiblePop>
+            )}
+            <Img src="/images/question_circled.svg" alt="Question mark" />
+          </DescContainer>
         </div>
         <div style={{ marginTop: "14px" }}>
           {/* {console.log(loggedOn)} */}
