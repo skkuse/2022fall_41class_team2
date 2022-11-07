@@ -6,7 +6,7 @@ from lecture.models import Lecture
 class InstructorSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['id', 'name', 'email', 'profile_image_url']
+        fields = ['id', 'nickname', 'name', 'email', 'profile_image_url']
 
 
 class LectureSerializer(serializers.ModelSerializer):
