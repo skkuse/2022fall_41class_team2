@@ -41,5 +41,5 @@ urlpatterns += [
 ]
 
 urlpatterns += [
-    path('enrollments/', include('enrollment.urls'), name='enrollment'),
+    path('enrollments/', include('enrollment.urls'), name='enrollments'),
 ]

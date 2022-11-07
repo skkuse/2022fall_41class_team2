@@ -43,11 +43,6 @@ class LectureSerializer(serializers.ModelSerializer):
 class EnrollmentSerializer(serializers.ModelSerializer):
     student = StudentSerializer(read_only=True)
     lecture = LectureSerializer(read_only=True)
-    """
-    @seungho
-    Why do you declare following line?
-    """
-    # serializers.PrimaryKeyRelatedField(many=True, queryset=Enrollment.objects.all())
 
     class Meta:
         model = Enrollment
