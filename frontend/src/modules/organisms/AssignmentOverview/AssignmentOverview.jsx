@@ -322,17 +322,19 @@ export const AssignmentOverview = ({ className, ...restProps }) => {
             </NameContainer>
             {/* TODO: 과제 개수만큼 pooling */}
             <AssignmentGrid numAssignment="2">
-              <AssignmentBlockContainer>
-                <AssignmentName
-                  assignment="Assignmnet 1"
-                  background="#CCE5C6"
-                ></AssignmentName>
-                <Deadline
-                  danger={false}
-                  remainingTime={"2d 20h 30m 29s"}
-                  background="rgba(204, 229, 198, 0.5)"
-                ></Deadline>
-              </AssignmentBlockContainer>
+              <Link to="/assignment1" style={{ textDecoration: "none" }}>
+                <AssignmentBlockContainer>
+                  <AssignmentName
+                    assignment="Assignmnet 1"
+                    background="#CCE5C6"
+                  ></AssignmentName>
+                  <Deadline
+                    danger={false}
+                    remainingTime={"2d 20h 30m 29s"}
+                    background="rgba(204, 229, 198, 0.5)"
+                  ></Deadline>
+                </AssignmentBlockContainer>
+              </Link>
               <AssignmentBlockContainer>
                 <AssignmentName
                   assignment="Assignmnet 2"
