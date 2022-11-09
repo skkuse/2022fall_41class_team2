@@ -30,9 +30,9 @@ const GeneralContainer = styled.div`
   flex-wrap: wrap;
   flex-direction: column;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
 
-  width: 100%;
+  width: 1210px;
   height: 100%;
 `;
 
@@ -171,7 +171,18 @@ const StyledHtmlSelect = styled.select`
   border-radius: 5px;
 `;
 
+const GridContainer = styled.div`
+  position: sticky;
+
+  display: grid;
+  width: 1210px;
+  grid-template-columns: 1fr 3.5fr 1fr;
+  grid-template-areas: "a b c";
+  align-itmes: center;
+`;
+
 const ButtonContainer = styled.div`
+  grid-area: b;
   display: flex;
   flex-direction: row;
 
@@ -218,20 +229,48 @@ const BottomContainer = styled.div`
 `;
 
 const NameContainer = styled.div`
+  width: auto;
+
   display: flex;
+
   align-items: stretch;
-  align-self: flex-start;
 `;
 
+const AssignmentGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+  grid-template-rows: repeat(${(props) => props.numAssignment}, 1fr);
+  row-gap: 4px;
+  grid-column-gap: 1px;
+  width: 100%;
+`;
 const AssignmentBlockContainer = styled.div`
   display: flex;
   flex-direction: row;
+
+  width: auto;
 `;
 
 const LectureGroup = styled.div`
+  width: 100%;
+  height: 100%;
+  display: grid;
+
+  grid-template-columns: 1fr 7.6fr;
+  grid-template-rows: auto;
+`;
+
+const MiddleContainer = styled.div`
   display: flex;
-  flex-direction: row;
-  justify-content: space-between;
+  flex-direction: column;
+  justify-content: center;
+`;
+
+const GridAligner = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 `;
 
 export const AssignmentOverview = ({ className, ...restProps }) => {
@@ -250,55 +289,65 @@ export const AssignmentOverview = ({ className, ...restProps }) => {
 
   return (
     <>
-      <GeneralContainer>
-        <TopContainer style={{ marginTop: "66px" }}>
-          <ButtonContainer
-            style={{
-              marginBottom: "15px",
-              marginLeft: "15px",
-              marginRight: "15px",
-            }}
-          >
-            <ListIndicatorBox>
-              <Text>강의 목록</Text>
-            </ListIndicatorBox>
-            <ListIndicatorBox>
-              <Text>정렬 기준</Text>
-            </ListIndicatorBox>
-          </ButtonContainer>
-          <ListDivLine></ListDivLine>
-        </TopContainer>
-        {/* TODO 강의 개수 및 과제 수만큼 만들기 */}
-        <BottomContainer>
+      <GridAligner>
+        <GridContainer>
+          <TopContainer style={{ marginTop: "66px" }}>
+            <MiddleContainer>
+              <ButtonContainer
+                style={{
+                  marginBottom: "15px",
+                  marginLeft: "15px",
+                  marginRight: "15px",
+                }}
+              >
+                <ListIndicatorBox>
+                  <Text>강의 목록</Text>
+                </ListIndicatorBox>
+                <ListIndicatorBox>
+                  <Text>정렬 기준</Text>
+                </ListIndicatorBox>
+              </ButtonContainer>
+              <ListDivLine></ListDivLine>
+            </MiddleContainer>
+          </TopContainer>
+        </GridContainer>
+
+        <div style={{ marginTop: "25px" }}></div>
+        <GeneralContainer>
+          {/* TODO 강의 개수만큼 pooling */}
+
           <LectureGroup>
             <NameContainer>
               <LectureName name="소프트웨어공학개론" background="#99CB8C" />
             </NameContainer>
-            <AssignmentBlockContainer>
-              <AssignmentName
-                assignment="Assignmnet 1"
-                background="#99CB8C"
-              ></AssignmentName>
-              <Deadline
-                danger={true}
-                remainingTime={"2d 20h 30m 29s"}
-                background="#99CB8C"
-              ></Deadline>
-            </AssignmentBlockContainer>
-            <AssignmentBlockContainer>
-              <AssignmentName
-                assignment="Assignmnet 2"
-                background="#99CB8C"
-              ></AssignmentName>
-              <Deadline
-                danger={false}
-                remainingTime={"20h 30m 29s"}
-                background="#99CB8C"
-              ></Deadline>
-            </AssignmentBlockContainer>
+            {/* TODO: 과제 개수만큼 pooling */}
+            <AssignmentGrid numAssignment="2">
+              <AssignmentBlockContainer>
+                <AssignmentName
+                  assignment="Assignmnet 1"
+                  background="#CCE5C6"
+                ></AssignmentName>
+                <Deadline
+                  danger={false}
+                  remainingTime={"2d 20h 30m 29s"}
+                  background="rgba(204, 229, 198, 0.5)"
+                ></Deadline>
+              </AssignmentBlockContainer>
+              <AssignmentBlockContainer>
+                <AssignmentName
+                  assignment="Assignmnet 2"
+                  background="#CCE5C6"
+                ></AssignmentName>
+                <Deadline
+                  danger={true}
+                  remainingTime={"20h 30m 29s"}
+                  background="rgba(204, 229, 198, 0.5)"
+                ></Deadline>
+              </AssignmentBlockContainer>
+            </AssignmentGrid>
           </LectureGroup>
-        </BottomContainer>
-      </GeneralContainer>
+        </GeneralContainer>
+      </GridAligner>
     </>
   );
 };

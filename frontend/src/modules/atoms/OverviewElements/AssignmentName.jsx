@@ -1,13 +1,17 @@
 // 과제명
 import styled from "styled-components";
+import { Text } from "../../atoms";
 
 const AssignmentNameStyle = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  
   font-family: "Gmarket Sans TTF";
   font-style: normal;
   font-weight: 500;
   font-size: 19.4234px;
   line-height: 22px;
-  text-align: end;
 
   border-radius: 10px;
 
@@ -20,7 +24,7 @@ const AssignmentNameStyle = styled.div`
 export const AssignmentName = ({ assignment, background }) => {
   return (
     <AssignmentNameStyle background={background}>
-      {assignment}
+      <div style={{ marginRight: "12px" }}>{assignment}</div>
     </AssignmentNameStyle>
   );
 };

@@ -35,12 +35,11 @@ export const OverviewPage = (...restProps) => {
   return (
     <>
       {/* Banner */}
-      <LandingPageBanner restProps={restProps} />
-
+      <div style={{ position: "sticky" }}>
+        <LandingPageBanner restProps={restProps} />
+      </div>
       {/* List design */}
-      <ListContainer>
-        <AssignmentOverview />
-      </ListContainer>
+      <AssignmentOverview />
     </>
   );
 };

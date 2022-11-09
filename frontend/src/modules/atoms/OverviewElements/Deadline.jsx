@@ -7,25 +7,10 @@ const Wrapper = styled.div`
   flex: 1;
 `;
 
-const TimerIcon = (danger, ...restProps) => {
-  return (
-    <div>
-      <Wrapper>
-        {/* 남은 시간에 따른 표시 변화 */}
-        {danger ? (
-          <Img src="/images/danger.svg" alt="timer" />
-        ) : (
-          <Img src="/images/normal.svg" alt="timer" />
-        )}
-      </Wrapper>
-    </div>
-  );
-};
-
 const DeadlineBlock = styled.div`
   display: flex;
-  flex-direction: row;
-  align-self: flex-end;
+  justify-content: flex-end;
+  align-items: center;
 
   font-family: "Gmarket Sans TTF";
   font-style: normal;
@@ -36,10 +21,12 @@ const DeadlineBlock = styled.div`
 
   border-radius: 10px;
 
-  width: 550px;
+  flex: 1;
   height: 68px;
   color: #000000;
   background: ${(props) => props.background};
+
+
 `;
 
 export const Deadline = ({
@@ -48,12 +35,21 @@ export const Deadline = ({
   background,
   ...restProps
 }) => {
+  console.log("deadline");
+  console.log(danger);
   return (
-    <div>
-      <DeadlineBlock background={background}>
-        <TimerIcon danger={danger} />
-        {remainingTime}
-      </DeadlineBlock>
-    </div>
+    <DeadlineBlock background={background}>
+      <div style={{ marginRight: "11.32px" }}>
+        <Wrapper>
+          {/* 남은 시간에 따른 표시 변화 */}
+          {danger ? (
+            <Img src="/images/danger.svg" alt="timer" />
+          ) : (
+            <Img src="/images/normal.svg" alt="timer" />
+          )}
+        </Wrapper>
+      </div>
+      <div style={{ marginRight: "11px" }}>{remainingTime}</div>
+    </DeadlineBlock>
   );
 };
