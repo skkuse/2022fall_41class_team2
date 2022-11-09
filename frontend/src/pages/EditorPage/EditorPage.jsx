@@ -18,7 +18,12 @@ export const EditorPage = () => {
   }, [monaco]);
 
   if (settingSelector) {
-    return <Editor defaultLanguage={settingSelector.language.toLowerCase()} />;
+    return (
+      <>
+        <>HELLOWORLD</>
+        <Editor defaultLanguage={settingSelector.language.toLowerCase()} />
+      </>
+    );
   }
 
   return <div></div>;
