@@ -49,5 +49,9 @@ urlpatterns += [
 ]
 
 urlpatterns += [
+    path('testcases/', include('testcase.urls'), name='testcases'),
+]
+
+urlpatterns += [
     path('outputs/', include('output.urls'), name='outputs')
 ]
