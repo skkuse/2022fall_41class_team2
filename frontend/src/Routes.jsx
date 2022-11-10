@@ -14,18 +14,6 @@ import { EditorPage } from "./pages/EditorPage/EditorPage";
 
 const CodingCatRoutes = () => {
   return (
-    // UI Develeopment
-    // <Router>
-    //   <Routes>
-    //     <Route path="/" element={<LandingPage />} />
-    //     <Route path="/settings" element={<SettingPage />} />
-    //     <Route path="/auth/login" element={<LoginPage />} />
-    //     <Route path="/auth/github" element={<LoginRedirectPage />} />
-    //     <Route path="main" element={<MainPage />} />
-    //     <Route path="*" element={<NotFoundPage />} />
-    //   </Routes>
-    // </Router>
-
     // OAuth2.0 in progress
     <AuthProvider>
       <Router>
@@ -37,6 +25,9 @@ const CodingCatRoutes = () => {
             <Route path="/overview" element={<OverviewPage />} />
             <Route path="editor/lecture/:lecture_id" element={<EditorPage />} />
             <Route path="/settings" element={<SettingPage />} />
+
+            {/* TODO: 과제 별 페이지로 routing */}
+            <Route path="/assignment1" element={<EditorPage />} />
           </Route>
 
           <Route path="/auth" element={<LoginRoute />}>
