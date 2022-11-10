@@ -4,11 +4,18 @@ import { SettingsButton } from "../../molecules";
 import { LoginAndRegisterButton } from "../../molecules";
 import { LandingPageBannerButton } from "../../molecules";
 import { UserBox } from "../UserBox/UserBox";
-import React, { useState, useEffect, ReactNode, FC, createContext, useContext } from "react";
-import {AuthContext} from "../../../App"
-import {getItemWithExpireTime} from "../../../service/localStorage";
-import { apiClient } from './../../../api/axios';
-import { UserDisplay } from './../../molecules/UserDisplay/UserDisplay';
+import React, {
+  useState,
+  useEffect,
+  ReactNode,
+  FC,
+  createContext,
+  useContext,
+} from "react";
+import { AuthContext } from "../../../App";
+import { getItemWithExpireTime } from "../../../service/localStorage";
+import { apiClient } from "./../../../api/axios";
+import { UserDisplay } from "./../../molecules/UserDisplay/UserDisplay";
 
 const BannerContainer = styled.div`
   display: flex;
@@ -40,21 +47,20 @@ const LowerContainer = styled.div`
   justify-content: space-between;
 `;
 
-export const LandingPageBanner = ({className}) => {
-
+export const LandingPageBanner = ({ className }) => {
   // * 유저 정보 가져오기
   const [userData, setUserData] = useState(null);
 
   useEffect(() => {
     let user = getItemWithExpireTime("user");
-    if(user) {
+    if (user) {
       apiClient.get(`/api/auth/${user.id}/`).then((val) => {
         console.log(val.data.data);
         setUserData(val.data.data);
-      })
+      });
     }
   }, []);
-  
+
   return (
     <BannerContainer>
       <TopContainer style={{ marginTop: "10px" }}>
@@ -64,12 +70,11 @@ export const LandingPageBanner = ({className}) => {
         </div>
         {/* login and register button */}
         <div style={{ marginRight: "20px" }}>
-          {
-            userData ? 
-            <UserDisplay userData={userData}/>
-            :
+          {userData ? (
+            <UserDisplay userData={userData} />
+          ) : (
             !getItemWithExpireTime("user") && <LoginAndRegisterButton />
-          }
+          )}
         </div>
       </TopContainer>
       <LowerContainer style={{ marginTop: "10px", marginBottom: "20px" }}>

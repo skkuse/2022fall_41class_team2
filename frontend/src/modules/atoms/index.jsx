@@ -13,7 +13,7 @@ import { SettingsIcon } from "./Icons/SettingsIcon/SettingsIcon";
 import { LoginIcon } from "./Icons/LoginIcon/LoginIcon";
 import { BannerIcon } from "./Icons";
 
-import { AssignmentName, Deadline, LectureName, TimerIcon } from "./OverviewElements";
+import { AssignmentName, Deadline, LectureName } from "./OverviewElements";
 
 export {
   Column,
@@ -27,4 +27,7 @@ export {
   LoginIcon,
   BannerIcon,
   DropdownSelector,
+  AssignmentName,
+  Deadline,
+  LectureName,
 };

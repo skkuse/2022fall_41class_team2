@@ -155,3 +155,5 @@ cython_debug/
 .idea
 *.pem
 !.keep
+migrations/
+!migrations/__init__.py
