@@ -6,6 +6,7 @@ from authentication.models import User
 from lecture.models import Lecture
 from rest_framework.test import APIClient
 from assignment.models import Assignment
+from testcase.models import Testcase
 
 
 class TestAssignmentListOrCreate(TestCase):
@@ -36,6 +37,14 @@ class TestAssignmentListOrCreate(TestCase):
             constraints='constraints: no constraints',
             skeleton_code='from libmemes import 9_10',
             answer_code='dummy-code',
+        )
+        testcase_1 = Testcase.objects.create(
+            assignment=assignment,
+            is_hidden=False,
+        )
+        testcase_2 = Testcase.objects.create(
+            assignment=assignment,
+            is_hidden=True,
         )
 
     def test_assignment_list(self):
@@ -69,7 +78,6 @@ class TestAssignmentListOrCreate(TestCase):
         result = response.data
 
         self.assertEqual(result.get('name'), 'put your assignment here')
-        self.assertEqual(result.get('lecture').get('instructor').get('id'), instructor.id)
 
     def test_assignment_create_as_student(self):
         student = User.objects.get(oauth_id=self.mock_student_oauth_id)
