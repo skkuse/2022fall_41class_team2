@@ -327,11 +327,13 @@ export const AssignmentOverview = ({ className, ...restProps }) => {
                   <AssignmentName
                     assignment="Assignmnet 1"
                     background="#CCE5C6"
+                    submission={false}
                   ></AssignmentName>
                   <Deadline
                     danger={false}
                     remainingTime={"2d 20h 30m 29s"}
                     background="rgba(204, 229, 198, 0.5)"
+                    submission={false}
                   ></Deadline>
                 </AssignmentBlockContainer>
               </Link>
@@ -339,11 +341,13 @@ export const AssignmentOverview = ({ className, ...restProps }) => {
                 <AssignmentName
                   assignment="Assignmnet 2"
                   background="#CCE5C6"
+                  submission={true}
                 ></AssignmentName>
                 <Deadline
                   danger={true}
                   remainingTime={"20h 30m 29s"}
                   background="rgba(204, 229, 198, 0.5)"
+                  submission={true}
                 ></Deadline>
               </AssignmentBlockContainer>
             </AssignmentGrid>
