@@ -14,7 +14,6 @@ from backend.exceptions import InternalServerError
         extend_schema(
             description='Get all enrollment information of user',
             methods=['GET'],
-            request=None,
             responses={
                 200: EnrollmentSerializer(many=True),
             },
@@ -22,7 +21,6 @@ from backend.exceptions import InternalServerError
         extend_schema(
             description='Create a user enrollment information',
             methods=['POST'],
-            request=EnrollmentSerializer,
             responses={
                 201: EnrollmentSerializer,
                 401: None,
@@ -32,6 +30,7 @@ from backend.exceptions import InternalServerError
 )
 class EnrollmentListOrCreate(generics.ListCreateAPIView):
     serializer_class = EnrollmentSerializer
+    lookup_field = 'lecture_id'
 
     def get_queryset(self):
         user = self.request.user
@@ -42,7 +41,7 @@ class EnrollmentListOrCreate(generics.ListCreateAPIView):
 
     def perform_create(self, serializer):
         try:
-            lecture_id = self.request.data.get('lecture_id')
+            lecture_id = self.request.data.get(self.lookup_field)
             lecture = Lecture.objects.get(pk=lecture_id)
         except Lecture.DoesNotExist:
             raise ParseError
