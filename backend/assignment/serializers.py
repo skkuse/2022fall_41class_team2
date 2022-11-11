@@ -1,28 +1,29 @@
 from rest_framework import serializers
 from assignment.models import Assignment
-from lecture.models import Lecture
-from authentication.models import User
+from testcase.models import Testcase
 
 
-class InstructorSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = ['id', 'nickname', 'name', 'email', 'profile_image_url']
-
-
-class LectureSerializer(serializers.ModelSerializer):
-    instructor = InstructorSerializer(read_only=True)
+class TestcaseSerializer(serializers.ModelSerializer):
 
     class Meta:
-        model = Lecture
-        fields = ['id', 'name', 'instructor']
+        model = Testcase
+        fields = ['id', 'created_at', 'input', 'output']
+
+    def to_representation(self, instance):
+        ret = super().to_representation(instance)
+        if instance.is_hidden:
+            ret.update(
+                (key, None) for key in ret.keys()
+            )
+        return ret
 
 
 class AssignmentSerializer(serializers.ModelSerializer):
-    lecture = LectureSerializer(read_only=True)
+    lecture_id = serializers.IntegerField(write_only=True)
+    testcases = TestcaseSerializer(many=True, read_only=True)
 
     class Meta:
         model = Assignment
-        fields = ['id', 'lecture', 'name', 'deadline', 'question',
-                  'constraints', 'skeleton_code', 'answer_code']
+        fields = ['id', 'name', 'deadline', 'question', 'constraints',
+                  'skeleton_code', 'answer_code', 'testcases', 'lecture_id']
 
