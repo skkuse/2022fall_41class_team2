@@ -5,15 +5,8 @@
 참조/제약사항: 참조 내용 혹은 제약사항 설명
  */
 
+// import ProblemMaster from "../../molecules/ProblemMaster/ProblemMaster";
 
-
-import ProblemMaster from "../../molecules/ProblemMaster/ProblemMaster";
-
-function Problem(props) {
-    
-    return <div>
-        <ProblemMaster/>
-    </div>
-} 
-
-export default Problem;
+export const Problem = (props) => {
+  return <div>문제설명</div>;
+};

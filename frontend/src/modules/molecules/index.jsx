@@ -5,6 +5,7 @@ import { LoginAndRegisterButton } from "./LoginAndRegisterButton/LoginAndRegsite
 import { LandingPageBannerButton } from "./LandingPageBannerButton/LandingPageBannerButton";
 import { UserDisplay } from "./UserDisplay/UserDisplay";
 import { AssignmentList } from "./AssignmentList/AssignmentList";
+import { ExitButton } from "./ExitButton/ExitButton";
 
 export {
   SettingsButton,
@@ -12,4 +13,5 @@ export {
   LandingPageBannerButton,
   UserDisplay,
   AssignmentList,
+  ExitButton,
 };

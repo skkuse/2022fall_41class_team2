@@ -6,28 +6,58 @@ import { useParams, useLocation, useNavigate } from "react-router-dom";
 import Editor, { useMonaco } from "@monaco-editor/react";
 import { useEffect } from "react";
 
+import { render } from "react-dom";
+import MonacoEditor from "react-monaco-editor";
 
+import {
+  Banner,
+  CodeEditor,
+  Testcase,
+  Problem,
+  Terminal,
+} from "../../modules/organisms/CodeEditor";
 
+const EditorPageGrid = styled.div`
+  display: grid;
+  grid-template:
+    "a c"
+    "b c";
+`;
+
+const ProblemWrapper = styled.div`
+  grid-area: a;
+`;
+const TestcaseWrapper = styled.div`
+  grid-area: b;
+`;
+const CodeEditorWrapper = styled.div`
+  grid-area: c;
+`;
 
 export const EditorPage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const monaco = useMonaco();
 
-  const settingSelector = useSelector((state) => state.SettingReducer);
-
-  useEffect(() => {
-    if (!monaco) return;
-  }, [monaco]);
-
-  if (settingSelector) {
-    return (
-      <>
-        <>HELLOWORLD</>
-        <Editor defaultLanguage={settingSelector.language.toLowerCase()} />
-      </>
-    );
-  }
-
-  return <div></div>;
+  return (
+    <>
+      {/* Banner */}
+      <Banner />
+      {/* Problem section*/}
+      <EditorPageGrid>
+        <ProblemWrapper>
+          <Problem />
+        </ProblemWrapper>
+        {/* TestCase */}
+        <TestcaseWrapper>
+          <Testcase />
+        </TestcaseWrapper>
+        {/* Editor */}
+        <CodeEditorWrapper>
+          <CodeEditor />
+        </CodeEditorWrapper>
+        {/* Terminal */}
+        <Terminal />
+      </EditorPageGrid>
+    </>
+  );
 };
