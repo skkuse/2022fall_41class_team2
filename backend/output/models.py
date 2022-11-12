@@ -15,7 +15,7 @@ class Result(models.Model):
 
 class FunctionalityResult(models.Model):
     result = models.OneToOneField('output.Result', on_delete=models.PROTECT, related_name='functionality_result')
-    testcase_results = models.JSONField(default=dict)
+    testcase_results = models.JSONField(default=list)
 
 
 # TODO @동우

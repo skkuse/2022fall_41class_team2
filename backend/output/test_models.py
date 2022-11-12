@@ -148,13 +148,13 @@ class TestFunctionalityResult(TestCase):
         )
 
         self.assertIsNotNone(functionality_result.id)
-        self.assertEqual(functionality_result.testcase_results, dict())
+        self.assertEqual(functionality_result.testcase_results, list())
 
     def test_functionality_result_remove(self):
         before_result = Result.objects.first()
         functionality_result = FunctionalityResult.objects.create(
             result=before_result,
-            testcase_results=dict(),
+            testcase_results=list(),
         )
 
         functionality_result.delete()
