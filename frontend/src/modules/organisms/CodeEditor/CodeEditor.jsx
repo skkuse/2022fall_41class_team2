@@ -1,7 +1,7 @@
 // 4. 코드 에디터 섹션
 
-// import EditorMaster from "../molecules/EditorMaster/EditorMaster";
 import { EditorHeader } from "../../atoms";
+import { Text } from "../../atoms";
 
 import styled from "styled-components";
 import { Helmet } from "react-helmet";
@@ -22,7 +22,34 @@ const EditorWrapper = styled.div`
   width: 100%;
   height: 100%;
 `;
+const EditorHeaderWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  justify-content: space-between;
 
+  background: #bfbfbf;
+`;
+
+const ActionButtonWrapper = styled.div`
+  width: 191px;
+
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  justify-content: space-between;
+
+  font-family: "Gmarket Sans TTF";
+  font-style: normal;
+  font-weight: 700;
+  font-size: 20px;
+  line-height: 23px;
+  /* identical to box height */
+
+  text-align: center;
+
+  color: #1e1e1e;
+`;
 export const CodeEditor = (props) => {
   const monaco = useMonaco();
 
@@ -97,7 +124,16 @@ export const CodeEditor = (props) => {
     return (
       <>
         <EditorWindowWrapper>
-          <EditorHeader content={headerContent} />
+          <EditorHeaderWrapper>
+            <EditorHeader content={headerContent} />
+            <div style={{ marginRight: "27.78px" }}>
+              <ActionButtonWrapper>
+                <Text>실행</Text>
+                <Text>채점</Text>
+                <Text style={{ color: "#0535DC" }}>제출</Text>
+              </ActionButtonWrapper>
+            </div>
+          </EditorHeaderWrapper>
           <div style={{ marginLeft: "12.42px", marginTop: "24.83px" }}>
             <EditorWrapper>
               <MonacoEditor
