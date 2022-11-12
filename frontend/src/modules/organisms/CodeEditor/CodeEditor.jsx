@@ -1,6 +1,7 @@
 // 4. 코드 에디터 섹션
 
 // import EditorMaster from "../molecules/EditorMaster/EditorMaster";
+import { EditorHeader } from "../../atoms";
 
 import styled from "styled-components";
 import { Helmet } from "react-helmet";
@@ -12,7 +13,15 @@ import { useEffect } from "react";
 
 import { render } from "react-dom";
 import MonacoEditor from "react-monaco-editor";
-const EditorWrapper = styled.div``;
+
+const EditorWindowWrapper = styled.div`
+  width: 1180px;
+  height: 820px;
+`;
+const EditorWrapper = styled.div`
+  width: 100%;
+  height: 100%;
+`;
 
 export const CodeEditor = (props) => {
   const monaco = useMonaco();
@@ -83,18 +92,26 @@ export const CodeEditor = (props) => {
       wrappingIndent: "none",
     };
 
+    const headerContent = "코드 입력";
+
     return (
       <>
-        <EditorWrapper>
-          <MonacoEditor
-            width="80%"
-            height="86%"
-            theme="light"
-            value="function hello() {\n\talert('Hello world!');\n}"
-            language={settingSelector.language.toLowerCase()}
-            options={options}
-          />
-        </EditorWrapper>
+        <EditorWindowWrapper>
+          <EditorHeader content={headerContent} />
+          <div style={{ marginLeft: "12.42px", marginTop: "24.83px" }}>
+            <EditorWrapper>
+              <MonacoEditor
+                width="1180px"
+                height="820px"
+                theme="light"
+                // TODO: JSX에서 line break 전달 불가...
+                value="function hello() {\n\talert('Hello world!');\n}"
+                language={settingSelector.language.toLowerCase()}
+                options={options}
+              />
+            </EditorWrapper>
+          </div>
+        </EditorWindowWrapper>
       </>
     );
   }

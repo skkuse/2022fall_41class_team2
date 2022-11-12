@@ -15,6 +15,8 @@ const Bg = styled.div`
   /* identical to box height */
 
   color: #1e1e1e;
+
+  overflow: scroll;
 `;
 
 export const EditorBackground = ({ content, ...restProps }) => {
