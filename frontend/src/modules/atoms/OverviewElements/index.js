@@ -1,1 +1,5 @@
-import { AssignmentName, Deadline, LectureName, TimerIcon } from "./";
+import { AssignmentName } from "./AssignmentName";
+import { Deadline } from "./Deadline";
+import { LectureName } from "./LectureName";
+
+export { AssignmentName, Deadline, LectureName };

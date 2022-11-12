@@ -1,4 +1,4 @@
-from drf_spectacular.utils import extend_schema, extend_schema_view
+from drf_spectacular.utils import extend_schema, extend_schema_view, OpenApiParameter
 from lecture.models import Lecture
 from rest_framework import generics, status
 from rest_framework.exceptions import PermissionDenied
@@ -14,7 +14,6 @@ from rest_framework.exceptions import ParseError
         extend_schema(
             description='Get all Assignment information of a specific lecture',
             methods=['GET'],
-            request=None,
             responses={
                 200: AssignmentSerializer(many=True)
             },
@@ -22,7 +21,6 @@ from rest_framework.exceptions import ParseError
         extend_schema(
             description='Create a new Assignment',
             methods=['POST'],
-            request=AssignmentSerializer,
             responses={
                 201: AssignmentSerializer,
                 401: None,
@@ -32,10 +30,18 @@ from rest_framework.exceptions import ParseError
 )
 class AssignmentListOrCreate(generics.ListCreateAPIView):
     serializer_class = AssignmentSerializer
-    query_param_name = 'lecture_id'
+    lookup_param_field = 'lecture_id'
+
+    @extend_schema(
+        parameters=[
+            OpenApiParameter(name=lookup_param_field, required=True, type=int),
+        ],
+    )
+    def get(self, request, *args, **kwargs):
+        return super().get(request, *args, **kwargs)
 
     def get_queryset(self):
-        lecture_id = self.request.query_params.get(self.query_param_name)
+        lecture_id = self.request.query_params.get(self.lookup_param_field)
         return Assignment.objects.filter(lecture_id=lecture_id).all()
 
     def perform_create(self, serializer):
@@ -52,7 +58,6 @@ class AssignmentListOrCreate(generics.ListCreateAPIView):
         extend_schema(
             description='Get Assignment information',
             methods=['GET'],
-            request=None,
             responses={
                 200: AssignmentSerializer
             },
@@ -60,7 +65,6 @@ class AssignmentListOrCreate(generics.ListCreateAPIView):
         extend_schema(
             description='Delete Assignment',
             methods=['DELETE'],
-            request='user_auth',
             responses={
                 204: None,
                 401: None

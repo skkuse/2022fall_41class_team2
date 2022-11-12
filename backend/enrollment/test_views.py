@@ -70,8 +70,6 @@ class TestEnrollmentListOrCreate(TestCase):
         result = response.data.get('results')
 
         self.assertEqual(len(result), 1)
-        self.assertEqual(result[0].get('student').get('id'), enrollment_1.student.id)
-        self.assertEqual(result[0].get('lecture').get('id'), enrollment_1.lecture.id)
 
     def test_enrollment_list_as_non_student(self):
         normal_user = User.objects.create(
@@ -112,8 +110,7 @@ class TestEnrollmentListOrCreate(TestCase):
         response = client.post('/enrollments/', data=data, format='json')
         result = response.data
 
-        self.assertEqual(result.get('student').get('id'), student_1.id)
-        self.assertEqual(result.get('lecture').get('id'), lecture_2.id)
+        self.assertIsNotNone(result.get('id'))
 
     def test_enrollment_create_duplicated(self):
         student_1 = User.objects.get(oauth_id=self.mock_student_oauth_id_1)
@@ -217,8 +214,7 @@ class TestLectureRetrieveOrDestroy(TestCase):
         response = client.get(f'/enrollments/{enrollment.id}/')
         result = response.data
 
-        self.assertEqual(result.get('student').get('id'), student_1.id)
-        self.assertEqual(result.get('lecture').get('id'), lecture_1.id)
+        self.assertEqual(result.get('id'), enrollment.id)
 
     def test_enrollment_retrieve_when_non_oneself(self):
         student_1 = User.objects.get(oauth_id=self.mock_student_oauth_id_1)

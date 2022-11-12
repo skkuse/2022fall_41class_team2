@@ -12,7 +12,6 @@ from backend.exceptions import InternalServerError
         extend_schema(
             description='List lectures associated with user if exist',
             methods=['GET'],
-            request=None,
             responses={
                 200: LectureSerializer(many=True),
             },
@@ -20,7 +19,6 @@ from backend.exceptions import InternalServerError
         extend_schema(
             description='Create a lecture using user as an instructor',
             methods=['POST'],
-            request=LectureSerializer,
             responses={
                 201: LectureSerializer,
                 401: None,
