@@ -4,8 +4,13 @@ from django.db import models
 class Result(models.Model):
     repo = models.ForeignKey('repo.Repo', on_delete=models.PROTECT, related_name='results')
     references = models.JSONField(default=dict)
-    # TODO @동우
     code_description = models.TextField(default="")
+
+    class Meta:
+        ordering = ['id', 'repo_id']
+
+    def __str__(self):
+        return self.id
 
 
 class FunctionalityResult(models.Model):
