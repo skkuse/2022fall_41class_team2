@@ -20,8 +20,10 @@ import {
 const EditorPageGrid = styled.div`
   display: grid;
   grid-template:
-    "a c"
-    "b c";
+    "a c d"
+    "b c d";
+
+  height: 100vh;
 `;
 
 const ProblemWrapper = styled.div`
@@ -33,6 +35,12 @@ const TestcaseWrapper = styled.div`
 const CodeEditorWrapper = styled.div`
   grid-area: c;
 `;
+const TerminalWrapper = styled.div`
+  /* TODO: State로 변화시키기 */
+  display: none;
+
+  grid-area: d;
+`;
 
 export const EditorPage = () => {
   const dispatch = useDispatch();
@@ -41,7 +49,11 @@ export const EditorPage = () => {
   return (
     <>
       {/* Banner */}
-      <Banner />
+      <Banner
+        lectureName="소프트웨어공학"
+        reamainingTime="2d 21h 24m 14s"
+        assignmentName="Assginment1"
+      />
       {/* Problem section*/}
       <EditorPageGrid>
         <ProblemWrapper>
@@ -56,7 +68,9 @@ export const EditorPage = () => {
           <CodeEditor />
         </CodeEditorWrapper>
         {/* Terminal */}
-        <Terminal />
+        <TerminalWrapper>
+          <Terminal />
+        </TerminalWrapper>
       </EditorPageGrid>
     </>
   );

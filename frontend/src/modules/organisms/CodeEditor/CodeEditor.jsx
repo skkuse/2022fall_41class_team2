@@ -87,9 +87,8 @@ export const CodeEditor = (props) => {
       <>
         <EditorWrapper>
           <MonacoEditor
-            // TODO : Screen-relative size
-            width="1225px"
-            height="864px"
+            width="80%"
+            height="86%"
             theme="light"
             value="function hello() {\n\talert('Hello world!');\n}"
             language={settingSelector.language.toLowerCase()}
