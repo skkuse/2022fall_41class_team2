@@ -103,15 +103,15 @@ export const Banner = ({
       </div>
       {/* save1 */}
       <div style={{ marginLeft: "47.86px" }}>
-        <Save1FuncButton />
+        <Save1FuncButton saved={true} />
       </div>
       {/* save2 */}
       <div style={{ marginLeft: "14.86px" }}>
-        <Save2FuncButton />
+        <Save2FuncButton saved={false} />
       </div>
       {/* save3 */}
       <div style={{ marginLeft: "14.86px" }}>
-        <Save3FuncButton />
+        <Save3FuncButton saved={true} />
       </div>
     </Bg>
   );
