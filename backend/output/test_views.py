@@ -3,11 +3,12 @@ from rest_framework.test import APIClient
 from authentication.models import User
 from lecture.models import Lecture
 from assignment.models import Assignment
+from testcase.models import Testcase
 from repo.models import Repo
 from output.models import Result
 
 
-class Test(TestCase):
+class TestExercises(TestCase):
     user_oauth_id = 'mock-user-oauth-id'
     language = 'python'
     code = '''
@@ -67,6 +68,129 @@ def solution():
         response = client.get(f'/outputs/exercises/', data={}, format='json')
 
         self.assertEqual(response.status_code, 405)
+
+
+class TestTestcases(TestCase):
+    mock_instructor_oauth_id = 'mock-instructor-oauth-id'
+    mock_student_oauth_id = 'mock-student-oauth-id'
+    mock_assignment_name = 'mock-assignment-name'
+    language = 'python'
+    code = '''
+def solution():
+    size = int(input())
+    nums = [float(e) for e in input().split()]
+
+    ret = 0
+    for num in nums:
+        ret += num
+
+    print(ret)
+    return ret
+'''
+
+    def setUp(self) -> None:
+        student = User.objects.create(
+            nickname='mock-student-nickname',
+            oauth_id=self.mock_student_oauth_id,
+        )
+        instructor = User.objects.create(
+            nickname='mock-instructor-nickname',
+            oauth_id=self.mock_instructor_oauth_id,
+        )
+        lecture = Lecture.objects.create(
+            name='mock-lecture-name',
+            instructor=instructor,
+        )
+        assignment = Assignment.objects.create(
+            name=self.mock_assignment_name,
+            lecture=lecture,
+        )
+        testcase_1 = Testcase.objects.create(
+            assignment=assignment,
+            is_hidden=False,
+            input='3\n1 2 3\n',
+            output='6.0\n'
+        )
+        testcase_2 = Testcase.objects.create(
+            assignment=assignment,
+            is_hidden=True,
+            input='3\n1.1 2.2 3.3',
+            output='6.6\n',
+        )
+
+    def test_retrieve_testcase_output(self):
+        student = User.objects.get(oauth_id=self.mock_student_oauth_id)
+        testcase = Testcase.objects.first()
+        data = {
+            'language': self.language,
+            'code': self.code,
+        }
+
+        client = APIClient()
+        client.force_authenticate(user=student)
+        response = client.post(f'/outputs/testcases/{testcase.id}/', data=data, format='json')
+        ret = response.data
+
+        self.assertFalse(ret.get('is_error'))
+        self.assertIsNotNone(ret.get('input'))
+        self.assertIsNotNone(ret.get('expected_output'))
+        self.assertIsNotNone(ret.get('actual_output'))
+
+    def test_retrieve_testcase_output_with_code_grammar_error(self):
+        student = User.objects.get(oauth_id=self.mock_student_oauth_id)
+        testcase = Testcase.objects.first()
+        data = {
+            'language': self.language,
+            'code': 'def solution():\n    retur\n',
+        }
+
+        client = APIClient()
+        client.force_authenticate(user=student)
+        response = client.post(f'/outputs/testcases/{testcase.id}/', data=data, format='json')
+        ret = response.data
+
+        self.assertTrue(ret.get('is_error'))
+        self.assertIsNone(ret.get('actual_output'))
+
+    def test_retrieve_testcase_when_non_exist_testcase(self):
+        student = User.objects.get(oauth_id=self.mock_student_oauth_id)
+        dummy_testcase_id = 99
+        data = {
+            'language': self.language,
+            'code': self.code,
+        }
+
+        client = APIClient()
+        client.force_authenticate(user=student)
+        response = client.post(f'/outputs/testcases/{dummy_testcase_id}/', data=data, format='json')
+
+        self.assertEqual(response.status_code, 400)
+
+    def test_retrieve_testcase_output_when_hidden_one(self):
+        student = User.objects.get(oauth_id=self.mock_student_oauth_id)
+        testcase = Testcase.objects.last()
+        data = {
+            'language': self.language,
+            'code': self.code,
+        }
+
+        client = APIClient()
+        client.force_authenticate(user=student)
+        response = client.post(f'/outputs/testcases/{testcase.id}/', data=data, format='json')
+
+        self.assertEqual(response.status_code, 400)
+
+    def test_retrieve_testcase_without_auth(self):
+        testcase = Testcase.objects.first()
+        data = {
+            'language': self.language,
+            'code': self.code,
+        }
+
+        client = APIClient()
+        response = client.post(f'/outputs/testcases/{testcase.id}/', data=data, format='json')
+
+        self.assertEqual(response.status_code, 401)
 
 
 class TestResultListOrCreate(TestCase):
@@ -141,7 +265,7 @@ class TestResultListOrCreate(TestCase):
         data = {
             'repo_id': repo.id,
             'language': 'python',
-            'code': 'dummy-code',
+            'content': 'dummy-code',
         }
 
         client = APIClient()
@@ -157,7 +281,7 @@ class TestResultListOrCreate(TestCase):
         data = {
             'repo_id': dummy_repo_id,
             'language': 'python',
-            'code': 'dummy-code',
+            'content': 'dummy-code',
         }
 
         client = APIClient()
@@ -172,7 +296,7 @@ class TestResultListOrCreate(TestCase):
         data = {
             'repo_id': repo.id,
             'language': 'python',
-            'code': 'dummy-code',
+            'content': 'dummy-code',
         }
 
         client = APIClient()
@@ -186,7 +310,7 @@ class TestResultListOrCreate(TestCase):
         data = {
             'repo_id': repo.id,
             'language': 'python',
-            'code': 'dummy-code',
+            'content': 'dummy-code',
         }
 
         client = APIClient()
@@ -203,7 +327,7 @@ class TestResultListOrCreate(TestCase):
         data = {
             'repo_id': repo.id,
             'language': 'python',
-            'code': 'dummy-code',
+            'content': 'dummy-code',
         }
 
         client = APIClient()
@@ -211,3 +335,75 @@ class TestResultListOrCreate(TestCase):
         response = client.post('/outputs/results/', data=data, format='json')
 
         self.assertEqual(response.status_code, 400)
+
+
+class TestResultRetrieve(TestCase):
+    mock_instructor_oauth_id = 'mock-instructor-oauth-id'
+    mock_student_oauth_id = 'mock-student-oauth-id'
+    mock_assignment_name = 'mock-assignment-name'
+
+    def setUp(self) -> None:
+        student = User.objects.create(
+            nickname='mock-student-nickname',
+            oauth_id=self.mock_student_oauth_id,
+        )
+        instructor = User.objects.create(
+            nickname='mock-instructor-nickname',
+            oauth_id=self.mock_instructor_oauth_id,
+        )
+        lecture = Lecture.objects.create(
+            name='mock-lecture-name',
+            instructor=instructor,
+        )
+        assignment = Assignment.objects.create(
+            name=self.mock_assignment_name,
+            lecture=lecture,
+        )
+        repo_1 = Repo.objects.create(
+            assignment=assignment,
+            author=student,
+        )
+        result_1 = Result.objects.create(
+            repo=repo_1,
+            references={
+                'first': [
+                    'one',
+                    'two',
+                ],
+                'second': [
+                    'three',
+                    'four',
+                ],
+            },
+        )
+
+    def test_result_retrieve(self):
+        student = User.objects.get(oauth_id=self.mock_student_oauth_id)
+        result = Result.objects.first()
+
+        client = APIClient()
+        client.force_authenticate(user=student)
+        response = client.get(f'/outputs/results/{result.id}/')
+        ret = response.data
+
+        self.assertIsNotNone(ret.get('id'))
+
+    def test_result_retrieve_when_non_exist_result(self):
+        student = User.objects.get(oauth_id=self.mock_student_oauth_id)
+        dummy_result_id = 99
+
+        client = APIClient()
+        client.force_authenticate(user=student)
+        response = client.get(f'/outputs/results/{dummy_result_id}/')
+
+        self.assertEqual(response.status_code, 400)
+
+    def test_result_retrieve_as_non_repo_author(self):
+        non_author_user = User.objects.get(oauth_id=self.mock_instructor_oauth_id)
+        result = Result.objects.first()
+
+        client = APIClient()
+        client.force_authenticate(user=non_author_user)
+        response = client.get(f'/outputs/results/{result.id}/')
+
+        self.assertEqual(response.status_code, 403)
