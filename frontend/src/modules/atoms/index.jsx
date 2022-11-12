@@ -24,6 +24,8 @@ import {
 } from "./Icons";
 
 import { AssignmentName, Deadline, LectureName } from "./OverviewElements";
+import { EditorBackground } from "./EditorBackground/EditorBackground";
+import { EditorHeader } from "./EditorHeader/EditorHeader";
 
 export {
   Column,
@@ -48,4 +50,6 @@ export {
   Save1,
   Save2,
   Save3,
+  EditorBackground,
+  EditorHeader,
 };

@@ -18,12 +18,12 @@ import {
 } from "../../modules/organisms/CodeEditor";
 
 const EditorPageGrid = styled.div`
-  display: grid;
+  display: inline-grid;
   grid-template:
     "a c d"
     "b c d";
-
-  height: 100vh;
+  grid-template-columns: auto auto;
+  grid-template-rows: auto auto;
 `;
 
 const ProblemWrapper = styled.div`
@@ -56,12 +56,18 @@ export const EditorPage = () => {
       />
       {/* Problem section*/}
       <EditorPageGrid>
-        <ProblemWrapper>
-          <Problem />
+        <ProblemWrapper style={{ marginLeft: "43px", marginTop: "25px" }}>
+          <Problem bodyContent="피보나치 수열을 만드시오..." />
         </ProblemWrapper>
         {/* TestCase */}
-        <TestcaseWrapper>
-          <Testcase />
+        <TestcaseWrapper style={{ marginLeft: "43px", marginTop: "9.77px" }}>
+          <Testcase
+            // TODO: 오브젝트 형태로 변경해서 표시
+            bodyContent="테스트케이스 1>
+          input: [1,2,3,4,5]
+          output: [소공개]
+          "
+          />
         </TestcaseWrapper>
         {/* Editor */}
         <CodeEditorWrapper>
