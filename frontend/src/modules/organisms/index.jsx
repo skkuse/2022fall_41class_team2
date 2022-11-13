@@ -6,7 +6,14 @@ import { LoginBox } from "./LoginBox/LoginBox";
 import { UserBox } from "./UserBox/UserBox";
 import { SettingsBox } from "./SettingsBox/SettingsBox";
 import { AssignmentOverview } from "./AssignmentOverview/AssignmentOverview";
-import { Banner, CodeEditor, Testcase, Problem, Terminal } from "./CodeEditor";
+import {
+  Banner,
+  CodeEditor,
+  Testcase,
+  Problem,
+  Terminal,
+  Grading,
+} from "./CodeEditor";
 
 export {
   LandingPageBanner,
@@ -20,4 +27,5 @@ export {
   Testcase,
   Problem,
   Terminal,
+  Grading,
 };

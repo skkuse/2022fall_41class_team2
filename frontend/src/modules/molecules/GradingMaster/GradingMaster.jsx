@@ -9,8 +9,8 @@ const DescWrapper = styled.div`
   height: 880px;
 `;
 
-export const TerminalMaster = ({ bodyContent, ...restProps }) => {
-  const headerContent = "실행결과";
+export const GradingMaster = ({ bodyContent, ...restProps }) => {
+  const headerContent = "채점결과";
   return (
     <DescWrapper>
       <EditorHeader

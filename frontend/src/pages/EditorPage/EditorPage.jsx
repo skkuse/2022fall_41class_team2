@@ -4,7 +4,7 @@ import { Helmet } from "react-helmet";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams, useLocation, useNavigate } from "react-router-dom";
 import Editor, { useMonaco } from "@monaco-editor/react";
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 
 import { render } from "react-dom";
 import MonacoEditor from "react-monaco-editor";
@@ -14,15 +14,14 @@ import {
   CodeEditor,
   Testcase,
   Problem,
-  Terminal,
 } from "../../modules/organisms/CodeEditor";
 
 const EditorPageGrid = styled.div`
   display: inline-grid;
   grid-template:
-    "a c d"
-    "b c d";
-  grid-template-columns: auto auto;
+    "a c"
+    "b c";
+  grid-template-columns: repeat(2, 1fr);
   grid-template-rows: repeat(2, 1fr);
 `;
 
@@ -35,12 +34,8 @@ const TestcaseWrapper = styled.div`
 const CodeEditorWrapper = styled.div`
   grid-area: c;
   grid-row: 1 / 3;
-`;
-const TerminalWrapper = styled.div`
-  /* TODO: State로 변화시키기 */
-  display: none;
 
-  grid-area: d;
+  width: 550px;
 `;
 
 export const EditorPage = () => {
@@ -72,8 +67,6 @@ export const EditorPage = () => {
           />
         </TestcaseWrapper>
 
-        {/* TODO state-based rendering  */}
-        {/* 기본 코드 입력 상황 */}
         {/* Editor */}
         <CodeEditorWrapper
           style={{
@@ -84,12 +77,6 @@ export const EditorPage = () => {
         >
           <CodeEditor />
         </CodeEditorWrapper>
-
-        {/* 실행/채점/제출/ 테스트케이스 검증 상황*/}
-        {/* Terminal */}
-        <TerminalWrapper style={{ marginLeft: "12.72px", marginTop: "25px" }}>
-          <Terminal />
-        </TerminalWrapper>
       </EditorPageGrid>
     </>
   );
