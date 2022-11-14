@@ -53,6 +53,7 @@ def solution():
     def test_generate_plagiarism_result(self):
         result = Result.objects.first()
         # change "localpath" to fit your local path in order to run this test
+        # # might need further minor adjustments depending on the OS
         localpath = r"C:\Users\skdan\Documents\2022 Fall\소프트웨어공학개론\2022fall_41class_team2"
         filename = rf"{localpath}\backend\output\plag_test_dir\lesgedit.py"
         test = rf"{localpath}\backend\output\plag_test_dir\reference\test"

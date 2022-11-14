@@ -2,7 +2,6 @@ from django.test import TestCase
 from authentication.models import User
 from lecture.models import Lecture
 from assignment.models import Assignment
-from testcase.models import Testcase
 from repo.models import Repo
 from output.models import Result
 from output.utils_efficiency import run
@@ -43,18 +42,6 @@ def solution():
             name=self.mock_assignment_name,
             lecture=lecture,
         )
-        testcase_1 = Testcase.objects.create(
-            assignment=assignment,
-            is_hidden=False,
-            input='3\n1 2 3',
-            output='6.0'
-        )
-        testcase_2 = Testcase.objects.create(
-            assignment=assignment,
-            is_hidden=True,
-            input='3\n1.1 2.2 3.3',
-            output='6.6',
-        )
         repo = Repo.objects.create(
             assignment=assignment,
             author=student,
@@ -65,6 +52,7 @@ def solution():
     def test_generate_efficiency_result(self):
         result = Result.objects.first()
         # change "localpath" to fit your local path in order to run this test
+        # # might need further minor adjustments depending on the OS
         localpath = r"C:\Users\skdan\Documents\2022 Fall\소프트웨어공학개론\2022fall_41class_team2"
         filename = rf"{localpath}\backend\output\plag_test_dir\lesgedit.py"
 
