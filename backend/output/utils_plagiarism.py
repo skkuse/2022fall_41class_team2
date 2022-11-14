@@ -1,12 +1,9 @@
-import os
 from copydetect import CopyDetector
 from bs4 import BeautifulSoup
 import tempfile
 import re
 from models import PlagiarismResult
 
-
-# todo: make a model with two json keyfields (num of referenced files, similarity)
 
 def run(filename, result, test_dir, ref_dir):
     # Make a temporary file to store the contents of the html report

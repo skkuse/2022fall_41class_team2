@@ -1,15 +1,13 @@
 import json
-import os
 import subprocess
 from models import EfficiencyResult
-# from backend.settings.base import BASE_DIR
 
-# SERVER_CODE_DIR = str(BASE_DIR) + os.environ['SERVER_CODE_DIR']
-# # todo: where do these values get saved? 
-# #         ans: into the model (make a model with those int field)
-# # todo: ask TA about getting the "data flow complexity score"
+# todo: ask TA about getting the "data flow complexity score"
+#       email sent -> awaiting response
+# todo: ask TA about the meaning of reservation words score
+#       email sent -> awaiting response
 def run(filename, result):
-# filename=r"C:\Users\skdan\Documents\2022 Fall\Capstone Design\dataset\Project_CodeNet_Python800\p00001\s001603790.py"
+    # Run multimetric on a given file path
     process = subprocess.run(['multimetric', f'{filename}'], stdout=subprocess.PIPE, universal_newlines=True)
 
     output = process.stdout
