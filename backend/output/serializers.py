@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from output.models import Result, FunctionalityResult, EfficiencyResult, PlagiarismResult
+from output.models import Result, FunctionalityResult, EfficiencyResult, PlagiarismResult, ReadabilityResult
 
 
 class TestcaseResultSerializer(serializers.Serializer):
@@ -43,6 +43,13 @@ class PlagiarismResultSerializer(serializers.ModelSerializer):
     class Meta:
         model = PlagiarismResult
         fields = ['id', 'num_files_compared', 'similarity_score', 'result_id']
+
+class ReadabilityResultSerializer(serializers.ModelSerializer):
+    result_id = serializers.IntegerField(write_only=True)
+
+    class Meta:
+        model = ReadabilityResult
+        fields = ['id', 'pylint_score', 'pycodestyle_score', 'mypy_score', 'result_id']
 
 
 class ResultSerializer(serializers.ModelSerializer):

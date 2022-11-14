@@ -18,9 +18,11 @@ class FunctionalityResult(models.Model):
     testcase_results = models.JSONField(default=list)
 
 
-# TODO @동우
 class ReadabilityResult(models.Model):
     result = models.OneToOneField('output.Result', on_delete=models.PROTECT, related_name='readability_result')
+    pylint_score = models.FloatField()
+    pycodestyle_score = models.IntegerField()
+    mypy_score = models.IntegerField()
 
 
 class EfficiencyResult(models.Model):
