@@ -5,8 +5,6 @@ from backend.settings.base import BASE_DIR
 
 SERVER_CODE_DIR = str(BASE_DIR) + os.environ['SERVER_CODE_DIR']
 
-filename = "utils_readability_code.py"
-
 def execute_pylint(filename: str):
     full_filename = SERVER_CODE_DIR + filename
     terminal_command = f"pylint {full_filename}" 
@@ -43,9 +41,9 @@ def execute_mypy(filename: str):
     else:
         return result
 
-def run(code: str, result: Result):
+def run(filename, result: Result, raw_code: str):
     with open(SERVER_CODE_DIR + filename, 'w') as file:
-        file.write(code)
+        file.write(raw_code)
 
     readability_serialize = ReadabilityResultSerializer(
         data={
