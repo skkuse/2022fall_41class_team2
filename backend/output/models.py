@@ -23,11 +23,16 @@ class ReadabilityResult(models.Model):
     result = models.OneToOneField('output.Result', on_delete=models.PROTECT, related_name='readability_result')
 
 
-# TODO @영준
+
 class EfficiencyResult(models.Model):
     result = models.OneToOneField('output.Result', on_delete=models.PROTECT, related_name='efficiency_result')
+    loc_score = models.IntegerField()
+    control_flow_complexity_score = models.IntegerField()
+    reservation_words_score = models.IntegerField()
+    data_flow_complexity_score = models.IntegerField()
 
 
-# TODO @영준
 class PlagiarismResult(models.Model):
     result = models.OneToOneField('output.Result', on_delete=models.PROTECT, related_name='plagiarism_result')
+    num_files_compared = models.IntegerField()
+    similarity_score = models.FloatField()
