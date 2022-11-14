@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from output.models import Result, FunctionalityResult
+from output.models import Result, FunctionalityResult, EfficiencyResult, PlagiarismResult
 
 
 class TestcaseResultSerializer(serializers.Serializer):
@@ -27,6 +27,23 @@ class FunctionalityResultSerializer(serializers.ModelSerializer):
         model = FunctionalityResult
         fields = ['id', 'testcase_results', 'result_id']
 
+#yj: added efficiency serializer
+class EfficiencyResultSerializer(serializers.ModelSerializer):
+    result_id = serializers.IntegerField(write_only=True)
+
+    class Meta:
+        model = EfficiencyResult
+        fields = ['id', 'loc_score', 'control_flow_complexity_score', 
+        'reservation_words_score', 'data_flow_complexity_score', 'result_id']
+
+#yj: added plagiarism serializer
+class PlagiarismResultSerializer(serializers.ModelSerializer):
+    result_id = serializers.IntegerField(write_only=True)
+
+    class Meta:
+        model = PlagiarismResult
+        fields = ['id', 'num_files_compared', 'similarity_score', 'result_id']
+
 
 class ResultSerializer(serializers.ModelSerializer):
     repo_id = serializers.IntegerField(write_only=True)
@@ -37,8 +54,10 @@ class ResultSerializer(serializers.ModelSerializer):
     )
     code_description = serializers.CharField(read_only=True)
     functionality_result = FunctionalityResultSerializer(read_only=True)
+    efficiency_result = EfficiencyResultSerializer(read_only=True)
+    plagiarism_result = PlagiarismResultSerializer(read_only=True)
 
     class Meta:
         model = Result
-        fields = ['id', 'references', 'code_description', 'functionality_result', 'repo_id']
+        fields = ['id', 'references', 'code_description', 'functionality_result', 'efficiency_result', 'plagiarism_result', 'repo_id']
 

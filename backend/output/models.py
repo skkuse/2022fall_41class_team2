@@ -23,13 +23,12 @@ class ReadabilityResult(models.Model):
     result = models.OneToOneField('output.Result', on_delete=models.PROTECT, related_name='readability_result')
 
 
-
 class EfficiencyResult(models.Model):
     result = models.OneToOneField('output.Result', on_delete=models.PROTECT, related_name='efficiency_result')
     loc_score = models.IntegerField()
     control_flow_complexity_score = models.IntegerField()
     reservation_words_score = models.IntegerField()
-    data_flow_complexity_score = models.IntegerField()
+    data_flow_complexity_score = models.FloatField()
 
 
 class PlagiarismResult(models.Model):
