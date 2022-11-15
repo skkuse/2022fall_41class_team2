@@ -10,5 +10,8 @@ drf-spectacular-sidecar==2022.10.1
 docker~=6.0.0
 beautifulsoup4==4.11.1
 copydetect==0.4.3
-multimetric
 openai==0.25.0
+multimetric
+pylint
+pycodestyle
+mypy

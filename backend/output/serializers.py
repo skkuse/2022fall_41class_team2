@@ -44,6 +44,7 @@ class PlagiarismResultSerializer(serializers.ModelSerializer):
         model = PlagiarismResult
         fields = ['id', 'num_files_compared', 'similarity_score', 'result_id']
 
+
 class ReadabilityResultSerializer(serializers.ModelSerializer):
     result_id = serializers.IntegerField(write_only=True)
 
