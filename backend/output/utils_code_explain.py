@@ -1,34 +1,29 @@
-import openai
+from openai import Completion
 
-OpenAI_key = "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"
+ENGINE = 'davinci'
+STOP = ["\"\"\""]
+TOP_P = 1.0
+BEST_OF = 1
+MAX_TOKENS = 64
+TEMPERATURE = 0
 
-openai.api_key = OpenAI_key
-completion = openai.Completion()
 
-# config
-temperature = 0
-max_tokens = 64
-top_p = 1.0
-best_of = 1
-frequency_penalty = 0.0
-presence_penalty = 0.0
-stop = ["\"\"\""]
+def run(raw_code: str, language: str = 'python'):
+    return execute_codex(raw_code)
+
 
 def execute_codex(raw_code: str):
     prompt = raw_code + "\n\"\"\"\nCode Explain:\n1."
 
-    response = completion.create(
-        prompt=prompt, 
-        engine="davinci",
-        max_tokens=max_tokens,    
-        stop=stop, 
-        temperature=temperature,
-        top_p=top_p,
-        best_of=best_of,
+    response = Completion.create(
+        prompt=prompt,
+        engine=ENGINE,
+        stop=STOP,
+        top_p=TOP_P,
+        best_of=BEST_OF,
+        max_tokens=MAX_TOKENS,
+        temperature=TEMPERATURE,
     )
 
     answer = response.choices[0].text.strip()
     return "1. " + answer
-
-def run(raw_code: str):
-    return execute_codex(raw_code)
