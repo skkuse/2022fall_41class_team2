@@ -1,5 +1,5 @@
-// 섹션을 모두 합친 메인 화면
-
+/*  EditorPage 옮기려고 합니다!! */
+// 섹션을 모두 합친 메인 화면 
 import React, { useState, useEffect, ReactNode, FC, createContext, useContext } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { apiClient } from "../../api/axios";

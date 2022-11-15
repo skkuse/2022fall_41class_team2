@@ -1,12 +1,29 @@
-// PROPOSED_COMPONENTS
-import ProblemDesc from "../../atoms/Assignment/ProblemSection/ProblemDesc";
-import Constraints from "../../atoms/Assignment/ProblemSection/Constraints";
+import styled from "styled-components";
+import { EditorBackground, EditorHeader } from "../../atoms/";
 
-function ProblemMaster(props) {
-    return <div>
-        <ProblemDesc assignmentId={props.assignmentId}/>
-        <Constraints assignmentId={props.assignmentId}/>
-    </div>
+const DescWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+
+  width: 598px;
+  height: 429.3px; 
+`;
+
+function ProblemMaster({ bodyContent, ...restProps }) {
+  // console.log(`Problem props: ${bodyContent}`);
+  const headerContent = "문제/참조&제약사항";
+  return (
+    <DescWrapper>
+      <EditorHeader
+        content={headerContent}
+        assignmentId={restProps.assignmentId}
+      />
+      <EditorBackground
+        content={bodyContent}
+        assignmentId={restProps.assignmentId}
+      />
+    </DescWrapper>
+  );
 }
 
 export default ProblemMaster;
