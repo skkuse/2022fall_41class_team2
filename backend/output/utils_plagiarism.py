@@ -7,6 +7,8 @@ from output.models import Result
 from output.serializers import PlagiarismResultSerializer
 
 DISPLAY_THRESHOLD = 0.5
+ANTO_OPEN_FLAG = False
+SILENT_FLAG = True
 NUM_FILES_COMPARED_FIELD = 'num_files_compared'
 SIMILARITY_FIELD = 'similarity_score'
 
@@ -40,6 +42,8 @@ def execute_copy_detector(filename: str, test_dirs: [str], ref_dirs: [str]):
         ref_dirs=ref_dirs,
         out_file=temp_report.name,
         display_t=DISPLAY_THRESHOLD,
+        autoopen=ANTO_OPEN_FLAG,
+        silent=SILENT_FLAG,
     )
     detector.add_file(filename)
     detector.run()
