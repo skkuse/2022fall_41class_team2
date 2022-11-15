@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useParams, useLocation, useNavigate } from "react-router-dom";
 import Editor, { useMonaco } from "@monaco-editor/react";
 import { useState, useEffect } from "react";
+import { apiClient } from "../../api/axios";
 
 import { render } from "react-dom";
 import MonacoEditor from "react-monaco-editor";
@@ -15,6 +16,7 @@ import {
   Testcase,
   Problem,
 } from "../../modules/organisms/CodeEditor";
+import { getTimeDiff } from "../../modules/organisms/AssignmentOverview/AssignmentOverview";
 
 const EditorPageGrid = styled.div`
   display: inline-grid;
@@ -41,30 +43,56 @@ const CodeEditorWrapper = styled.div`
 export const EditorPage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
+  const monaco = useMonaco();
+  const params = useParams();
+
+  const [lecture, setLecture] = useState();
+  const [ass, setAss] = useState();
+
+  const settingSelector = useSelector((state) => state.SettingReducer);
+
+  useEffect(() => {
+    if (!monaco) return;
+
+  }, [monaco]);
+
+  useEffect(() => {
+    setLecture(location.state.lecture);
+    apiClient.get(`/api/assignments/${params.assignment_id}/`).then((value) => {
+      setAss(value.data.data);
+    })
+  },[])
+
+  if(!ass) {
+    return <></>;
+  }
+
 
   return (
     <>
       {/* Banner */}
       <Banner
-        lectureName="소프트웨어공학"
-        reamainingTime="2d 21h 24m 14s"
-        assignmentName="Assginment1"
+        lectureName={lecture.name}
+        reamainingTime={`${getTimeDiff(new Date(ass.deadline),  new Date())}`}
+        assignmentName={ass.name}
       />
       {/* Problem section*/}
       <EditorPageGrid>
         <ProblemWrapper style={{ marginLeft: "43px", marginTop: "25px" }}>
           {/* scroll test */}
-          <Problem bodyContent="피보나치 수열을 만드시오...피보나치 수열을 만드시오...피보나치 수열을 만드시오...피보나치 수열을 만드시오...피보나치 수열을 만드시오...피보나치 수열을 만드시오...피보나치 수열을 만드시오...피보나치 수열을 만드시오...피보나치 수열을 만드시오...피보나치 수열을 만드시오...피보나치 수열을 만드시오...피보나치 수열을 만드시오...피보나치 수열을 만드시오...피보나치 수열을 만드시오...피보나치 수열을 만드시오...피보나치 수열을 만드시오...피보나치 수열을 만드시오...피보나치 수열을 만드시오...피보나치 수열을 만드시오...피보나치 수열을 만드시오...피보나치 수열을 만드시오...피보나치 수열을 만드시오...피보나치 수열을 만드시오...피보나치 수열을 만드시오...피보나치 수열을 만드시오...피보나치 수열을 만드시오...피보나치 수열을 만드시오...피보나치 수열을 만드시오...피보나치 수열을 만드시오...피보나치 수열을 만드시오...피보나치 수열을 만드시오...피보나치 수열을 만드시오...피보나치 수열을 만드시오...피보나치 수열을 만드시오...피보나치 수열을 만드시오...피보나치 수열을 만드시오...피보나치 수열을 만드시오...피보나치 수열을 만드시오...피보나치 수열을 만드시오...피보나치 수열을 만드시오...피보나치 수열을 만드시오...피보나치 수열을 만드시오...피보나치 수열을 만드시오...피보나치 수열을 만드시오...피보나치 수열을 만드시오...피보나치 수열을 만드시오...피보나치 수열을 만드시오...피보나치 수열을 만드시오...피보나치 수열을 만드시오...피보나치 수열을 만드시오...피보나치 수열을 만드시오...피보나치 수열을 만드시오...피보나치 수열을 만드시오...피보나치 수열을 만드시오...피보나치 수열을 만드시오...피보나치 수열을 만드시오...피보나치 수열을 만드시오...피보나치 수열을 만드시오...피보나치 수열을 만드시오...피보나치 수열을 만드시오...피보나치 수열을 만드시오...피보나치 수열을 만드시오...피보나치 수열을 만드시오...피보나치 수열을 만드시오...피보나치 수열을 만드시오...피보나치 수열을 만드시오...피보나치 수열을 만드시오...피보나치 수열을 만드시오...피보나치 수열을 만드시오...피보나치 수열을 만드시오...피보나치 수열을 만드시오...피보나치 수열을 만드시오...피보나치 수열을 만드시오...피보나치 수열을 만드시오...피보나치 수열을 만드시오...피보나치 수열을 만드시오...피보나치 수열을 만드시오...피보나치 수열을 만드시오...피보나치 수열을 만드시오...피보나치 수열을 만드시오...피보나치 수열을 만드시오...피보나치 수열을 만드시오...피보나치 수열을 만드시오...피보나치 수열을 만드시오...피보나치 수열을 만드시오...피보나치 수열을 만드시오...피보나치 수열을 만드시오...피보나치 수열을 만드시오...피보나치 수열을 만드시오...피보나치 수열을 만드시오...피보나치 수열을 만드시오...피보나치 수열을 만드시오...피보나치 수열을 만드시오...피보나치 수열을 만드시오...피보나치 수열을 만드시오...피보나치 수열을 만드시오...피보나치 수열을 만드시오...피보나치 수열을 만드시오...피보나치 수열을 만드시오...피보나치 수열을 만드시오...피보나치 수열을 만드시오...피보나치 수열을 만드시오...피보나치 수열을 만드시오...피보나치 수열을 만드시오...피보나치 수열을 만드시오...피보나치 수열을 만드시오...피보나치 수열을 만드시오...피보나치 수열을 만드시오...피보나치 수열을 만드시오...피보나치 수열을 만드시오...피보나치 수열을 만드시오...피보나치 수열을 만드시오...피보나치 수열을 만드시오...피보나치 수열을 만드시오...피보나치 수열을 만드시오...피보나치 수열을 만드시오...피보나치 수열을 만드시오...피보나치 수열을 만드시오...피보나치 수열을 만드시오...피보나치 수열을 만드시오...피보나치 수열을 만드시오...피보나치 수열을 만드시오...피보나치 수열을 만드시오...v" />
+          <Problem bodyContent={ass.question} />
         </ProblemWrapper>
         {/* TestCase */}
         <TestcaseWrapper style={{ marginLeft: "43px", marginTop: "9.77px" }}>
           <Testcase
-            // TODO: 오브젝트 형태로 변경해서 표시
-            bodyContent="테스트케이스 1>
-          input: [1,2,3,4,5]
-          output: [소공개]
-          "
-          />
+            // // TODO: 오브젝트 형태로 변경해서 표시
+            bodyContent={`테스트케이스 1>
+            input: [1,2,3,4]
+            output: [소공개]`}
+            testCases={ass.testcases}
+            />
+        
         </TestcaseWrapper>
 
         {/* Editor */}
@@ -75,9 +103,10 @@ export const EditorPage = () => {
             marginRight: "43px",
           }}
         >
-          <CodeEditor />
+          <CodeEditor assignment={ass}/>
         </CodeEditorWrapper>
       </EditorPageGrid>
     </>
   );
 };
+

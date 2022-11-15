@@ -31,7 +31,7 @@ const ValidationButton = styled.div`
   color: #1e1e1e;
 `;
 
-function TestcaseMaster({ bodyContent, ...restProps }) {
+function TestcaseMaster({ bodyContent, testCases, ...restProps }) {
   const headerContent = "테스트 케이스";
   return (
     <DescWrapper>
@@ -46,11 +46,24 @@ function TestcaseMaster({ bodyContent, ...restProps }) {
         </div>
       </TestCaseHeaderContainer>
 
-      {/* TODO: testcase 개수만큼 pooling */}
-      <EditorBackground
+      {/* // TODO: testcase 개수만큼 pooling */}
+      {
+        testCases.map((testcase) => {
+          return (
+            <EditorBackground
+              content={`테스트케이스 1>
+              input: ${testcase.input}
+              output: ${testcase.output}
+              `}
+              assignmentId={restProps.assignmentId}
+              />
+          );
+        })
+      }
+      {/* <EditorBackground
         content={bodyContent}
         assignmentId={restProps.assignmentId}
-      />
+      /> */}
     </DescWrapper>
   );
 }
