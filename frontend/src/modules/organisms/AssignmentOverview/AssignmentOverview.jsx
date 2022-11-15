@@ -283,9 +283,17 @@ export const AssignmentOverview = ({ className, ...restProps }) => {
     settingSelector.backgroundColor
   );
 
+  const lectureSelector = useSelector((state) =>
+    state.LectureReducer.lectures
+  );   
+
   // Language options
   const [currentLang, setCurrentLang] = useState(settingSelector.language);
   const dispatch = useDispatch();
+
+  if(!lectureSelector) {
+    return <></>; 
+  }
 
   return (
     <>
@@ -315,41 +323,70 @@ export const AssignmentOverview = ({ className, ...restProps }) => {
         <div style={{ marginTop: "25px" }}></div>
         <GeneralContainer>
           {/* TODO 강의 개수만큼 pooling */}
+          {
+            lectureSelector.results && lectureSelector.results.length ?
+            lectureSelector.results.map((lecture) => {
+              return <LectureGroupComp key={JSON.stringify(lecture)} lecture={lecture}/>
+            }) :
+            <div>
+              아직 지정된 강의가 없습니다.
+            </div>
+          }
+          
 
-          <LectureGroup>
-            <NameContainer>
-              <LectureName name="소프트웨어공학개론" background="#99CB8C" />
-            </NameContainer>
-            {/* TODO: 과제 개수만큼 pooling */}
-            <AssignmentGrid numAssignment="2">
-              <Link to="/assignment1" style={{ textDecoration: "none" }}>
-                <AssignmentBlockContainer>
-                  <AssignmentName
-                    assignment="Assignmnet 1"
-                    background="#CCE5C6"
-                  ></AssignmentName>
-                  <Deadline
-                    danger={false}
-                    remainingTime={"2d 20h 30m 29s"}
-                    background="rgba(204, 229, 198, 0.5)"
-                  ></Deadline>
-                </AssignmentBlockContainer>
-              </Link>
-              <AssignmentBlockContainer>
-                <AssignmentName
-                  assignment="Assignmnet 2"
-                  background="#CCE5C6"
-                ></AssignmentName>
-                <Deadline
-                  danger={true}
-                  remainingTime={"20h 30m 29s"}
-                  background="rgba(204, 229, 198, 0.5)"
-                ></Deadline>
-              </AssignmentBlockContainer>
-            </AssignmentGrid>
-          </LectureGroup>
+
         </GeneralContainer>
       </GridAligner>
     </>
   );
 };
+
+const LectureGroupComp = ({lecture}) => {
+  return (
+    <LectureGroup>
+      <NameContainer>
+        <LectureName name={`${lecture.name}`} background="#99CB8C" />
+      </NameContainer>
+      {/* TODO: 과제 개수만큼 pooling */}
+      <AssignmentGrid numAssignment={`${lecture.assignments.results.length}`}>
+        {
+          lecture.assignments.results.map((ass) => {
+            return (
+              <Link key={JSON.stringify(ass)} 
+              to={`/assignment/${ass.id}`} 
+              style={{ textDecoration: "none" }}>
+                <AssignmentBlockContainer>
+                  <AssignmentName
+                    assignment={`${ass.name}`}
+                    background="#CCE5C6"
+                  ></AssignmentName>
+                    
+                  <Deadline
+                    danger={false}
+                    remainingTime={
+                      `${getTimeDiff(new Date(ass.deadline),  new Date())}`
+                    }
+                    background="rgba(204, 229, 198, 0.5)"
+                  ></Deadline>
+                </AssignmentBlockContainer>
+              </Link>
+            )
+          })
+        }
+      </AssignmentGrid>
+    </LectureGroup>
+  );
+}
+
+
+const getTimeDiff = (time1, now) => {
+  let diff = new Date(time1 - now);
+  console.log(time1);
+  // console.log(diff.getFullYear() - 1970);
+  // console.log(diff.getMonth());
+  const diffDate = diff.getDate();
+  const diffHour = diff.getHours();
+  const diffMin = diff.getMinutes();
+  const diffSec = diff.getSeconds();
+  return `${diffDate}d ${diffHour}h ${diffMin}m ${diffSec}s`;
+}

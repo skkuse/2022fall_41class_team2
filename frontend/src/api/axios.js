@@ -46,6 +46,14 @@ class API_CLIENT {
 
   }
 
+  async delete(url) {
+    this.setProfile();
+    const result = await this.client.delete(url);
+    this.auth(result.status);
+    return result;
+
+  }
+
   auth(status) {
     switch (status) {
       case 401 || 403:

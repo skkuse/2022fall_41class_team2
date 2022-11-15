@@ -27,7 +27,7 @@ const CodingCatRoutes = () => {
             <Route path="/settings" element={<SettingPage />} />
 
             {/* TODO: 과제 별 페이지로 routing */}
-            <Route path="/assignment1" element={<EditorPage />} />
+            <Route path="/assignment/:assignment_id" element={<EditorPage />} />
           </Route>
 
           <Route path="/auth" element={<LoginRoute />}>
