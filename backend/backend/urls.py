@@ -53,5 +53,9 @@ urlpatterns += [
 ]
 
 urlpatterns += [
+    path('repos/', include('repo.urls'), name='repos')
+]
+
+urlpatterns += [
     path('outputs/', include('output.urls'), name='outputs')
 ]
