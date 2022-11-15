@@ -1,3 +1,6 @@
+import os
+import tempfile
+
 from django.test import TestCase
 from authentication.models import User
 from lecture.models import Lecture
@@ -49,21 +52,31 @@ def solution():
         result = Result.objects.create(
             repo=repo,
         )
+
     def test_generate_efficiency_result(self):
         result = Result.objects.first()
-        # change "localpath" to fit your local path in order to run this test
-        # # might need further minor adjustments depending on the OS
-        localpath = r"C:\Users\skdan\Documents\2022 Fall\소프트웨어공학개론\2022fall_41class_team2"
-        filename = rf"{localpath}\backend\output\plag_test_dir\lesgedit.py"
+        filename = None
 
-        plswork = run(filename=filename, result=result)
-        loc_score = plswork.get('loc_score')
-        cf_score = plswork.get('control_flow_complexity_score')
-        rw_score = plswork.get('reservation_words_score')
-        df_score = plswork.get('data_flow_complexity_score')
-    
-        self.assertIsNotNone(plswork.get('id'))
-        self.assertEqual(plswork.get("loc_score"), loc_score)
-        self.assertEqual(plswork.get('control_flow_complexity_score'), cf_score)
-        self.assertEqual(plswork.get('reservation_words_score'), rw_score)
-        self.assertEqual(plswork.get('data_flow_complexity_score'), df_score)
+        try:
+            with tempfile.NamedTemporaryFile(
+                mode='w',
+                suffix='.py',
+                delete=False,
+            ) as file:
+                file.write(self.code)
+            filename = file.name
+
+            plswork = run(result=result, filename=filename)
+
+            loc_score = plswork.get('loc_score')
+            cf_score = plswork.get('control_flow_complexity_score')
+            rw_score = plswork.get('reservation_words_score')
+            df_score = plswork.get('data_flow_complexity_score')
+
+            self.assertIsNotNone(plswork.get('id'))
+            self.assertEqual(plswork.get("loc_score"), loc_score)
+            self.assertEqual(plswork.get('control_flow_complexity_score'), cf_score)
+            self.assertEqual(plswork.get('reservation_words_score'), rw_score)
+            self.assertEqual(plswork.get('data_flow_complexity_score'), df_score)
+        finally:
+            os.remove(filename)

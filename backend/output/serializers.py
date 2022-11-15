@@ -27,14 +27,14 @@ class FunctionalityResultSerializer(serializers.ModelSerializer):
         model = FunctionalityResult
         fields = ['id', 'testcase_results', 'result_id']
 
-#yj: added efficiency serializer
+
 class EfficiencyResultSerializer(serializers.ModelSerializer):
     result_id = serializers.IntegerField(write_only=True)
 
     class Meta:
         model = EfficiencyResult
-        fields = ['id', 'loc_score', 'control_flow_complexity_score', 
-        'reservation_words_score', 'data_flow_complexity_score', 'result_id']
+        fields = ['id', 'loc_score', 'control_flow_complexity_score',
+                  'reservation_words_score', 'data_flow_complexity_score', 'result_id']
 
 #yj: added plagiarism serializer
 class PlagiarismResultSerializer(serializers.ModelSerializer):
