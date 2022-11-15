@@ -12,3 +12,5 @@ CONTAINER_CODE_DIR=/usr/src/codingcat
 PYTHON_IMAGE=python:3.9-alpine
 NODE_IMAGE=node:18.12-alpine
 GCC_IMAGE=gcc:12.2
+
+OpenAI_key=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
