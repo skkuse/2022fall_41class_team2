@@ -353,7 +353,13 @@ const LectureGroupComp = ({lecture}) => {
           lecture.assignments.results.map((ass) => {
             return (
               <Link key={JSON.stringify(ass)} 
-              to={`/assignment/${ass.id}`} 
+              to={{
+                pathname: `/assignment/${ass.id}`,
+                // state:"asdfasdf"
+              }} 
+              state={{
+                lecture: lecture
+              }}
               style={{ textDecoration: "none" }}>
                 <AssignmentBlockContainer>
                   <AssignmentName
@@ -381,7 +387,7 @@ const LectureGroupComp = ({lecture}) => {
 }
 
 
-const getTimeDiff = (time1, now) => {
+export const getTimeDiff = (time1, now) => {
   let diff = new Date(time1 - now);
   console.log(time1);
   // console.log(diff.getFullYear() - 1970);

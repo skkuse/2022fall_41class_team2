@@ -23,9 +23,8 @@ async function getLectureAPI(payload) {
     for (const index in result.data.data.results) {
         let lecture = result.data.data.results[index];
         let assResult = await apiClient.get("/api/assignments/?lecture_id="+ lecture.id);
-        alert(JSON.stringify(assResult));
+        // alert(JSON.stringify(assResult));
         if(!assResult.data.data.results){
-            alert("?no")
             let postAssResult = await apiClient.post("/api/assignments/", {
                 "name": "Assignment1",
                 "deadline": "2022-11-18T12:45:25.465Z",

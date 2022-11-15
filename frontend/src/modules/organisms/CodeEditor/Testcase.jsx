@@ -2,8 +2,8 @@
 
 import TestcaseMaster from "../../molecules/TestcaseMaster/TestcaseMaster";
 
-export const Testcase = ({ headerContent, bodyContent, ...restProps }) => {
+export const Testcase = ({ headerContent, bodyContent, testCases, ...restProps }) => {
   return (
-    <TestcaseMaster headerContent={headerContent} bodyContent={bodyContent} />
+    <TestcaseMaster headerContent={headerContent} bodyContent={bodyContent} testCases={testCases} />
   );
 };

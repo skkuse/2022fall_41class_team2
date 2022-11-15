@@ -15,6 +15,7 @@ import { Resizable } from "re-resizable";
 import { useState, useEffect } from "react";
 import { render } from "react-dom";
 import MonacoEditor from "react-monaco-editor";
+import { apiClient } from './../../../api/axios';
 
 const EvaluationWindowGrid = styled.div`
   display: inline-grid;
@@ -102,11 +103,14 @@ const ActionButtonWrapper = styled.div`
 
   color: #1e1e1e;
 `;
-export const CodeEditor = (props) => {
+export const CodeEditor = ({assignment}) => {
   const headerContent = "코드 입력";
   let editorWidth = "1180px";
 
   const [editMode, setEditMode] = useState({ edit: true, altMode: "none" });
+
+  const [repo, setRepo] = useState();
+  const settingSelector = useSelector((state) => state.SettingReducer);
 
   const changeMode = ({ src, ...restProps }) => {
     // altMode : none, grading, execution, submission
@@ -122,13 +126,39 @@ export const CodeEditor = (props) => {
     // console.log(editMode);
   };
 
+  
+
   useEffect(() => {
     console.log(editMode);
   }, [editMode]);
 
+  const fetchRepoList = async() => {
+    let result = await apiClient.get("/api/repos/");
+    if(!result.data.results) {
+      const postResult = await  apiClient.post("/api/repos/", {
+        "language": settingSelector.language.toLowerCase(),
+        "code": "string",
+        "assignment_id": assignment.id
+      });
+    }
+    result = await apiClient.get("/api/repos/");
+    return result.data.data.results;
+  }
+
+  const handleRepo = async() => {
+    const repoList  = await fetchRepoList();
+    // ! 서버 측 repo api 동작 이상함 (repo 받아올 시 빈칸인데, 새로 넣으려하면 3개 이상 만들 수 없다고 뜸)
+    if(repoList){
+      const curRepo = repoList[0];
+    }
+  }
+
+  useEffect( () => {
+    handleRepo();
+  },[]);
+
   const monaco = useMonaco();
 
-  const settingSelector = useSelector((state) => state.SettingReducer);
 
   useEffect(() => {
     if (!monaco) return;
@@ -224,7 +254,7 @@ export const CodeEditor = (props) => {
                     height="820px"
                     theme="light"
                     // TODO: JSX에서 line break 전달 불가...
-                    value="function hello() {\n\talert('Hello world!');\n}"
+                    value={"function hello() {\n\talert('Hello world!');\n}".replace("\\n","<br>")}
                     language={settingSelector.language.toLowerCase()}
                     options={options}
                   />
