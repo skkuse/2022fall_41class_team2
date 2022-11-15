@@ -16,6 +16,10 @@ import { useState, useEffect } from "react";
 import { render } from "react-dom";
 import MonacoEditor from "react-monaco-editor";
 import { apiClient } from './../../../api/axios';
+import { saveRepoListAction } from "../../../pages/EditorPage/EditorAction";
+import { monaco } from 'react-monaco-editor';
+import { saveRepoAction } from './../../../pages/EditorPage/EditorAction';
+import { createRef } from "react";
 
 const EvaluationWindowGrid = styled.div`
   display: inline-grid;
@@ -108,9 +112,14 @@ export const CodeEditor = ({assignment}) => {
   let editorWidth = "1180px";
 
   const [editMode, setEditMode] = useState({ edit: true, altMode: "none" });
+  const editorRef = createRef();
 
   const [repo, setRepo] = useState();
+  const [monacoOption, setMonacoOption] = useState();
+  const dispatch = useDispatch();
   const settingSelector = useSelector((state) => state.SettingReducer);
+  const repoSelector = useSelector((state) => state.editorReducer);
+  let repoList = [];
 
   const changeMode = ({ src, ...restProps }) => {
     // altMode : none, grading, execution, submission
@@ -132,112 +141,187 @@ export const CodeEditor = ({assignment}) => {
     console.log(editMode);
   }, [editMode]);
 
+
+
   const fetchRepoList = async() => {
-    let result = await apiClient.get("/api/repos/");
-    if(!result.data.results) {
-      const postResult = await  apiClient.post("/api/repos/", {
-        "language": settingSelector.language.toLowerCase(),
-        "code": "string",
-        "assignment_id": assignment.id
-      });
+    let result = await apiClient.get(`/api/repos/?assignment_id=${assignment.id}`);
+    console.log(result.data.data.results);
+    if(!result.data.data.results) {
+      console.log("삽입");
+      const postResult = await addRepo("print(\"hello world\"");
+      result = await apiClient.get(`/api/repos/?assignment_id=${assignment.id}`);
     }
-    result = await apiClient.get("/api/repos/");
-    return result.data.data.results;
+    console.log(result);
+    const monacoModelList = result.data.data.results.map((repo) => {
+      // return(makeMonacoModel(repo));
+      return repo;
+    })
+    // dispatch(saveRepoListAction(monacoModelList));
+    return monacoModelList;
+  }
+
+  const addRepo = async(code) => {
+    const postResult = await  apiClient.post("/api/repos/", {
+      "language": settingSelector.language.toLowerCase(),
+      "code": code,
+      "assignment_id": assignment.id
+    });
+    return postResult;
   }
 
   const handleRepo = async() => {
-    const repoList  = await fetchRepoList();
-    // ! 서버 측 repo api 동작 이상함 (repo 받아올 시 빈칸인데, 새로 넣으려하면 3개 이상 만들 수 없다고 뜸)
-    if(repoList){
-      const curRepo = repoList[0];
-    }
+    repoList  = await fetchRepoList();
+    dispatch(saveRepoListAction(repoList));
   }
 
   useEffect( () => {
     handleRepo();
   },[]);
 
-  const monaco = useMonaco();
-
-
   useEffect(() => {
     if (!monaco) return;
   }, [monaco]);
 
-  if (settingSelector) {
-    const options = {
-      acceptSuggestionOnCommitCharacter: true,
-      acceptSuggestionOnEnter: "on",
-      accessibilitySupport: "auto",
-      autoIndent: false,
-      automaticLayout: true,
-      codeLens: true,
-      colorDecorators: true,
-      contextmenu: true,
-      cursorBlinking: "blink",
-      cursorSmoothCaretAnimation: false,
-      cursorStyle: "line",
-      disableLayerHinting: false,
-      disableMonospaceOptimizations: false,
-      dragAndDrop: false,
-      fixedOverflowWidgets: false,
-      folding: true,
-      foldingStrategy: "auto",
-      fontLigatures: false,
-      formatOnPaste: false,
-      formatOnType: false,
-      hideCursorInOverviewRuler: false,
-      highlightActiveIndentGuide: true,
-      links: true,
-      mouseWheelZoom: false,
-      multiCursorMergeOverlapping: true,
-      multiCursorModifier: "alt",
-      overviewRulerBorder: true,
-      overviewRulerLanes: 2,
-      quickSuggestions: true,
-      quickSuggestionsDelay: 100,
-      readOnly: false,
-      renderControlCharacters: false,
-      renderFinalNewline: true,
-      renderIndentGuides: true,
-      renderLineHighlight: "all",
-      renderWhitespace: "none",
-      revealHorizontalRightPadding: 30,
-      roundedSelection: true,
-      rulers: [],
-      scrollBeyondLastColumn: 5,
-      scrollBeyondLastLine: true,
-      selectOnLineNumbers: true,
-      selectionClipboard: true,
-      selectionHighlight: true,
-      showFoldingControls: "mouseover",
-      smoothScrolling: false,
-      suggestOnTriggerCharacters: true,
-      wordBasedSuggestions: true,
-      wordSeparators: "~!@#$%^&*()-=+[{]}|;:'\",.<>/?",
-      wordWrap: "off",
-      wordWrapBreakAfterCharacters: "\t})]?|&,;",
-      wordWrapBreakBeforeCharacters: "{([+",
-      wordWrapBreakObtrusiveCharacters: ".",
-      wordWrapColumn: 80,
-      wordWrapMinified: true,
-      wrappingIndent: "none",
-    };
+  useEffect(() => {
+    if (settingSelector && repoSelector && repoSelector.selectedModel) {
+      const options = {
+        acceptSuggestionOnCommitCharacter: true,
+        acceptSuggestionOnEnter: "on",
+        accessibilitySupport: "auto",
+        autoIndent: false,
+        automaticLayout: true,
+        codeLens: true,
+        colorDecorators: true,
+        contextmenu: true,
+        cursorBlinking: "blink",
+        cursorSmoothCaretAnimation: false,
+        cursorStyle: "line",
+        disableLayerHinting: false,
+        disableMonospaceOptimizations: false,
+        dragAndDrop: false,
+        fixedOverflowWidgets: false,
+        folding: true,
+        foldingStrategy: "auto",
+        fontLigatures: false,
+        formatOnPaste: false,
+        formatOnType: false,
+        hideCursorInOverviewRuler: false,
+        highlightActiveIndentGuide: true,
+        links: true,
+        mouseWheelZoom: false,
+        multiCursorMergeOverlapping: true,
+        multiCursorModifier: "alt",
+        // model:model,
+        overviewRulerBorder: true,
+        overviewRulerLanes: 2,
+        quickSuggestions: true,
+        quickSuggestionsDelay: 100,
+        readOnly: false,
+        renderControlCharacters: false,
+        renderFinalNewline: true,
+        renderIndentGuides: true,
+        renderLineHighlight: "all",
+        renderWhitespace: "none",
+        revealHorizontalRightPadding: 30,
+        roundedSelection: true,
+        rulers: [],
+        scrollBeyondLastColumn: 5,
+        scrollBeyondLastLine: true,
+        selectOnLineNumbers: true,
+        selectionClipboard: true,
+        selectionHighlight: true,
+        showFoldingControls: "mouseover",
+        smoothScrolling: false,
+        suggestOnTriggerCharacters: true,
+        wordBasedSuggestions: true,
+        wordSeparators: "~!@#$%^&*()-=+[{]}|;:'\",.<>/?",
+        wordWrap: "off",
+        wordWrapBreakAfterCharacters: "\t})]?|&,;",
+        wordWrapBreakBeforeCharacters: "{([+",
+        wordWrapBreakObtrusiveCharacters: ".",
+        wordWrapColumn: 80,
+        wordWrapMinified: true,
+        wrappingIndent: "none",
+      };
 
-    return (
-      <>
-        <EditorWindowWrapper>
-          {/* 코드 수정 상황 */}
-          {editMode.edit && (
-            <>
+      setMonacoOption(options);
+    }
+    
+  }, [repoSelector, repoSelector.selectedModel, settingSelector])
+
+  if(!(repoSelector && repoSelector.selectedModel)) {
+    return <></>;
+  }
+
+  console.log(editorRef);
+
+
+  return (
+    <>
+      <EditorWindowWrapper>
+        {/* 코드 수정 상황 */}
+        {editMode.edit && (
+          <>
+            <EditorHeaderWrapper editMode={editMode}>
+              <div onClick={() => changeMode({ src: headerContent })}>
+                <EditorHeader content={headerContent} />
+              </div>
+              <div style={{ marginRight: "27.78px" }}>
+                <ActionButtonWrapper>
+                  <div onClick={() => changeMode({ src: "실행" })}>실행</div>
+                  <div onClick={() => changeMode({ src: "채점" })}>채점</div>
+                  <div
+                    style={{ color: "#0535DC" }}
+                    onClick={() => changeMode({ src: "제출" })}
+                  >
+                    제출
+                    {/* {
+                      JSON.stringify( repoSelector.selectedModel.content.code)
+                    } */}
+                  </div>
+                </ActionButtonWrapper>
+              </div>
+            </EditorHeaderWrapper>
+            <div style={{ marginLeft: "12.42px", marginTop: "24.83px" }}>
+              <EditorWrapper>
+                <MonacoEditor
+                  ref={editorRef}
+                  width="1180px"
+                  height="820px"
+                  theme="light"
+                  language={settingSelector.language.toLowerCase()}
+                  value={repoSelector.selectedModel.content.code}
+                  onChange={(e)=>{
+                    console.log(e);
+                    let repoTemp= repoSelector.selectedModel;
+                    repoTemp.content.code = e;
+                    dispatch(saveRepoAction(repoTemp));
+                    
+                  }}
+                  // value={repoSelector.selectedModel.content.code}
+                  options={monacoOption}
+                />
+              </EditorWrapper>
+            </div>
+          </>
+        )}
+
+        {/* 실행/채점/제출/ 테스트케이스 검증 상황*/}
+        {!editMode.edit && (
+          <>
+            <EvaluationWindowGrid>
               <EditorHeaderWrapper editMode={editMode}>
                 <div onClick={() => changeMode({ src: headerContent })}>
                   <EditorHeader content={headerContent} />
                 </div>
                 <div style={{ marginRight: "27.78px" }}>
                   <ActionButtonWrapper>
-                    <div onClick={() => changeMode({ src: "실행" })}>실행</div>
-                    <div onClick={() => changeMode({ src: "채점" })}>채점</div>
+                    <div onClick={() => changeMode({ src: "실행" })}>
+                      실행
+                    </div>
+                    <div onClick={() => changeMode({ src: "채점" })}>
+                      채점
+                    </div>
                     <div
                       style={{ color: "#0535DC" }}
                       onClick={() => changeMode({ src: "제출" })}
@@ -250,92 +334,77 @@ export const CodeEditor = ({assignment}) => {
               <div style={{ marginLeft: "12.42px", marginTop: "24.83px" }}>
                 <EditorWrapper>
                   <MonacoEditor
-                    width="1180px"
+                    width="560px"
                     height="820px"
                     theme="light"
                     // TODO: JSX에서 line break 전달 불가...
-                    value={"function hello() {\n\talert('Hello world!');\n}".replace("\\n","<br>")}
+                    value="function hello() {\n\talert('Hello world!');\n}"
                     language={settingSelector.language.toLowerCase()}
-                    options={options}
+                    options={monacoOption}
                   />
                 </EditorWrapper>
               </div>
-            </>
-          )}
+              {/* 실행 결과*/}
+              {editMode.altMode === "실행" && (
+                <TerminalWrapper
+                  style={{ marginLeft: "12.72px" }}
+                  edit={editMode.edit}
+                  altMode={editMode.altMode}
+                >
+                  <Terminal />
+                </TerminalWrapper>
+              )}
+              {/* 채점 결과*/}
+              {editMode.altMode === "채점" && (
+                <GradingWrapper
+                  style={{ marginLeft: "12.72px" }}
+                  edit={editMode.edit}
+                  altMode={editMode.altMode}
+                >
+                  <Grading />
+                </GradingWrapper>
+              )}
+              {/* 제출 결과*/}
+              {editMode.altMode === "제출" && (
+                <TerminalWrapper
+                  style={{ marginLeft: "12.72px" }}
+                  edit={editMode.edit}
+                  altMode={editMode.altMode}
+                >
+                  <SubmissionResult />
+                </TerminalWrapper>
+              )}
+            </EvaluationWindowGrid>
+          </>
+        )}
+      </EditorWindowWrapper>
+    </>
+  );
+}
 
-          {/* 실행/채점/제출/ 테스트케이스 검증 상황*/}
-          {!editMode.edit && (
-            <>
-              <EvaluationWindowGrid>
-                <EditorHeaderWrapper editMode={editMode}>
-                  <div onClick={() => changeMode({ src: headerContent })}>
-                    <EditorHeader content={headerContent} />
-                  </div>
-                  <div style={{ marginRight: "27.78px" }}>
-                    <ActionButtonWrapper>
-                      <div onClick={() => changeMode({ src: "실행" })}>
-                        실행
-                      </div>
-                      <div onClick={() => changeMode({ src: "채점" })}>
-                        채점
-                      </div>
-                      <div
-                        style={{ color: "#0535DC" }}
-                        onClick={() => changeMode({ src: "제출" })}
-                      >
-                        제출
-                      </div>
-                    </ActionButtonWrapper>
-                  </div>
-                </EditorHeaderWrapper>
-                <div style={{ marginLeft: "12.42px", marginTop: "24.83px" }}>
-                  <EditorWrapper>
-                    <MonacoEditor
-                      width="560px"
-                      height="820px"
-                      theme="light"
-                      // TODO: JSX에서 line break 전달 불가...
-                      value="function hello() {\n\talert('Hello world!');\n}"
-                      language={settingSelector.language.toLowerCase()}
-                      options={options}
-                    />
-                  </EditorWrapper>
-                </div>
-                {/* 실행 결과*/}
-                {editMode.altMode === "실행" && (
-                  <TerminalWrapper
-                    style={{ marginLeft: "12.72px" }}
-                    edit={editMode.edit}
-                    altMode={editMode.altMode}
-                  >
-                    <Terminal />
-                  </TerminalWrapper>
-                )}
-                {/* 채점 결과*/}
-                {editMode.altMode === "채점" && (
-                  <GradingWrapper
-                    style={{ marginLeft: "12.72px" }}
-                    edit={editMode.edit}
-                    altMode={editMode.altMode}
-                  >
-                    <Grading />
-                  </GradingWrapper>
-                )}
-                {/* 제출 결과*/}
-                {editMode.altMode === "제출" && (
-                  <TerminalWrapper
-                    style={{ marginLeft: "12.72px" }}
-                    edit={editMode.edit}
-                    altMode={editMode.altMode}
-                  >
-                    <SubmissionResult />
-                  </TerminalWrapper>
-                )}
-              </EvaluationWindowGrid>
-            </>
-          )}
-        </EditorWindowWrapper>
-      </>
-    );
-  }
-};
+// export const makeMonacoModel = (repo, dispatch) => {
+//   let model = monaco.editor.createModel(`${(repo.content.code)}`.replace("\\n","<br>"), "python");
+//   model.onDidChangeContent((e) => {
+//     console.log(e);
+//     let codeTempList = model.getLinesContent();
+//     let codeTemp = "";
+//     codeTempList.forEach(element => {
+//       if(element == "") {
+//         codeTemp+= "\n";
+//       }
+//       else{
+//         codeTemp+=element;
+//       }
+//     });
+    
+//     repo.content = {
+//       code: codeTemp,
+//       language: "python"
+//     }
+
+//     console.log("?ASDgsdg");
+
+//     // dispatch(saveRepoAction(repo));
+//   })
+//   return model;
+// }

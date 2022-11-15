@@ -76,6 +76,7 @@ export const EditorPage = () => {
         lectureName={lecture.name}
         reamainingTime={`${getTimeDiff(new Date(ass.deadline),  new Date())}`}
         assignmentName={ass.name}
+        assignment={ass}
       />
       {/* Problem section*/}
       <EditorPageGrid>
