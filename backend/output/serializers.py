@@ -36,7 +36,7 @@ class EfficiencyResultSerializer(serializers.ModelSerializer):
         fields = ['id', 'loc_score', 'control_flow_complexity_score',
                   'reservation_words_score', 'data_flow_complexity_score', 'result_id']
 
-#yj: added plagiarism serializer
+
 class PlagiarismResultSerializer(serializers.ModelSerializer):
     result_id = serializers.IntegerField(write_only=True)
 

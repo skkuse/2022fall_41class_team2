@@ -1,3 +1,6 @@
+import os
+import tempfile
+
 from django.test import TestCase
 from authentication.models import User
 from lecture.models import Lecture
@@ -52,14 +55,28 @@ def solution():
 
     def test_generate_plagiarism_result(self):
         result = Result.objects.first()
-        # change "localpath" to fit your local path in order to run this test
-        # # might need further minor adjustments depending on the OS
-        localpath = r"C:\Users\skdan\Documents\2022 Fall\소프트웨어공학개론\2022fall_41class_team2"
-        filename = rf"{localpath}\backend\output\plag_test_dir\lesgedit.py"
-        test = rf"{localpath}\backend\output\plag_test_dir\reference\test"
-        ref = rf"{localpath}\backend\output\plag_test_dir\reference"
-        plswork = run(filename= filename, result = result, test_dir= test, ref_dir= ref)
-        
-        self.assertIsNotNone(plswork.get('id'))
-        self.assertEqual(plswork.get("num_files_compared"), 13)
-        self.assertEqual(plswork.get("similarity_score"), 100.0)
+        filename = None
+
+        try:
+            with tempfile.NamedTemporaryFile(
+                mode='w',
+                suffix='.py',
+                delete=False,
+            ) as file:
+                file.write(self.code)
+            filename = file.name
+            test_dir = tempfile.mkdtemp()
+            ref_dir = tempfile.mkdtemp()
+
+            plswork = run(
+                result=result,
+                filename=filename,
+                test_dir=test_dir,
+                ref_dir=ref_dir,
+            )
+
+            self.assertIsNotNone(plswork.get('id'))
+            self.assertEqual(plswork.get("num_files_compared"), 13)
+            self.assertEqual(plswork.get("similarity_score"), 100.0)
+        finally:
+            os.remove(filename)
