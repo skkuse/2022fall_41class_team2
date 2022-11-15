@@ -359,6 +359,7 @@ const LectureGroupComp = ({lecture}) => {
                   <AssignmentName
                     assignment={`${ass.name}`}
                     background="#CCE5C6"
+                    submission={false}
                   ></AssignmentName>
                     
                   <Deadline
@@ -367,6 +368,7 @@ const LectureGroupComp = ({lecture}) => {
                       `${getTimeDiff(new Date(ass.deadline),  new Date())}`
                     }
                     background="rgba(204, 229, 198, 0.5)"
+                    submission={false}
                   ></Deadline>
                 </AssignmentBlockContainer>
               </Link>
