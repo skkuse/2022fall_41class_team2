@@ -36,12 +36,12 @@ def solution():
 
     def test_retrieve_exercise_output(self):
         user = User.objects.get(oauth_id=self.user_oauth_id)
-
         data = {
             'language': self.language,
             'code': self.code,
             'input': self.input,
         }
+
         client = APIClient()
         client.force_authenticate(user=user)
         response = client.post(f'/outputs/exercises/', data=data, format='json')
@@ -215,6 +215,18 @@ class TestResultListOrCreate(TestCase):
             name=self.mock_assignment_name,
             lecture=lecture,
         )
+        testcase_1 = Testcase.objects.create(
+            assignment=assignment,
+            is_hidden=False,
+            input='3\n1 2 3\n',
+            output='6.0\n'
+        )
+        testcase_2 = Testcase.objects.create(
+            assignment=assignment,
+            is_hidden=True,
+            input='3\n1.1 2.2 3.3',
+            output='6.6\n',
+        )
         repo_1 = Repo.objects.create(
             assignment=assignment,
             author=student,
@@ -265,7 +277,18 @@ class TestResultListOrCreate(TestCase):
         data = {
             'repo_id': repo.id,
             'language': 'python',
-            'content': 'dummy-code',
+            'code': '''
+def solution():
+    size = int(input())
+    nums = [float(e) for e in input().split()]
+
+    ret = 0
+    for num in nums:
+        ret += num
+
+    print(ret)
+    return ret
+''',
         }
 
         client = APIClient()
@@ -281,7 +304,7 @@ class TestResultListOrCreate(TestCase):
         data = {
             'repo_id': dummy_repo_id,
             'language': 'python',
-            'content': 'dummy-code',
+            'code': 'dummy-code',
         }
 
         client = APIClient()
@@ -296,7 +319,7 @@ class TestResultListOrCreate(TestCase):
         data = {
             'repo_id': repo.id,
             'language': 'python',
-            'content': 'dummy-code',
+            'code': 'dummy-code',
         }
 
         client = APIClient()
@@ -310,7 +333,7 @@ class TestResultListOrCreate(TestCase):
         data = {
             'repo_id': repo.id,
             'language': 'python',
-            'content': 'dummy-code',
+            'code': 'dummy-code',
         }
 
         client = APIClient()
@@ -327,7 +350,7 @@ class TestResultListOrCreate(TestCase):
         data = {
             'repo_id': repo.id,
             'language': 'python',
-            'content': 'dummy-code',
+            'code': 'dummy-code',
         }
 
         client = APIClient()

@@ -1,6 +1,6 @@
 import json
 import subprocess
-from output.models import Result
+
 from output.serializers import EfficiencyResultSerializer
 
 LOC_FIELD = 'loc_score'
@@ -13,11 +13,11 @@ DATA_FLOW_COMPLEXITY_FIELD = 'data_flow_complexity_score'
 #       email sent -> awaiting response
 # todo: ask TA about the meaning of reservation words score
 #       email sent -> awaiting response
-def run(result: Result, filename: str):
-    multimetric_output = execute_multimetric(filename=filename)
+def run(result_id: int, full_filename: str):
+    multimetric_output = execute_multimetric(full_filename=full_filename)
 
     data = dict({
-        'result_id': result.id,
+        'result_id': result_id,
     })
     data.update(multimetric_output)
 
@@ -28,10 +28,10 @@ def run(result: Result, filename: str):
     return serializer.data
 
 
-def execute_multimetric(filename: str):
+def execute_multimetric(full_filename: str):
     # Run multimetric on a given file path
     process = subprocess.run(
-        ['multimetric', f'{filename}'],
+        ['multimetric', f'{full_filename}'],
         stdout=subprocess.PIPE,
         universal_newlines=True
     )

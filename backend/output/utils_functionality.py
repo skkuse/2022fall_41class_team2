@@ -1,20 +1,18 @@
 from output import utils_execution
-from assignment.models import Assignment
 from testcase.models import Testcase
-from output.models import Result
 from output.serializers import TestcaseResultSerializer, FunctionalityResultSerializer
 
 
-def run(result: Result, assignment: Assignment, language: str, raw_code: str):
-    testcases = Testcase.objects.filter(assignment=assignment).all()
+def run(result_id: int, testcases: [Testcase], base_dir: str, language: str, raw_code: str):
     testcase_results = generate_testcase_results(
+        base_dir=base_dir,
         language=language,
         raw_code=raw_code,
         testcases=testcases,
     )
 
     serializer = FunctionalityResultSerializer(data={
-        'result_id': result.id,
+        'result_id': result_id,
         'testcase_results': testcase_results,
     })
     serializer.is_valid(raise_exception=True)
@@ -23,16 +21,17 @@ def run(result: Result, assignment: Assignment, language: str, raw_code: str):
     return serializer.data
 
 
-def generate_testcase_results(language: str, raw_code: str, testcases: [Testcase]):
+def generate_testcase_results(base_dir: str, language: str, raw_code: str, testcases: [Testcase]):
     ret = list()
     for idx, testcase in enumerate(testcases):
-        execution_result = utils_execution.run(
+        execution_output = utils_execution.run(
+            base_dir=base_dir,
             language=language,
             raw_code=raw_code,
             raw_input=testcase.input,
         )
-        if execution_result.get('exit_status') == 0:
-            actual_output = execution_result.get('output')
+        if execution_output.get('exit_status') == 0:
+            actual_output = execution_output.get('output')
             is_error = False
             is_pass = (actual_output == testcase.output)
         else:

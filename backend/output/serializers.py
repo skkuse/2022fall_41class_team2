@@ -60,12 +60,12 @@ class ResultSerializer(serializers.ModelSerializer):
         required=False,
         read_only=True,
     )
-    code_description = serializers.CharField(read_only=True)
     functionality_result = FunctionalityResultSerializer(read_only=True)
     efficiency_result = EfficiencyResultSerializer(read_only=True)
     plagiarism_result = PlagiarismResultSerializer(read_only=True)
+    readability_result = ReadabilityResultSerializer(read_only=True)
 
     class Meta:
         model = Result
-        fields = ['id', 'references', 'code_description', 'functionality_result', 'efficiency_result', 'plagiarism_result', 'repo_id']
-
+        fields = ['id', 'references', 'code_description', 'functionality_result', 'efficiency_result',
+                  'plagiarism_result', 'readability_result', 'repo_id']

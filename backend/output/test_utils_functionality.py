@@ -1,3 +1,5 @@
+import os
+
 from django.test import TestCase
 from authentication.models import User
 from lecture.models import Lecture
@@ -6,6 +8,9 @@ from testcase.models import Testcase
 from repo.models import Repo
 from output.models import Result
 from output.utils_functionality import run
+from backend.settings.base import BASE_DIR
+
+SERVER_CODE_DIR = str(BASE_DIR) + os.environ['SERVER_CODE_DIR']
 
 
 class Test(TestCase):
@@ -65,10 +70,10 @@ def solution():
 
     def test_generate_functionality_result(self):
         result = Result.objects.first()
-        assignment = Assignment.objects.first()
+        testcases = Testcase.objects.all()
         testcase = Testcase.objects.first()
 
-        ret = run(result, assignment, self.language, self.code)
+        ret = run(result.id, testcases, SERVER_CODE_DIR, self.language, self.code)
 
         self.assertIsNotNone(ret.get('id'))
         self.assertEqual(len(ret.get('testcase_results')), 2)

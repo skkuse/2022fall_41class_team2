@@ -69,8 +69,8 @@ def solution():
             ref_dir = tempfile.mkdtemp()
 
             plswork = run(
-                result=result,
-                filename=filename,
+                result_id=result.id,
+                full_filename=filename,
                 test_dir=test_dir,
                 ref_dir=ref_dir,
             )

@@ -3,7 +3,6 @@ import re
 
 from copydetect import CopyDetector
 from bs4 import BeautifulSoup
-from output.models import Result
 from output.serializers import PlagiarismResultSerializer
 
 DISPLAY_THRESHOLD = 0.5
@@ -13,15 +12,15 @@ NUM_FILES_COMPARED_FIELD = 'num_files_compared'
 SIMILARITY_FIELD = 'similarity_score'
 
 
-def run(result: Result, filename: str, test_dir: str, ref_dir: str):
+def run(result_id: int, full_filename: str, test_dir: str, ref_dir: str):
     plagiarism_output = execute_copy_detector(
-        filename=filename,
+        full_filename=full_filename,
         test_dirs=[test_dir],
         ref_dirs=[ref_dir],
     )
 
     data = dict({
-        'result_id': result.id,
+        'result_id': result_id,
     })
     data.update(plagiarism_output)
 
@@ -32,7 +31,7 @@ def run(result: Result, filename: str, test_dir: str, ref_dir: str):
     return plag_serialize.data
 
 
-def execute_copy_detector(filename: str, test_dirs: [str], ref_dirs: [str]):
+def execute_copy_detector(full_filename: str, test_dirs: [str], ref_dirs: [str]):
     # Make a temporary file to store the contents of the html report
     temp_report = tempfile.NamedTemporaryFile()
 
@@ -45,7 +44,7 @@ def execute_copy_detector(filename: str, test_dirs: [str], ref_dirs: [str]):
         autoopen=ANTO_OPEN_FLAG,
         silent=SILENT_FLAG,
     )
-    detector.add_file(filename)
+    detector.add_file(full_filename)
     detector.run()
     detector.generate_html_report()
 

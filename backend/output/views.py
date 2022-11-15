@@ -1,16 +1,20 @@
+import os
+
+from pathlib import Path
 from rest_framework import generics, status, fields
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.exceptions import NotAuthenticated, PermissionDenied, ParseError
 from backend.exceptions import InternalServerError
-from output import utils_execution, utils_functionality
+from output import utils_execution, utils_code_explain, utils_functionality, utils_readability, utils_efficiency, utils_plagiarism
 from testcase.models import Testcase
 from repo.models import Repo
 from output.models import Result
 from output.serializers import ResultSerializer, TestcaseResultSerializer
 from drf_spectacular.utils import extend_schema_view, extend_schema, inline_serializer, OpenApiParameter
+from backend.settings.base import BASE_DIR
 
-
+SERVER_CODE_DIR = str(BASE_DIR) + os.environ['SERVER_CODE_DIR']
 MAX_RESULT_NUM = 3
 
 
@@ -21,7 +25,7 @@ MAX_RESULT_NUM = 3
         name='request_output_exercises',
         fields={
             'language': fields.CharField(),
-            'content': fields.CharField(),
+            'code': fields.CharField(),
             'input': fields.CharField(),
         },
     ),
@@ -43,6 +47,7 @@ def retrieve_exercise_output(request):
     raw_input = data.get('input')
 
     result = utils_execution.run(
+        base_dir=SERVER_CODE_DIR,
         language=language,
         raw_code=raw_code,
         raw_input=raw_input,
@@ -60,7 +65,7 @@ def retrieve_exercise_output(request):
         name='request_output_testcase',
         fields={
             'language': fields.CharField(),
-            'content': fields.CharField(),
+            'code': fields.CharField(),
         },
     ),
     responses={
@@ -85,6 +90,7 @@ def retrieve_testcase_output(request, testcase_id):
         raise ParseError("Hidden testcase cannot be executed explicitly")
 
     ret = utils_execution.run(
+        base_dir=SERVER_CODE_DIR,
         language=language,
         raw_code=raw_code,
         raw_input=testcase.input,
@@ -115,6 +121,7 @@ def retrieve_testcase_output(request, testcase_id):
     list=[
         extend_schema(
             description='Retrieve a result associated user and assignment',
+            methods=['GET'],
             responses={
                 200: ResultSerializer(many=True),
                 401: None,
@@ -122,12 +129,13 @@ def retrieve_testcase_output(request, testcase_id):
         ),
         extend_schema(
             description='Create a result associated user and repo, this request is same as assignment submission',
+            methods=['POST'],
             responses={
                 201: ResultSerializer,
                 401: None,
                 403: None,
                 500: None,
-            }
+            },
         ),
     ]
 )
@@ -159,16 +167,16 @@ class ResultListOrCreate(generics.ListCreateAPIView):
             fields={
                 'repo_id': fields.IntegerField(),
                 'language': fields.CharField(),
-                'content': fields.CharField(),
+                'code': fields.CharField(),
             },
         ),
     )
     def post(self, request, *args, **kwargs):
+        repo_id = self.request.data.get('repo_id')
         language = request.data.get('language')
-        raw_code = request.data.get('content')
+        raw_code = request.data.get('code')
 
         try:
-            repo_id = self.request.data.get('repo_id')
             repo = Repo.objects.get(pk=repo_id)
         except Repo.DoesNotExist:
             raise ParseError
@@ -179,25 +187,66 @@ class ResultListOrCreate(generics.ListCreateAPIView):
         if repo.author != user:
             raise PermissionDenied
 
-        # TODO repo content update
-
         if Result.objects.filter(
             repo__assignment=repo.assignment,
             repo__author=user,
         ).count() >= MAX_RESULT_NUM:
             raise ParseError(detail="Submission could not be over 3 times.")
 
+        # Run Code Description Module
+        code_description = utils_code_explain.run(
+            raw_code=raw_code,
+        )
+        data = request.data
+        data.update({'code_description': code_description})
+
+        # save init result object
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         result = serializer.save()
 
-        utils_functionality.run(
-            result=result,
-            assignment=repo.assignment,
+        # get necessary instances
+        assignment = repo.assignment
+        testcases = Testcase.objects.filter(assignment=assignment).all()
+
+        # make directory and file dynamically
+        base_dir = f'{SERVER_CODE_DIR}{assignment.id}/{language}/'
+        Path(base_dir).mkdir(parents=True, exist_ok=True)
+        [filename] = utils_execution.make_arguments(
+            base_dir=base_dir,
             language=language,
             raw_code=raw_code,
         )
-        # TODO generate sub-results
+        full_filename = base_dir + filename
+
+        # Run Functionality Module
+        utils_functionality.run(
+            result_id=result.id,
+            testcases=testcases,
+            base_dir=base_dir,
+            language=language,
+            raw_code=raw_code,
+        )
+
+        # Run Readability Module
+        utils_readability.run(
+            result_id=result.id,
+            full_filename=full_filename,
+        )
+
+        # Run Efficiency Module
+        utils_efficiency.run(
+            result_id=result.id,
+            full_filename=full_filename,
+        )
+
+        # Run Plagiarism Module
+        utils_plagiarism.run(
+            result_id=result.id,
+            full_filename=full_filename,
+            test_dir=base_dir,
+            ref_dir=base_dir,
+        )
 
         return Response(
             data=ResultSerializer(instance=result).data,
@@ -207,6 +256,7 @@ class ResultListOrCreate(generics.ListCreateAPIView):
 
 @extend_schema(
     description='Retrieve a result',
+    methods=['GET'],
     responses={
         200: ResultSerializer,
         400: None,

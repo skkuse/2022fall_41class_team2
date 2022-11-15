@@ -67,8 +67,8 @@ def solution():
             filename = file.name
 
             ret = run(
-                result=result,
-                filename=filename,
+                result_id=result.id,
+                full_filename=filename,
             )
 
             self.assertIsNotNone(ret.get('id'))

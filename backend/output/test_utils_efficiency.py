@@ -66,7 +66,7 @@ def solution():
                 file.write(self.code)
             filename = file.name
 
-            plswork = run(result=result, filename=filename)
+            plswork = run(result_id=result.id, full_filename=filename)
 
             loc_score = plswork.get('loc_score')
             cf_score = plswork.get('control_flow_complexity_score')
