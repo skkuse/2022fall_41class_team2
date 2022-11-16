@@ -48,10 +48,10 @@ function TestcaseMaster({ bodyContent, testCases, ...restProps }) {
 
       {/* // TODO: testcase 개수만큼 pooling */}
       {
-        testCases.map((testcase) => {
+        testCases.map((testcase, index) => {
           return (
             <EditorBackground
-              content={`테스트케이스 1>
+              content={`테스트케이스 ${index}>
               input: ${testcase.input}
               output: ${testcase.output}
               `}
