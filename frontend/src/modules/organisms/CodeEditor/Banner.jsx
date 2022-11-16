@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 
 import { MonitorIcon, Img } from "../../atoms";
+import { useSelector } from 'react-redux';
 import {
   ExitButton,
   SettingsButton,
@@ -13,6 +14,12 @@ import {
   Save2FuncButton,
   Save3FuncButton,
 } from "../../molecules";
+// import { makeMonacoModel } from "./CodeEditor";
+import { useDispatch } from 'react-redux';
+import { changeRepoAction, createRepoAction, saveRepoListAction, updateRepoAction } from './../../../pages/EditorPage/EditorAction';
+import { apiClient } from './../../../api/axios';
+import { useNavigate } from 'react-router-dom';
+import { getTimeDiff } from "../AssignmentOverview/AssignmentOverview";
 
 const Wrapper = styled.div`
   height: auto;
@@ -29,7 +36,7 @@ const Bg = styled.div`
   width: 100%;
   height: 55px;
 
-  text-color: #ffffff;
+  color: #ffffff;
 `;
 
 const StringWrapper = styled.div`
@@ -49,13 +56,40 @@ export const Banner = ({
   lectureName,
   reamainingTime,
   assignmentName,
+  assignment,
   saveState,
   danger,
 }) => {
+
+  const repoSelector = useSelector((state) => state.editorReducer);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const [remainTime, setRemainTime] = useState(getTimeDiff(new Date(assignment.deadline),  new Date()));
+
+
+
+  useEffect(() => {
+    setInterval(()=>{
+      setRemainTime(getTimeDiff(new Date(assignment.deadline),  new Date()));
+    }, 1000)
+    
+  },[])
+
+
   /* saveState는 임시 저장 세 번까지를 구현하려고 넣어보았습니다 @bw-99 어떻게 구현하는지에 따라서 달라질 것 같습니다. */
+  if(!repoSelector) {
+    return <></>;
+  }
+
 
   return (
     <Bg>
+      {/* {
+        JSON.stringify(`${repoSelector}`)
+      } */}
+      {/* {
+        repoSelector.repoList.length
+      } */}
       {/* Exit */}
       <ExitButton />
       {/* Settings */}
@@ -80,39 +114,109 @@ export const Banner = ({
         </Wrapper>
       </div>
       <div style={{ marginLeft: "13.51px" }}>
-        <StringWrapper>{reamainingTime}</StringWrapper>
+        <StringWrapper>{remainTime}</StringWrapper>
       </div>
       <div style={{ margin: "auto" }}>
         <StringWrapper>{assignmentName}</StringWrapper>
       </div>
       {/* Functools */}
-      {/* TODO: 각각의 기능 구현 필요 */}
       {/* duplicate */}
-      <DuplicateFuncButton />
+      <div  onClick={()=>{
+        navigator.clipboard.writeText(repoSelector.selectedModel.content.code);
+      }}>
+        <DuplicateFuncButton/>
+      </div>
+      
       {/* reset */}
-      <div style={{ marginLeft: "14.86px" }}>
+      <div style={{ marginLeft: "14.86px" }} onClick={()=>{
+        const skeletonCode = assignment.skeleton_code;
+        dispatch(updateRepoAction(skeletonCode));
+      }}>
         <ResetFuncButton />
       </div>
       {/* download */}
-      <div style={{ marginLeft: "14.86px" }}>
+      <div style={{ marginLeft: "14.86px" }} onClick={()=>{
+        const file = new Blob([repoSelector.selectedModel.content.code], {
+          type: "text/plain;charset=utf-8}"
+        });
+
+        const element = document.createElement("a");
+        element.href = URL.createObjectURL(file);
+        element.download = `${assignment.name}.txt`;
+
+        document.body.appendChild(element);
+        element.click();
+      }}>
         <DownloadFuncButton />
       </div>
       {/* upload */}
-      <div style={{ marginLeft: "14.86px" }}>
+      <div style={{ marginLeft: "14.86px" }} onClick={()=>{
+        
+      }}>
         <UploadFuncButton />
       </div>
-      {/* save1 */}
-      <div style={{ marginLeft: "47.86px" }}>
-        <Save1FuncButton saved={true} />
+      <div style={{
+        marginLeft: "calc(47.86px - 14.86px)",
+        display: "flex",
+      }}>
+        {/* save */}
+        <SaveButtonComp repoSelector={repoSelector} index={0} assignment={assignment}/>
+        <SaveButtonComp repoSelector={repoSelector} index={1} assignment={assignment}/>
+        <SaveButtonComp repoSelector={repoSelector} index={2} assignment={assignment}/>
       </div>
-      {/* save2 */}
-      <div style={{ marginLeft: "14.86px" }}>
-        <Save2FuncButton saved={false} />
-      </div>
-      {/* save3 */}
-      <div style={{ marginLeft: "14.86px" }}>
-        <Save3FuncButton saved={true} />
-      </div>
+
     </Bg>
   );
 };
+
+const SaveButtonComp = ({repoSelector, index, assignment}) => {
+  const dispatch = useDispatch();
+  const isSaved = repoSelector.repoList.length - 1 >= index;
+  
+  return (
+    <div style={{ marginLeft: "14.86px" }} onClick={async () => {
+      // * 코드 저장
+      if(isSaved && repoSelector.selectedModel.id == repoSelector.repoList[index].id) {
+        console.log(assignment.id);
+        const result = await apiClient.put(`/api/repos/${repoSelector.selectedModel.id}/`,{
+          language: repoSelector.selectedModel.content.language,
+          code: repoSelector.selectedModel.content.code,
+          assignment_id: assignment.id
+        })
+        console.log(result.data);
+      }
+      // * 코드 불러오기
+      else if(isSaved) {
+        // alert("코드 불러오기")
+        dispatch(changeRepoAction(repoSelector.repoList[index]));
+      }
+      // * 저장소 새로 추가
+      else {
+        // alert("코드 추가");
+        const result = await apiClient.post(`/api/repos/`,{
+          language: "python",
+          code: "code",
+          assignment_id: assignment.id
+        })
+        dispatch(createRepoAction(result.data.data));
+      }
+    }}>
+      <Save1FuncButton saved={isSaved} />
+    </div>
+  );
+}
+
+
+const changeList2String = (lines) => {
+  let codeTempList = lines;
+  let codeTemp = "";
+  codeTempList.forEach(element => {
+    if(element == '') {
+      codeTemp+= "\n";
+    }
+    else{
+      codeTemp+=element;
+    }
+  });
+  return codeTemp;
+}

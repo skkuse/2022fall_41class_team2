@@ -46,6 +46,14 @@ class API_CLIENT {
 
   }
 
+  async put(url, data) {
+    this.setProfile();
+    const result = await this.client.put(url, data);
+    this.auth(result.status);
+    return result;
+
+  }
+
   async delete(url) {
     this.setProfile();
     const result = await this.client.delete(url);
