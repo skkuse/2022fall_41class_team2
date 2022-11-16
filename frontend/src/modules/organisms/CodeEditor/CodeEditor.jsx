@@ -148,7 +148,7 @@ export const CodeEditor = ({assignment}) => {
     console.log(result.data.data.results);
     if(!result.data.data.results) {
       console.log("삽입");
-      const postResult = await addRepo("print(\"hello world\"");
+      const postResult = await addRepo(assignment.skeleton_code);
       result = await apiClient.get(`/api/repos/?assignment_id=${assignment.id}`);
     }
     console.log(result);
@@ -183,6 +183,7 @@ export const CodeEditor = ({assignment}) => {
   }, [monaco]);
 
   useEffect(() => {
+
     if (settingSelector && repoSelector && repoSelector.selectedModel) {
       const options = {
         acceptSuggestionOnCommitCharacter: true,
@@ -285,20 +286,23 @@ export const CodeEditor = ({assignment}) => {
             <div style={{ marginLeft: "12.42px", marginTop: "24.83px" }}>
               <EditorWrapper>
                 <MonacoEditor
-                  ref={editorRef}
                   width="1180px"
                   height="820px"
-                  theme="light"
-                  language={settingSelector.language.toLowerCase()}
+                  language={repoSelector.selectedModel.content.language}
+                  theme="vs-light"
                   value={repoSelector.selectedModel.content.code}
                   onChange={(e)=>{
                     console.log(e);
                     let repoTemp= repoSelector.selectedModel;
                     repoTemp.content.code = e;
                     dispatch(saveRepoAction(repoTemp));
+                    const result = apiClient.put(`/api/repos/${repoSelector.selectedModel.id}/`,{
+                      language: repoSelector.selectedModel.content.language,
+                      code: repoSelector.selectedModel.content.code,
+                      assignment_id: assignment.id
+                    })
                     
                   }}
-                  // value={repoSelector.selectedModel.content.code}
                   options={monacoOption}
                 />
               </EditorWrapper>

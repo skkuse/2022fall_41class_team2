@@ -3,10 +3,19 @@ export const SAVE_REPO = "SAVE_REPO";
 export const GET_REPO = "GET_REPO";
 export const CHANGE_REPO = "CHANGE_REPO";
 export const CREATE_REPO = "CREATE_REPO";
+export const UPDATE_REPO = "UPDATE_REPO";
 
-export const createRepoAction =() => {
+export const updateRepoAction  = (code) => {
+    return {
+        type: UPDATE_REPO,
+        payload: code
+    }
+}
+
+export const createRepoAction =(repo) => {
     return {
         type: CREATE_REPO,
+        payload: repo
     }
 }
 

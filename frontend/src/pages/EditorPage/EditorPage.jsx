@@ -74,7 +74,7 @@ export const EditorPage = () => {
       {/* Banner */}
       <Banner
         lectureName={lecture.name}
-        reamainingTime={`${getTimeDiff(new Date(ass.deadline),  new Date())}`}
+        reamainingTime={`${new Date(ass.deadline)}`}
         assignmentName={ass.name}
         assignment={ass}
       />

@@ -16,8 +16,10 @@ import {
 } from "../../molecules";
 // import { makeMonacoModel } from "./CodeEditor";
 import { useDispatch } from 'react-redux';
-import { changeRepoAction, createRepoAction, saveRepoListAction } from './../../../pages/EditorPage/EditorAction';
+import { changeRepoAction, createRepoAction, saveRepoListAction, updateRepoAction } from './../../../pages/EditorPage/EditorAction';
 import { apiClient } from './../../../api/axios';
+import { useNavigate } from 'react-router-dom';
+import { getTimeDiff } from "../AssignmentOverview/AssignmentOverview";
 
 const Wrapper = styled.div`
   height: auto;
@@ -60,6 +62,20 @@ export const Banner = ({
 }) => {
 
   const repoSelector = useSelector((state) => state.editorReducer);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const [remainTime, setRemainTime] = useState(getTimeDiff(new Date(assignment.deadline),  new Date()));
+
+
+
+  useEffect(() => {
+    setInterval(()=>{
+      setRemainTime(getTimeDiff(new Date(assignment.deadline),  new Date()));
+    }, 1000)
+    
+  },[])
+
+
   /* saveState는 임시 저장 세 번까지를 구현하려고 넣어보았습니다 @bw-99 어떻게 구현하는지에 따라서 달라질 것 같습니다. */
   if(!repoSelector) {
     return <></>;
@@ -98,50 +114,55 @@ export const Banner = ({
         </Wrapper>
       </div>
       <div style={{ marginLeft: "13.51px" }}>
-        <StringWrapper>{reamainingTime}</StringWrapper>
+        <StringWrapper>{remainTime}</StringWrapper>
       </div>
       <div style={{ margin: "auto" }}>
         <StringWrapper>{assignmentName}</StringWrapper>
       </div>
       {/* Functools */}
-      {/* TODO: 각각의 기능 구현 필요 */}
       {/* duplicate */}
-      <DuplicateFuncButton />
+      <div  onClick={()=>{
+        navigator.clipboard.writeText(repoSelector.selectedModel.content.code);
+      }}>
+        <DuplicateFuncButton/>
+      </div>
+      
       {/* reset */}
-      <div style={{ marginLeft: "14.86px" }}>
+      <div style={{ marginLeft: "14.86px" }} onClick={()=>{
+        const skeletonCode = assignment.skeleton_code;
+        dispatch(updateRepoAction(skeletonCode));
+      }}>
         <ResetFuncButton />
       </div>
       {/* download */}
-      <div style={{ marginLeft: "14.86px" }}>
+      <div style={{ marginLeft: "14.86px" }} onClick={()=>{
+        const file = new Blob([repoSelector.selectedModel.content.code], {
+          type: "text/plain;charset=utf-8}"
+        });
+
+        const element = document.createElement("a");
+        element.href = URL.createObjectURL(file);
+        element.download = `${assignment.name}.txt`;
+
+        document.body.appendChild(element);
+        element.click();
+      }}>
         <DownloadFuncButton />
       </div>
       {/* upload */}
-      <div style={{ marginLeft: "14.86px" }}>
+      <div style={{ marginLeft: "14.86px" }} onClick={()=>{
+        
+      }}>
         <UploadFuncButton />
       </div>
       <div style={{
         marginLeft: "calc(47.86px - 14.86px)",
         display: "flex",
       }}>
-        {/* save1 */}
+        {/* save */}
         <SaveButtonComp repoSelector={repoSelector} index={0} assignment={assignment}/>
         <SaveButtonComp repoSelector={repoSelector} index={1} assignment={assignment}/>
         <SaveButtonComp repoSelector={repoSelector} index={2} assignment={assignment}/>
-        {/* <div onClick={() => {
-          // const code = changeList2String(repoSelector.selectedModel.getLinesContent());
-          // alert(code);
-        }} style={{ marginLeft: "14.86px" }}>
-          <Save1FuncButton saved={repoSelector.repoList.length == 1} />
-        </div> */}
-        {/* save2 */}
-        {/* <div style={{ marginLeft: "14.86px" }}>
-          <Save2FuncButton saved={repoSelector.repoList.length == 2} />
-        </div> */}
-        {/* save3 */}
-        {/* <div style={{ marginLeft: "14.86px" }}>
-          <Save3FuncButton saved={repoSelector.repoList.length >= 3} />
-        </div> */}
-
       </div>
 
     </Bg>
@@ -170,18 +191,14 @@ const SaveButtonComp = ({repoSelector, index, assignment}) => {
         dispatch(changeRepoAction(repoSelector.repoList[index]));
       }
       // * 저장소 새로 추가
-      // TODO: 저장소 새로 추가
       else {
-        alert("코드 저장");
-        dispatch(createRepoAction())
-
-        // const model = makeMonacoModel({
-        //   content: {
-        //     code: changeList2String(repoSelector.selectedModel.getLinesContent())
-        //   }
-        // });
-
-        // dispatch(saveRepoListAction([...repoSelector.repoList, model]));
+        // alert("코드 추가");
+        const result = await apiClient.post(`/api/repos/`,{
+          language: "python",
+          code: "code",
+          assignment_id: assignment.id
+        })
+        dispatch(createRepoAction(result.data.data));
       }
     }}>
       <Save1FuncButton saved={isSaved} />

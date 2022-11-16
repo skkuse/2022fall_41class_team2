@@ -1,4 +1,4 @@
-import { CHANGE_REPO, SAVE_REPO, SAVE_REPO_LIST } from "../pages/EditorPage/EditorAction";
+import { CHANGE_REPO, SAVE_REPO, SAVE_REPO_LIST, UPDATE_REPO } from "../pages/EditorPage/EditorAction";
 import { GET_REPO, CREATE_REPO } from './../pages/EditorPage/EditorAction';
 
 let editorInitState = {
@@ -25,6 +25,7 @@ export function editorReducer(state = editorInitState, action) {
         case CREATE_REPO:
             alert("create repo")
             let tempList = [...state.repoList];
+            tempList.push(action.payload);
             // tempList.push({
             //     content: {
             //         language: "python",
@@ -33,13 +34,22 @@ export function editorReducer(state = editorInitState, action) {
             // })
             return {
                 ...state,
-                repoList: tempList
+                repoList: tempList,
+                selectedModel: action.payload
             }
 
         case CHANGE_REPO:
             return {
                 ...state,
                 selectedModel: action.payload
+            }
+
+        case UPDATE_REPO:
+            let modelTemp = state.selectedModel;
+            modelTemp.content.code = action.payload;
+            return {
+                ...state,
+                selectedModel: modelTemp
             }
 
         case SAVE_REPO:
