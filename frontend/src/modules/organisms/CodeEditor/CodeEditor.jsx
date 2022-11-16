@@ -146,7 +146,7 @@ export const CodeEditor = ({assignment}) => {
   const fetchRepoList = async() => {
     let result = await apiClient.get(`/api/repos/?assignment_id=${assignment.id}`);
     console.log(result.data.data.results);
-    if(!result.data.data.results) {
+    if(!result.data.data.results.length) {
       console.log("삽입");
       const postResult = await addRepo(assignment.skeleton_code);
       result = await apiClient.get(`/api/repos/?assignment_id=${assignment.id}`);

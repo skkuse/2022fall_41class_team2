@@ -291,6 +291,16 @@ export const AssignmentOverview = ({ className, ...restProps }) => {
   const [currentLang, setCurrentLang] = useState(settingSelector.language);
   const dispatch = useDispatch();
 
+  const colorList = [
+    ["#B1D3C5", "#C6D7D0", "#D1D9D6"],
+    ["#6ECEDA","#A5D5DB", "#C0D8DB"],
+    ["#D18063", "#D6AE9F", "#D9C5BD"],
+    ["#B57FB3", "#C8ADC7", "#D2C4D1"],
+    ["#EADB80", "#E3DBAE", "#DFDBC5"],
+    ["#E098AE", "#DEBAC5", "#DDCBD0"],
+    [],
+  ]
+
   if(!lectureSelector) {
     return <></>; 
   }
@@ -325,8 +335,12 @@ export const AssignmentOverview = ({ className, ...restProps }) => {
           {/* TODO 강의 개수만큼 pooling */}
           {
             lectureSelector.results && lectureSelector.results.length ?
-            lectureSelector.results.map((lecture) => {
-              return <LectureGroupComp key={JSON.stringify(lecture)} lecture={lecture}/>
+            lectureSelector.results.map((lecture, index) => {
+              return <LectureGroupComp 
+              key={JSON.stringify(lecture)} 
+              lecture={lecture}
+              color={colorList[index]}
+              />
             }) :
             <div>
               아직 지정된 강의가 없습니다.
@@ -341,11 +355,11 @@ export const AssignmentOverview = ({ className, ...restProps }) => {
   );
 };
 
-const LectureGroupComp = ({lecture}) => {
+const LectureGroupComp = ({lecture, color}) => {
   return (
     <LectureGroup>
       <NameContainer>
-        <LectureName name={`${lecture.name}`} background="#99CB8C" />
+        <LectureName name={`${lecture.name}`} background={color[0]} />
       </NameContainer>
       {/* TODO: 과제 개수만큼 pooling */}
       <AssignmentGrid numAssignment={`${lecture.assignments.results.length}`}>
@@ -364,7 +378,7 @@ const LectureGroupComp = ({lecture}) => {
                 <AssignmentBlockContainer>
                   <AssignmentName
                     assignment={`${ass.name}`}
-                    background="#CCE5C6"
+                    background={color[1]}
                     submission={false}
                   ></AssignmentName>
                     
@@ -373,7 +387,7 @@ const LectureGroupComp = ({lecture}) => {
                     remainingTime={
                       `${getTimeDiff(new Date(ass.deadline),  new Date())}`
                     }
-                    background="rgba(204, 229, 198, 0.5)"
+                    background={color[2]}
                     submission={false}
                   ></Deadline>
                 </AssignmentBlockContainer>
@@ -389,7 +403,7 @@ const LectureGroupComp = ({lecture}) => {
 
 export const getTimeDiff = (time1, now) => {
   let diff = new Date(time1 - now);
-  console.log(time1);
+  // console.log(time1);
   // console.log(diff.getFullYear() - 1970);
   // console.log(diff.getMonth());
   const diffDate = diff.getDate();
