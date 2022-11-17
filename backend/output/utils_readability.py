@@ -25,7 +25,10 @@ def execute_pylint(full_filename: str):
     terminal_command = f'pylint {full_filename}'
     stream = os.popen(terminal_command)
     output = stream.read()
-    result = float(re.findall(r'\d+.\d+', output.split('\n')[-3])[0])
+    try:
+        result = float(re.findall(r'\d+.\d+', output.split('\n')[-3])[0])
+    except:
+        result = 0
     return result
 
 
