@@ -10,9 +10,8 @@ import {
   ResetFuncButton,
   DownloadFuncButton,
   UploadFuncButton,
-  Save1FuncButton,
-  Save2FuncButton,
-  Save3FuncButton,
+  SaveFuncButton,
+
 } from "../../molecules";
 // import { makeMonacoModel } from "./CodeEditor";
 import { useDispatch } from 'react-redux';
@@ -176,7 +175,7 @@ const SaveButtonComp = ({repoSelector, index, assignment}) => {
   return (
     <div style={{ marginLeft: "14.86px" }} onClick={async () => {
       // * 코드 저장
-      if(isSaved && repoSelector.selectedModel.id == repoSelector.repoList[index].id) {
+      if(isSaved && repoSelector.selectedModel.id === repoSelector.repoList[index].id) {
         console.log(assignment.id);
         const result = await apiClient.put(`/api/repos/${repoSelector.selectedModel.id}/`,{
           language: repoSelector.selectedModel.content.language,
@@ -201,7 +200,7 @@ const SaveButtonComp = ({repoSelector, index, assignment}) => {
         dispatch(createRepoAction(result.data.data));
       }
     }}>
-      <Save1FuncButton saved={isSaved} />
+      <SaveFuncButton slot={index} saved={isSaved} />
     </div>
   );
 }

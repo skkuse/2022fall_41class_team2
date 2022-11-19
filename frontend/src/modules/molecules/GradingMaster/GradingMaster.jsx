@@ -5,8 +5,7 @@ const DescWrapper = styled.div`
   display: flex;
   flex-direction: column;
 
-  width: 598px;
-  height: 880px;
+  height: 100%;
 `;
 
 export const GradingMaster = ({ bodyContent, ...restProps }) => {

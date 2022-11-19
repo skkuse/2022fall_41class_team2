@@ -5,8 +5,7 @@ const DescWrapper = styled.div`
   display: flex;
   flex-direction: column;
 
-  width: 598px;
-  height: 429.3px; 
+  height:100%
 `;
 
 function ProblemMaster({ bodyContent, ...restProps }) {

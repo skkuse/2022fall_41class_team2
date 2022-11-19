@@ -15,10 +15,10 @@ import { Resizable } from "re-resizable";
 import { useState, useEffect } from "react";
 import { render } from "react-dom";
 import MonacoEditor from "react-monaco-editor";
-import { apiClient } from './../../../api/axios';
+import { apiClient } from "./../../../api/axios";
 import { saveRepoListAction } from "../../../pages/EditorPage/EditorAction";
-import { monaco } from 'react-monaco-editor';
-import { saveRepoAction } from './../../../pages/EditorPage/EditorAction';
+import { monaco } from "react-monaco-editor";
+import { saveRepoAction } from "./../../../pages/EditorPage/EditorAction";
 import { createRef } from "react";
 
 const EvaluationWindowGrid = styled.div`
@@ -28,13 +28,14 @@ const EvaluationWindowGrid = styled.div`
     "c d";
   grid-template-columns: repeat(2, 1fr);
   grid-template-rows: repeat(1, 1fr);
+  height: 100vh;
 `;
 const EditorWindowWrapper = styled.div`
   display: flex;
   flex-direction: column;
 
-  width: 1180px;
-  height: 820px;
+  height: 100%;
+  overflow: hidden;
 `;
 
 const TerminalWrapper = styled.div`
@@ -45,8 +46,7 @@ const TerminalWrapper = styled.div`
   grid-area: d;
   grid-row: 1 / 3;
 
-  width: 550px;
-  height: 820px;
+  height: 100%;
 `;
 
 const GradingWrapper = styled.div`
@@ -57,8 +57,7 @@ const GradingWrapper = styled.div`
   grid-area: d;
   grid-row: 1 / 3;
 
-  width: 550px;
-  height: 820px;
+  height: 100%;
 `;
 const SubmissionWrapper = styled.div`
   /* TODO: State로 변화시키기 */
@@ -68,14 +67,13 @@ const SubmissionWrapper = styled.div`
   grid-area: d;
   grid-row: 1 / 3;
 
-  width: 550px;
-  height: 820px;
+  height: 100%;
 `;
 
 const EditorWrapper = styled.div`
-  width: 550px;
+  flex: 1;
 
-  height: 100%;
+  height: 100vh;
 `;
 const EditorHeaderWrapper = styled.div`
   display: flex;
@@ -83,7 +81,7 @@ const EditorHeaderWrapper = styled.div`
   flex-direction: row;
   justify-content: space-between;
 
-  width: ${(props) => (props.editMode.edit ? "100%" : "572px")};
+  /* width: ${(props) => (props.editMode.edit ? "100%" : "572px")}; */
 
   background: #bfbfbf;
 `;
@@ -107,9 +105,9 @@ const ActionButtonWrapper = styled.div`
 
   color: #1e1e1e;
 `;
-export const CodeEditor = ({assignment}) => {
+export const CodeEditor = ({ assignment }) => {
   const headerContent = "코드 입력";
-  let editorWidth = "1180px";
+  // let editorWidth = "1180px";
 
   const [editMode, setEditMode] = useState({ edit: true, altMode: "none" });
   const editorRef = createRef();
@@ -126,64 +124,61 @@ export const CodeEditor = ({assignment}) => {
 
     if (src !== headerContent) {
       setEditMode({ edit: false, altMode: src });
-      editorWidth = "590px";
     } else {
       setEditMode({ edit: true, altMode: "none" });
-      editorWidth = "1180px";
     }
 
     // console.log(editMode);
   };
 
-  
-
   useEffect(() => {
     console.log(editMode);
   }, [editMode]);
 
-
-
-  const fetchRepoList = async() => {
-    let result = await apiClient.get(`/api/repos/?assignment_id=${assignment.id}`);
+  const fetchRepoList = async () => {
+    let result = await apiClient.get(
+      `/api/repos/?assignment_id=${assignment.id}`
+    );
     console.log(result.data.data.results);
-    if(!result.data.data.results.length) {
+    if (!result.data.data.results.length) {
       console.log("삽입");
       const postResult = await addRepo(assignment.skeleton_code);
-      result = await apiClient.get(`/api/repos/?assignment_id=${assignment.id}`);
+      result = await apiClient.get(
+        `/api/repos/?assignment_id=${assignment.id}`
+      );
     }
     console.log(result);
     const monacoModelList = result.data.data.results.map((repo) => {
       // return(makeMonacoModel(repo));
       return repo;
-    })
+    });
     // dispatch(saveRepoListAction(monacoModelList));
     return monacoModelList;
-  }
+  };
 
-  const addRepo = async(code) => {
-    const postResult = await  apiClient.post("/api/repos/", {
-      "language": settingSelector.language.toLowerCase(),
-      "code": code,
-      "assignment_id": assignment.id
+  const addRepo = async (code) => {
+    const postResult = await apiClient.post("/api/repos/", {
+      language: settingSelector.language.toLowerCase(),
+      code: code,
+      assignment_id: assignment.id,
     });
     return postResult;
-  }
+  };
 
-  const handleRepo = async() => {
-    repoList  = await fetchRepoList();
+  const handleRepo = async () => {
+    repoList = await fetchRepoList();
     dispatch(saveRepoListAction(repoList));
-  }
+  };
 
-  useEffect( () => {
+  useEffect(() => {
     handleRepo();
-  },[]);
+  }, []);
 
   useEffect(() => {
     if (!monaco) return;
   }, [monaco]);
 
   useEffect(() => {
-
     if (settingSelector && repoSelector && repoSelector.selectedModel) {
       const options = {
         acceptSuggestionOnCommitCharacter: true,
@@ -247,15 +242,13 @@ export const CodeEditor = ({assignment}) => {
 
       setMonacoOption(options);
     }
-    
-  }, [repoSelector, repoSelector.selectedModel, settingSelector])
+  }, [repoSelector, repoSelector.selectedModel, settingSelector]);
 
-  if(!(repoSelector && repoSelector.selectedModel)) {
+  if (!(repoSelector && repoSelector.selectedModel)) {
     return <></>;
   }
 
   console.log(editorRef);
-
 
   return (
     <>
@@ -286,22 +279,22 @@ export const CodeEditor = ({assignment}) => {
             <div style={{ marginLeft: "12.42px", marginTop: "24.83px" }}>
               <EditorWrapper>
                 <MonacoEditor
-                  width="1180px"
-                  height="820px"
                   language={repoSelector.selectedModel.content.language}
                   theme="vs-light"
                   value={repoSelector.selectedModel.content.code}
-                  onChange={(e)=>{
+                  onChange={(e) => {
                     console.log(e);
-                    let repoTemp= repoSelector.selectedModel;
+                    let repoTemp = repoSelector.selectedModel;
                     repoTemp.content.code = e;
                     dispatch(saveRepoAction(repoTemp));
-                    const result = apiClient.put(`/api/repos/${repoSelector.selectedModel.id}/`,{
-                      language: repoSelector.selectedModel.content.language,
-                      code: repoSelector.selectedModel.content.code,
-                      assignment_id: assignment.id
-                    })
-                    
+                    const result = apiClient.put(
+                      `/api/repos/${repoSelector.selectedModel.id}/`,
+                      {
+                        language: repoSelector.selectedModel.content.language,
+                        code: repoSelector.selectedModel.content.code,
+                        assignment_id: assignment.id,
+                      }
+                    );
                   }}
                   options={monacoOption}
                 />
@@ -320,12 +313,8 @@ export const CodeEditor = ({assignment}) => {
                 </div>
                 <div style={{ marginRight: "27.78px" }}>
                   <ActionButtonWrapper>
-                    <div onClick={() => changeMode({ src: "실행" })}>
-                      실행
-                    </div>
-                    <div onClick={() => changeMode({ src: "채점" })}>
-                      채점
-                    </div>
+                    <div onClick={() => changeMode({ src: "실행" })}>실행</div>
+                    <div onClick={() => changeMode({ src: "채점" })}>채점</div>
                     <div
                       style={{ color: "#0535DC" }}
                       onClick={() => changeMode({ src: "제출" })}
@@ -338,11 +327,8 @@ export const CodeEditor = ({assignment}) => {
               <div style={{ marginLeft: "12.42px", marginTop: "24.83px" }}>
                 <EditorWrapper>
                   <MonacoEditor
-                    width="560px"
-                    height="820px"
                     theme="light"
-                    // TODO: JSX에서 line break 전달 불가...
-                    value="function hello() {\n\talert('Hello world!');\n}"
+                    value="function hello() {<br/>  alert('Hello world!');<br/>}"
                     language={settingSelector.language.toLowerCase()}
                     options={monacoOption}
                   />
@@ -384,7 +370,7 @@ export const CodeEditor = ({assignment}) => {
       </EditorWindowWrapper>
     </>
   );
-}
+};
 
 // export const makeMonacoModel = (repo, dispatch) => {
 //   let model = monaco.editor.createModel(`${(repo.content.code)}`.replace("\\n","<br>"), "python");
@@ -400,7 +386,7 @@ export const CodeEditor = ({assignment}) => {
 //         codeTemp+=element;
 //       }
 //     });
-    
+
 //     repo.content = {
 //       code: codeTemp,
 //       language: "python"

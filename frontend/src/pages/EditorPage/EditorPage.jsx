@@ -23,12 +23,18 @@ const EditorPageGrid = styled.div`
   grid-template:
     "a c"
     "b c";
-  grid-template-columns: repeat(2, 1fr);
+  grid-auto-columns: 0.5fr 1fr;
   grid-template-rows: repeat(2, 1fr);
+
+  width: 100vw;
+  height: 100vh;
+
+  
 `;
 
 const ProblemWrapper = styled.div`
   grid-area: a;
+  min-width: 360px;
 `;
 const TestcaseWrapper = styled.div`
   grid-area: b;
@@ -36,8 +42,6 @@ const TestcaseWrapper = styled.div`
 const CodeEditorWrapper = styled.div`
   grid-area: c;
   grid-row: 1 / 3;
-
-  width: 550px;
 `;
 
 export const EditorPage = () => {
@@ -54,33 +58,35 @@ export const EditorPage = () => {
 
   useEffect(() => {
     if (!monaco) return;
-
   }, [monaco]);
 
   useEffect(() => {
     setLecture(location.state.lecture);
     apiClient.get(`/api/assignments/${params.assignment_id}/`).then((value) => {
       // * 테케 없으면 새로 추가
-      if(!value.data.data.testcases.length) {
-        apiClient.post("/api/testcases/", {
-          input: "string",
-          output: "string",
-          assignment_id: params.assignment_id
-        }).then((value) => {
-          apiClient.get(`/api/assignments/${params.assignment_id}/`).then((value) => {
-            setAss(value.data.data);
+      if (!value.data.data.testcases.length) {
+        apiClient
+          .post("/api/testcases/", {
+            input: "string",
+            output: "string",
+            assignment_id: params.assignment_id,
           })
-        })
-      }else{
+          .then((value) => {
+            apiClient
+              .get(`/api/assignments/${params.assignment_id}/`)
+              .then((value) => {
+                setAss(value.data.data);
+              });
+          });
+      } else {
         setAss(value.data.data);
       }
-    })
-  },[])
+    });
+  }, []);
 
-  if(!ass) {
+  if (!ass) {
     return <></>;
   }
-
 
   return (
     <>
@@ -105,8 +111,7 @@ export const EditorPage = () => {
             input: [1,2,3,4]
             output: [소공개]`}
             testCases={ass.testcases}
-            />
-        
+          />
         </TestcaseWrapper>
 
         {/* Editor */}
@@ -117,10 +122,9 @@ export const EditorPage = () => {
             marginRight: "43px",
           }}
         >
-          <CodeEditor assignment={ass}/>
+          <CodeEditor assignment={ass} />
         </CodeEditorWrapper>
       </EditorPageGrid>
     </>
   );
 };
-

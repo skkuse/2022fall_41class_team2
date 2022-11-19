@@ -5,8 +5,7 @@ const DescWrapper = styled.div`
   display: flex;
   flex-direction: column;
 
-  width: 598px;
-  height: 429.3px;
+  height: 100%;
 `;
 
 const TestCaseHeaderContainer = styled.div`
@@ -47,19 +46,17 @@ function TestcaseMaster({ bodyContent, testCases, ...restProps }) {
       </TestCaseHeaderContainer>
 
       {/* // TODO: testcase 개수만큼 pooling */}
-      {
-        testCases.map((testcase, index) => {
-          return (
-            <EditorBackground
-              content={`테스트케이스 ${index}>
+      {testCases.map((testcase, index) => {
+        return (
+          <EditorBackground
+            content={`테스트케이스 ${index}>
               input: ${testcase.input}
               output: ${testcase.output}
               `}
-              assignmentId={restProps.assignmentId}
-              />
-          );
-        })
-      }
+            assignmentId={restProps.assignmentId}
+          />
+        );
+      })}
       {/* <EditorBackground
         content={bodyContent}
         assignmentId={restProps.assignmentId}

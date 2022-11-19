@@ -44,7 +44,7 @@ const LowerContainer = styled.div`
   height: 100%;
   width: 100%;
   align-items: center;
-  justify-content: space-between;
+  justify-content: space-around;
 `;
 
 export const LandingPageBanner = ({ className }) => {
@@ -65,11 +65,11 @@ export const LandingPageBanner = ({ className }) => {
     <BannerContainer>
       <TopContainer style={{ marginTop: "10px" }}>
         {/* Settings icon */}
-        <div style={{ marginLeft: "20px" }}>
+        <div style={{ marginLeft: "20px", }}>
           <SettingsButton />
         </div>
         {/* login and register button */}
-        <div style={{ marginRight: "20px" }}>
+        <div style={{ marginRight: "120px" }}>
           {userData ? (
             <UserDisplay userData={userData} />
           ) : (
