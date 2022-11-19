@@ -172,7 +172,7 @@ class ResultListOrCreate(generics.ListCreateAPIView):
         ),
     )
     def post(self, request, *args, **kwargs):
-        repo_id = self.request.data.get('repo_id')
+        repo_id = request.data.get('repo_id')
         language = request.data.get('language')
         raw_code = request.data.get('code')
 
@@ -183,33 +183,37 @@ class ResultListOrCreate(generics.ListCreateAPIView):
         except Repo.MultipleObjectsReturned:
             raise InternalServerError
 
+        # Get necessary instances
         user = self.request.user
+        assignment = repo.assignment
+        testcases = Testcase.objects.filter(assignment=assignment).all()
+        sample_testcase = testcases.first()
+
         if repo.author != user:
             raise PermissionDenied
 
         if Result.objects.filter(
-            repo__assignment=repo.assignment,
+            repo__assignment=assignment,
             repo__author=user,
         ).count() >= MAX_RESULT_NUM:
             raise ParseError(detail="Submission could not be over 3 times.")
 
-        # Run Code Description Module
-        code_description = utils_code_explain.run(
+        # When code is non-executable just return result instance
+        if utils_execution.run(
+            base_dir=SERVER_CODE_DIR,
+            language=language,
             raw_code=raw_code,
-        )
-        data = request.data
-        data.update({'code_description': code_description})
+            raw_input=sample_testcase.input,
+        ).get('exit_status') != 0:
+            serializer = self.get_serializer(data=request.data)
+            serializer.is_valid(raise_exception=True)
+            result = serializer.save()
+            return Response(
+                data=ResultSerializer(instance=result).data,
+                status=status.HTTP_201_CREATED,
+            )
 
-        # save init result object
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        result = serializer.save()
-
-        # get necessary instances
-        assignment = repo.assignment
-        testcases = Testcase.objects.filter(assignment=assignment).all()
-
-        # make directory and file dynamically
+        # Make directory and file dynamically to calling external library
         base_dir = f'{SERVER_CODE_DIR}{assignment.id}/{language}/'
         Path(base_dir).mkdir(parents=True, exist_ok=True)
         [filename] = utils_execution.make_arguments(
@@ -218,6 +222,18 @@ class ResultListOrCreate(generics.ListCreateAPIView):
             raw_code=raw_code,
         )
         full_filename = base_dir + filename
+
+        # Run Code Description Module
+        code_description = utils_code_explain.run(
+            raw_code=raw_code,
+        )
+        data = request.data
+        data.update({'code_description': code_description})
+
+        # Save init result object
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        result = serializer.save()
 
         # Run Functionality Module
         utils_functionality.run(

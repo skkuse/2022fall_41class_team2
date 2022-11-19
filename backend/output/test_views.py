@@ -297,6 +297,41 @@ def solution():
         ret = response.data
 
         self.assertIsNotNone(ret.get('id'))
+        self.assertIsNotNone(ret.get('functionality_result'))
+        self.assertIsNotNone(ret.get('efficiency_result'))
+        self.assertIsNotNone(ret.get('plagiarism_result'))
+        self.assertIsNotNone(ret.get('readability_result'))
+
+    def test_results_create_when_code_is_not_executable(self):
+        student = User.objects.get(oauth_id=self.mock_student_oauth_id)
+        repo = Repo.objects.first()
+        data = {
+            'repo_id': repo.id,
+            'language': 'python',
+            'code': '''
+def solution():
+    size = int(input())
+    nums = [float(e) for e in input().split()]
+
+    ret = 0
+    for num in nums:
+        ret += num
+
+    print(ret)
+    retur ret
+''',
+        }
+
+        client = APIClient()
+        client.force_authenticate(user=student)
+        response = client.post('/outputs/results/', data=data, format='json')
+        ret = response.data
+
+        self.assertIsNotNone(ret.get('id'))
+        self.assertIsNone(ret.get('functionality_result'))
+        self.assertIsNone(ret.get('efficiency_result'))
+        self.assertIsNone(ret.get('plagiarism_result'))
+        self.assertIsNone(ret.get('readability_result'))
 
     def test_results_create_when_repo_non_exist(self):
         student = User.objects.get(oauth_id=self.mock_student_oauth_id)
