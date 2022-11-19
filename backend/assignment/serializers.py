@@ -7,13 +7,13 @@ class TestcaseSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Testcase
-        fields = ['id', 'created_at', 'input', 'output']
+        fields = ['id', 'created_at', 'input', 'output', 'is_hidden']
 
     def to_representation(self, instance):
         ret = super().to_representation(instance)
         if instance.is_hidden:
             ret.update(
-                (key, None) for key in ret.keys()
+                (key, None) for key in ret.keys() if key != 'is_hidden'
             )
         return ret
 
