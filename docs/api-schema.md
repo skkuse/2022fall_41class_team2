@@ -158,7 +158,7 @@ Acesss Token 재발급
 
 - Request: `auth (required)`, `lecture_id`, `deadline`, `question`, `constraints`, `[{language, skeleton_code, answer_code}]`
 
-- Response: `assignment_id`, `name`, `deadline`, `question`, `constraints`, `[{language, skeleton_code, answer_code}]`
+- Response: `assignment_id`, `name`, `deadline`, `question`, `constraints`, `[{language, skeleton_code, answer_code}]`, `[testcases]`
 
 ### GET /assignments/{assignment_id}/
 
@@ -168,7 +168,7 @@ Acesss Token 재발급
 
 - Request: `auth (optional)`
 
-- Response: `assignment_id`, `name`, `deadline`, `question`, `constraints`, `[{language, skeleton_code, answer_code}]`
+- Response: `assignment_id`, `name`, `deadline`, `question`, `constraints`, `[{language, skeleton_code, answer_code}]`, `[testcases]`
 
 ### DELETE /assignments/{assignment_id}/
 
@@ -176,7 +176,7 @@ Acesss Token 재발급
 
 요청자의 Auth가 강의 Instructor와 일치해야 함
 
-관련 테스트 케이스 등 하위 정보는 보존 (NOT Cascade)
+관련 테스트 케이스 등 하위 정보도 삭제 (Cascade)
 
 - Request: `auth (required)`
 
@@ -200,11 +200,9 @@ Acesss Token 재발급
 
 요청자의 Auth가 강의 Instructor와 일치해야 함
 
-> 일반 유저가 추가할 수도...?
-
 - Request: `auth (required)`, `assignment_id`, `input`, `output`, `hidden`
 
-- Response: `testcase_id`, `created_at`, `input`, `output`
+- Response: `testcase_id`, `created_at`, `input`, `output`, `is_hidden`
 
 ### GET /testcases/{testcase_id}/
 
@@ -214,7 +212,7 @@ Acesss Token 재발급
 
 - Request: `auth (required)`
 
-- Response: `testcase_id`, `created_at`, `input`, `output`
+- Response: `testcase_id`, `created_at`, `input`, `output`, `is_hidden`
 
 ### DELETE /testcases/{testcase_id}/
 

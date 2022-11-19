@@ -31,8 +31,7 @@ CREATE TABLE `assignments` (
   `deadline` timestamp DEFAULT (now()),
   `question` varchar(255),
   `constraints` varchar(255),
-  `language, skeleton_content` json,
-  `language, answer_content` json
+  `contents: language, skeleton_code, answer_code` json
 );
 
 CREATE TABLE `testcases` (
@@ -50,7 +49,7 @@ CREATE TABLE `repo` (
   `assignment_id` int,
   `created_at` timestamp DEFAULT (now()),
   `modified_at` timestamp DEFAULT (now()),
-  `language, content` json
+  `content: language, code` json
 );
 
 CREATE TABLE `result` (

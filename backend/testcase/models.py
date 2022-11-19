@@ -2,7 +2,7 @@ from django.db import models
 
 
 class Testcase(models.Model):
-    assignment = models.ForeignKey('assignment.Assignment', on_delete=models.PROTECT, related_name='testcases')
+    assignment = models.ForeignKey('assignment.Assignment', on_delete=models.CASCADE, related_name='testcases')
     created_at = models.DateTimeField(auto_now_add=True, editable=False)
     is_hidden = models.BooleanField(default=True)
     input = models.TextField(default="")
