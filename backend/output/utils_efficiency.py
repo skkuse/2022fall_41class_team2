@@ -8,11 +8,11 @@ CONTROL_FLOW_COMPLEXITY_FIELD = 'control_flow_complexity_score'
 RESERVATION_WORDS_FIELD = 'reservation_words_score'
 DATA_FLOW_COMPLEXITY_FIELD = 'data_flow_complexity_score'
 
+# todo: incorrect data flow complexity score is being used
+#       for the purposes of a working module. Will apply appropriate 
+#       changes upon TA's email reply 
+#       -yj(11/21) 
 
-# todo: ask TA about getting the "data flow complexity score"
-#       email sent -> awaiting response
-# todo: ask TA about the meaning of reservation words score
-#       email sent -> awaiting response
 def run(result_id: int, full_filename: str):
     multimetric_output = execute_multimetric(full_filename=full_filename)
 
@@ -43,7 +43,7 @@ def execute_multimetric(full_filename: str):
     df_complexity_score = output_json['overall']['tiobe_complexity']
     sloc_score = output_json['overall']['loc']
     cf_complexity_score = output_json['overall']['cyclomatic_complexity']
-    r_words_score = output_json['overall']['operands_uniq']
+    r_words_score = output_json['overall']['halstead_difficulty']
 
     return {
         LOC_FIELD: sloc_score,
