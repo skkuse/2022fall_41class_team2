@@ -9,17 +9,20 @@ name = 'assignment name here'
 deadline = datetime(year=2022, month=12, day=31, tzinfo=timezone.utc)
 question = "what's 9 + 10"
 constraints = 'what be my constraints'
-skeleton_code = '''
+contents = [{
+    'language': 'python',
+    'skeleton_code': '''
 def solution():
     return 0
-'''
-answer_code = '''
+''',
+    'answer_code': '''
 def solution():
     return 9 + 10
-'''
+''',
+}]
 
 
-class TestLecture(TestCase):
+class TestAssignment(TestCase):
 
     def test_assignment_save(self):
         instructor = User.objects.create(
@@ -38,13 +41,13 @@ class TestLecture(TestCase):
             deadline=deadline,
             question=question,
             constraints=constraints,
-            skeleton_code=skeleton_code,
-            answer_code=answer_code,
+            contents=contents,
         )
 
         self.assertIsNotNone(assignment.id)
-        self.assertEqual(assignment.skeleton_code, skeleton_code)
-        self.assertEqual(assignment.answer_code, answer_code)
+        self.assertEqual(assignment.contents[0].get('language'), contents[0].get('language'))
+        self.assertEqual(assignment.contents[0].get('skeleton_code'), contents[0].get('skeleton_code'))
+        self.assertEqual(assignment.contents[0].get('answer_code'), contents[0].get('answer_code'))
 
     def test_assignment_save_with_very_long_answer_code_field(self):
         instructor = User.objects.create(
@@ -236,12 +239,15 @@ for i in range(n):
             deadline=deadline,
             question=question,
             constraints=constraints,
-            skeleton_code=skeleton_code,
-            answer_code=another_answer_code,
+            contents=[{
+                'language': 'python',
+                'skeleton_code': contents[0].get('skeleton_code'),
+                'answer_code': another_answer_code,
+            }],
         )
 
         self.assertIsNotNone(assignment.id)
-        self.assertEqual(assignment.answer_code, another_answer_code)
+        self.assertEqual(assignment.contents[0].get('answer_code'), another_answer_code)
 
     def test_assignment_save_with_empty_name(self):
         instructor = User.objects.create(
@@ -258,8 +264,7 @@ for i in range(n):
             deadline=deadline,
             question=question,
             constraints=constraints,
-            skeleton_code=skeleton_code,
-            answer_code=answer_code,
+            contents=contents,
         )
 
         self.assertIsNotNone(assignment.id)
@@ -281,8 +286,7 @@ for i in range(n):
             deadline=deadline,
             question=question,
             constraints=constraints,
-            skeleton_code=skeleton_code,
-            answer_code=answer_code,
+            contents=contents,
         )
 
         result = assignment.delete()
