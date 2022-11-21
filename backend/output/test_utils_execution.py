@@ -1,5 +1,10 @@
+import os
+
 from django.test import TestCase
 from output.utils_execution import setup_input, run
+from backend.settings.base import BASE_DIR
+
+SERVER_CODE_DIR = str(BASE_DIR) + os.environ['SERVER_CODE_DIR']
 
 
 class Test(TestCase):
@@ -30,7 +35,7 @@ class Test(TestCase):
     def test_run_unsupported_language(self):
         with self.assertRaises(Exception):
             language = 'golang'
-            run(language, '', '')
+            run(SERVER_CODE_DIR, language, '', '')
 
     def test_run_python(self):
         raw_code = '''
@@ -49,7 +54,7 @@ def solution():
 4
 1 2.1 3.1 4
 '''
-        response = run('python', raw_code, raw_input)
+        response = run(SERVER_CODE_DIR, 'python', raw_code, raw_input)
 
         self.assertEqual(response.get('exit_status'), 0)
         self.assertEqual(response.get('output'), '10.2\n')
@@ -80,7 +85,7 @@ let solution = () => {
 4
 1 2.1 3.1 4
 '''
-        response = run('javascript', raw_code, raw_input)
+        response = run(SERVER_CODE_DIR, 'javascript', raw_code, raw_input)
 
         self.assertEqual(response.get('exit_status'), 0)
         self.assertEqual(response.get('output'), '10.2\n')
@@ -107,7 +112,7 @@ void solution() {
 4
 1 2.1 3.1 4
 '''
-        response = run('c', raw_code, raw_input)
+        response = run(SERVER_CODE_DIR, 'c', raw_code, raw_input)
 
         self.assertEqual(response.get('exit_status'), 0)
         self.assertEqual(response.get('output'), '10.2\n')
@@ -136,7 +141,7 @@ void solution() {
 4
 1 2.1 3.1 4
 '''
-        response = run('cpp', raw_code, raw_input)
+        response = run(SERVER_CODE_DIR, 'cpp', raw_code, raw_input)
 
         self.assertEqual(response.get('exit_status'), 0)
         self.assertEqual(response.get('output'), '10.2\n')
