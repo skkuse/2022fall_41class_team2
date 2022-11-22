@@ -8,8 +8,10 @@ class Assignment(models.Model):
     deadline = models.DateTimeField(blank=True, default=timezone.now)
     question = models.CharField(max_length=255, blank=True, default='')
     constraints = models.CharField(max_length=255, blank=True, default='')
-    skeleton_code = models.TextField(blank=True, default='')
-    answer_code = models.TextField(blank=True, default='')
+    contents = models.JSONField(default=list)
 
     class Meta:
         ordering = ['name']
+
+    def __str__(self):
+        return f'[{self.id}] {self.name}'

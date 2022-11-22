@@ -35,16 +35,30 @@ class TestAssignmentListOrCreate(TestCase):
             deadline=datetime(year=2022, month=12, day=31, tzinfo=timezone.utc),
             question="what's 9 + 10",
             constraints='constraints: no constraints',
-            skeleton_code='from libmemes import 9_10',
-            answer_code='dummy-code',
+            contents=[
+                {
+                    'language': 'python',
+                    'skeleton_code': 'from libmemes import 9_10',
+                    'answer_code': 'dummy-answer',
+                },
+                {
+                    'language': 'javascript',
+                    'skeleton_code': 'console.log("skeleton")',
+                    'answer_code': 'function dummy() {}',
+                },
+            ],
         )
         testcase_1 = Testcase.objects.create(
             assignment=assignment,
             is_hidden=False,
+            input='public-input',
+            output='public-output',
         )
         testcase_2 = Testcase.objects.create(
             assignment=assignment,
             is_hidden=True,
+            input='private-input',
+            output='private-output',
         )
 
     def test_assignment_list(self):
@@ -58,20 +72,38 @@ class TestAssignmentListOrCreate(TestCase):
         result = response.data.get('results')
 
         self.assertEqual(len(result), 1)
+        self.assertEqual(len(result[0].get('contents')), 2)
         self.assertEqual(result[0].get('id'), assignment.id)
         self.assertEqual(result[0].get('name'), assignment.name)
+        self.assertEqual(len(result[0].get('testcases')), 2)
+
+    def test_assignment_list_without_auth(self):
+        lecture = Lecture.objects.get(name=self.mock_lecture_name)
+        assignment = Assignment.objects.get(name=self.mock_assignment_name)
+
+        client = APIClient()
+        response = client.get('/assignments/', data={'lecture_id': lecture.id}, format='json')
+        result = response.data.get('results')
+
+        self.assertEqual(len(result), 1)
+        self.assertEqual(result[0].get('id'), assignment.id)
+        self.assertEqual(result[0].get('name'), assignment.name)
+        self.assertEqual(len(result[0].get('testcases')), 2)
 
     def test_assignment_create_as_instructor(self):
         instructor = User.objects.get(oauth_id=self.mock_instructor_oauth_id)
         lecture = Lecture.objects.get(name=self.mock_lecture_name)
-
         data = {'lecture_id': lecture.id,
                 'name': 'put your assignment here',
                 'deadline': datetime(year=2022, month=1, day=1),
                 'question': "what's 9 + 10",
                 'constraints': 'constraints: no constraints',
-                'skeleton_code': 'from libmemes import 9_10',
-                'answer_code': 'hahaha'}
+                'contents': [{
+                    'language': 'python',
+                    'skeleton_code': 'from libmemes import 9_10',
+                    'answer_code': 'hahaha',
+                }]}
+
         client = APIClient()
         client.force_authenticate(user=instructor)
         response = client.post('/assignments/', data=data, format='json')
@@ -82,13 +114,15 @@ class TestAssignmentListOrCreate(TestCase):
     def test_assignment_create_as_student(self):
         student = User.objects.get(oauth_id=self.mock_student_oauth_id)
         lecture = Lecture.objects.get(name=self.mock_lecture_name)
-
         data = {'lecture_id': lecture.id,
                 'name': 'put your assignment here',
                 'deadline': '2022-12-22',
                 'question': "what's 9 + 10",
-                'constraints': 'constraints: no constraints',
-                'skeleton_code': 'from libmemes import 9_10', }
+                'contents': [{
+                    'language': 'python',
+                    'skeleton_code': 'from libmemes import 9_10',
+                    'answer_code': 'hahaha',
+                }]}
 
         client = APIClient()
         client.force_authenticate(user=student)
@@ -98,13 +132,15 @@ class TestAssignmentListOrCreate(TestCase):
 
     def test_assignment_create_without_auth(self):
         lecture = Lecture.objects.get(name=self.mock_lecture_name)
-
         data = {'lecture_id': lecture.id,
                 'name': 'put your assignment here',
                 'deadline': '2022-12-22',
                 'question': "what's 9 + 10",
-                'constraints': 'constraints: no constraints',
-                'skeleton_code': 'from libmemes import 9_10',}
+                'contents': [{
+                    'language': 'python',
+                    'skeleton_code': 'from libmemes import 9_10',
+                    'answer_code': 'hahaha',
+                }]}
 
         client = APIClient()
         response = client.post('/assignments/', data=data, format='json')
@@ -139,8 +175,18 @@ class TestLectureRetrieveOrDestroy(TestCase):
             deadline=datetime(year=2022, month=12, day=1, tzinfo=timezone.utc),
             question="question 1: what's 9 + 10",
             constraints='constraints: no constraints',
-            skeleton_code='from libmemes import 9_10',
-            answer_code='hahaha',
+            contents=[
+                {
+                    'language': 'python',
+                    'skeleton_code': 'from libmemes1 import 9_10',
+                    'answer_code': 'ha1',
+                },
+                {
+                    'language': 'javascript',
+                    'skeleton_code': 'console.log("skeleton1")',
+                    'answer_code': 'function dummy1() {}',
+                },
+            ],
         )
         assignment2 = Assignment.objects.create(
             lecture=lecture,
@@ -148,8 +194,30 @@ class TestLectureRetrieveOrDestroy(TestCase):
             deadline=datetime(year=2022, month=12, day=2, tzinfo=timezone.utc),
             question="question 2: what's 9 + 10",
             constraints='constraints: 1 constraint',
-            skeleton_code='from libmemes2 import 9Plus10',
-            answer_code='hahaha',
+            contents=[
+                {
+                    'language': 'python',
+                    'skeleton_code': 'from libmemes2 import 9_10',
+                    'answer_code': 'ha2',
+                },
+                {
+                    'language': 'javascript',
+                    'skeleton_code': 'console.log("skeleton2")',
+                    'answer_code': 'function dummy2() {}',
+                },
+            ],
+        )
+        testcase1 = Testcase.objects.create(
+            assignment=assignment1,
+            is_hidden=False,
+            input='public-input',
+            output='public-output',
+        )
+        testcase2 = Testcase.objects.create(
+            assignment=assignment1,
+            is_hidden=True,
+            input='private-input',
+            output='private-output',
         )
 
     def test_assignment_retrieve_with_instructor(self):
