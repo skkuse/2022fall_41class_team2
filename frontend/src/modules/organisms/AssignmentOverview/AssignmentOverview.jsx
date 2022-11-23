@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
+import { Helmet } from "react-helmet";
 
 /* Custom modules */
 import { Text } from "../../atoms";
@@ -273,7 +274,7 @@ const GridAligner = styled.div`
   align-items: center;
 `;
 
-export const AssignmentOverview = ({ className, ...restProps }) => {
+export const AssignmentOverview = ({ className, darkMode, ...restProps }) => {
   const settingSelector = useSelector((state) => state.SettingReducer);
   const navigate = useNavigate();
 
@@ -283,9 +284,7 @@ export const AssignmentOverview = ({ className, ...restProps }) => {
     settingSelector.backgroundColor
   );
 
-  const lectureSelector = useSelector((state) =>
-    state.LectureReducer.lectures
-  );   
+  const lectureSelector = useSelector((state) => state.LectureReducer.lectures);
 
   // Language options
   const [currentLang, setCurrentLang] = useState(settingSelector.language);
@@ -293,20 +292,25 @@ export const AssignmentOverview = ({ className, ...restProps }) => {
 
   const colorList = [
     ["#B1D3C5", "#C6D7D0", "#D1D9D6"],
-    ["#6ECEDA","#A5D5DB", "#C0D8DB"],
+    ["#6ECEDA", "#A5D5DB", "#C0D8DB"],
     ["#D18063", "#D6AE9F", "#D9C5BD"],
     ["#B57FB3", "#C8ADC7", "#D2C4D1"],
     ["#EADB80", "#E3DBAE", "#DFDBC5"],
     ["#E098AE", "#DEBAC5", "#DDCBD0"],
     [],
-  ]
+  ];
 
-  if(!lectureSelector) {
-    return <></>; 
+  if (!lectureSelector) {
+    return <></>;
   }
 
   return (
     <>
+      <Helmet
+        bodyAttributes={{
+          style: darkMode ? "background : #000000" : "background : #FFFFFF",
+        }}
+      />
       <GridAligner>
         <GridContainer>
           <TopContainer style={{ marginTop: "66px" }}>
@@ -333,29 +337,26 @@ export const AssignmentOverview = ({ className, ...restProps }) => {
         <div style={{ marginTop: "25px" }}></div>
         <GeneralContainer>
           {/* TODO 강의 개수만큼 pooling */}
-          {
-            lectureSelector.results && lectureSelector.results.length ?
+          {lectureSelector.results && lectureSelector.results.length ? (
             lectureSelector.results.map((lecture, index) => {
-              return <LectureGroupComp 
-              key={JSON.stringify(lecture)} 
-              lecture={lecture}
-              color={colorList[index]}
-              />
-            }) :
-            <div>
-              아직 지정된 강의가 없습니다.
-            </div>
-          }
-          
-
-
+              return (
+                <LectureGroupComp
+                  key={JSON.stringify(lecture)}
+                  lecture={lecture}
+                  color={colorList[index]}
+                />
+              );
+            })
+          ) : (
+            <div>아직 지정된 강의가 없습니다.</div>
+          )}
         </GeneralContainer>
       </GridAligner>
     </>
   );
 };
 
-const LectureGroupComp = ({lecture, color}) => {
+const LectureGroupComp = ({ lecture, color }) => {
   return (
     <LectureGroup>
       <NameContainer>
@@ -363,43 +364,43 @@ const LectureGroupComp = ({lecture, color}) => {
       </NameContainer>
       {/* TODO: 과제 개수만큼 pooling */}
       <AssignmentGrid numAssignment={`${lecture.assignments.results.length}`}>
-        {
-          lecture.assignments.results.map((ass) => {
-            return (
-              <Link key={JSON.stringify(ass)} 
+        {lecture.assignments.results.map((ass) => {
+          return (
+            <Link
+              key={JSON.stringify(ass)}
               to={{
                 pathname: `/assignment/${ass.id}`,
                 // state:"asdfasdf"
-              }} 
-              state={{
-                lecture: lecture
               }}
-              style={{ textDecoration: "none" }}>
-                <AssignmentBlockContainer>
-                  <AssignmentName
-                    assignment={`${ass.name}`}
-                    background={color[1]}
-                    submission={false}
-                  ></AssignmentName>
-                    
-                  <Deadline
-                    danger={false}
-                    remainingTime={
-                      `${getTimeDiff(new Date(ass.deadline),  new Date())}`
-                    }
-                    background={color[2]}
-                    submission={false}
-                  ></Deadline>
-                </AssignmentBlockContainer>
-              </Link>
-            )
-          })
-        }
+              state={{
+                lecture: lecture,
+              }}
+              style={{ textDecoration: "none" }}
+            >
+              <AssignmentBlockContainer>
+                <AssignmentName
+                  assignment={`${ass.name}`}
+                  background={color[1]}
+                  submission={false}
+                ></AssignmentName>
+
+                <Deadline
+                  danger={false}
+                  remainingTime={`${getTimeDiff(
+                    new Date(ass.deadline),
+                    new Date()
+                  )}`}
+                  background={color[2]}
+                  submission={false}
+                ></Deadline>
+              </AssignmentBlockContainer>
+            </Link>
+          );
+        })}
       </AssignmentGrid>
     </LectureGroup>
   );
-}
-
+};
 
 export const getTimeDiff = (time1, now) => {
   let diff = new Date(time1 - now);
@@ -411,4 +412,4 @@ export const getTimeDiff = (time1, now) => {
   const diffMin = diff.getMinutes();
   const diffSec = diff.getSeconds();
   return `${diffDate}d ${diffHour}h ${diffMin}m ${diffSec}s`;
-}
+};

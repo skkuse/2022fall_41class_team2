@@ -24,7 +24,9 @@ const BannerContainer = styled.div`
   justify-content: center;
   width: 100%;
   height: 90px;
-  background: #ffffff;
+
+  background: ${(props) => (props.darkMode ? "#1F1F32" : "#FFFFFF")};
+
   box-shadow: 0px 11px 7px rgba(0, 0, 0, 0.05);
 `;
 
@@ -47,7 +49,7 @@ const LowerContainer = styled.div`
   justify-content: space-around;
 `;
 
-export const LandingPageBanner = ({ className }) => {
+export const LandingPageBanner = ({ darkMode }) => {
   // * 유저 정보 가져오기
   const [userData, setUserData] = useState(null);
 
@@ -62,16 +64,16 @@ export const LandingPageBanner = ({ className }) => {
   }, []);
 
   return (
-    <BannerContainer>
+    <BannerContainer darkMode={darkMode}>
       <TopContainer style={{ marginTop: "10px" }}>
         {/* Settings icon */}
-        <div style={{ marginLeft: "20px", }}>
-          <SettingsButton />
+        <div style={{ marginLeft: "20px" }}>
+          <SettingsButton darkMode={darkMode} />
         </div>
         {/* login and register button */}
         <div style={{ marginRight: "120px" }}>
           {userData ? (
-            <UserDisplay userData={userData} />
+            <UserDisplay userData={userData} darkMode={darkMode} />
           ) : (
             !getItemWithExpireTime("user") && <LoginAndRegisterButton />
           )}
@@ -79,14 +81,26 @@ export const LandingPageBanner = ({ className }) => {
       </TopContainer>
       <LowerContainer style={{ marginTop: "10px", marginBottom: "20px" }}>
         <div style={{ marginLeft: "120px" }}>
-          <LandingPageBannerButton>문제</LandingPageBannerButton>
+          <LandingPageBannerButton darkMode={darkMode}>
+            문제
+          </LandingPageBannerButton>
         </div>
-        <LandingPageBannerButton>강의</LandingPageBannerButton>
-        <LandingPageBannerButton>공지사항</LandingPageBannerButton>
-        <LandingPageBannerButton>도움말</LandingPageBannerButton>
-        <LandingPageBannerButton>게시판</LandingPageBannerButton>
+        <LandingPageBannerButton darkMode={darkMode}>
+          강의
+        </LandingPageBannerButton>
+        <LandingPageBannerButton darkMode={darkMode}>
+          공지사항
+        </LandingPageBannerButton>
+        <LandingPageBannerButton darkMode={darkMode}>
+          도움말
+        </LandingPageBannerButton>
+        <LandingPageBannerButton darkMode={darkMode}>
+          게시판
+        </LandingPageBannerButton>
         <div style={{ marginRight: "120px" }}>
-          <LandingPageBannerButton>그룹</LandingPageBannerButton>
+          <LandingPageBannerButton darkMode={darkMode}>
+            그룹
+          </LandingPageBannerButton>
         </div>
       </LowerContainer>
     </BannerContainer>

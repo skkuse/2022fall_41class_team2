@@ -5,19 +5,18 @@ import { LandingPageBanner } from "../../modules/organisms/LandingPageOrganism/L
 import { LandingPageScenery } from "../../modules/organisms/LandingPageOrganism/LandingPageScenery";
 import { useDispatch, useSelector } from "react-redux";
 
-export const LandingPage = ( ...restProps) => {
-  // test
-  // return <h1>hello world</h1>;
-  const settingSelector = useSelector((state) =>
-    state.SettingReducer
-  );    
-
+export const LandingPage = (...restProps) => {
+  const settingSelector = useSelector((state) => state.SettingReducer);
+  const dispatch = useDispatch();
+  // TODO: settingSelector에 따라서 LandingPageScenery의 배경을 바꿔야 함
+  const darkMode = true;
   return (
     <>
       {/* Banner */}
-      <LandingPageBanner  restProps={restProps} />
+      {/* TODO 다크 모드 state */}
+      <LandingPageBanner restProps={restProps} darkMode={darkMode} />
       {/* Scenery */}
-      <LandingPageScenery />
+      <LandingPageScenery darkMode={darkMode} />
     </>
   );
 };
