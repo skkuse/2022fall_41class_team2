@@ -20,6 +20,7 @@ import { saveRepoListAction } from "../../../pages/EditorPage/EditorAction";
 import { monaco } from 'react-monaco-editor';
 import { saveRepoAction } from './../../../pages/EditorPage/EditorAction';
 import { createRef } from "react";
+import { changeRepoAction } from './../../../pages/EditorPage/EditorAction';
 
 const EvaluationWindowGrid = styled.div`
   display: inline-grid;
@@ -137,9 +138,9 @@ export const CodeEditor = ({assignment}) => {
 
   
 
-  useEffect(() => {
-    console.log(editMode);
-  }, [editMode]);
+    useEffect(() => {
+      console.log(editMode);
+    }, [editMode]);
 
 
 
@@ -171,6 +172,7 @@ export const CodeEditor = ({assignment}) => {
   const handleRepo = async() => {
     repoList  = await fetchRepoList();
     dispatch(saveRepoListAction(repoList));
+    dispatch(changeRepoAction(repoList[repoList.length - 1]));
   }
 
   useEffect( () => {
