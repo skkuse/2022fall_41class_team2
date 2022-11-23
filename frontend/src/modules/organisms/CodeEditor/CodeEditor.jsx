@@ -83,7 +83,7 @@ const EditorHeaderWrapper = styled.div`
 
   /* width: ${(props) => (props.editMode.edit ? "100%" : "572px")}; */
 
-  background: #bfbfbf;
+  background: ${(props) => (props.darkMode ? "#525263" : "#bfbfbf")};
 `;
 
 const ActionButtonWrapper = styled.div`
@@ -105,7 +105,30 @@ const ActionButtonWrapper = styled.div`
 
   color: #1e1e1e;
 `;
-export const CodeEditor = ({ assignment }) => {
+const CoreButton = styled.div`
+  width: 58px;
+  height: 30px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-family: "Gmarket Sans TTF";
+  font-style: normal;
+  font-weight: 700;
+  font-size: 20px;
+  line-height: 23px;
+  /* identical to box height */
+
+  text-align: center;
+
+  color: #1e1e1e;
+  background: #d9d9d9;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  border-radius: 10px;
+`;
+
+export const CodeEditor = ({ assignment, darkMode }) => {
   const headerContent = "코드 입력";
   // let editorWidth = "1180px";
 
@@ -256,15 +279,19 @@ export const CodeEditor = ({ assignment }) => {
         {/* 코드 수정 상황 */}
         {editMode.edit && (
           <>
-            <EditorHeaderWrapper editMode={editMode}>
+            <EditorHeaderWrapper editMode={editMode} darkMode={darkMode}>
               <div onClick={() => changeMode({ src: headerContent })}>
-                <EditorHeader content={headerContent} />
+                <EditorHeader content={headerContent} darkMode={darkMode} />
               </div>
               <div style={{ marginRight: "27.78px" }}>
-                <ActionButtonWrapper>
-                  <div onClick={() => changeMode({ src: "실행" })}>실행</div>
-                  <div onClick={() => changeMode({ src: "채점" })}>채점</div>
-                  <div
+                <ActionButtonWrapper darkMode={darkMode}>
+                  <CoreButton onClick={() => changeMode({ src: "실행" })}>
+                    실행
+                  </CoreButton>
+                  <CoreButton onClick={() => changeMode({ src: "채점" })}>
+                    채점
+                  </CoreButton>
+                  <CoreButton
                     style={{ color: "#0535DC" }}
                     onClick={() => changeMode({ src: "제출" })}
                   >
@@ -272,7 +299,7 @@ export const CodeEditor = ({ assignment }) => {
                     {/* {
                       JSON.stringify( repoSelector.selectedModel.content.code)
                     } */}
-                  </div>
+                  </CoreButton>
                 </ActionButtonWrapper>
               </div>
             </EditorHeaderWrapper>
@@ -341,7 +368,7 @@ export const CodeEditor = ({ assignment }) => {
                   edit={editMode.edit}
                   altMode={editMode.altMode}
                 >
-                  <Terminal />
+                  <Terminal darkMode={darkMode} />
                 </TerminalWrapper>
               )}
               {/* 채점 결과*/}
@@ -351,7 +378,7 @@ export const CodeEditor = ({ assignment }) => {
                   edit={editMode.edit}
                   altMode={editMode.altMode}
                 >
-                  <Grading />
+                  <Grading darkMode={darkMode} />
                 </GradingWrapper>
               )}
               {/* 제출 결과*/}
@@ -361,7 +388,7 @@ export const CodeEditor = ({ assignment }) => {
                   edit={editMode.edit}
                   altMode={editMode.altMode}
                 >
-                  <SubmissionResult />
+                  <SubmissionResult darkMode={darkMode} />
                 </TerminalWrapper>
               )}
             </EvaluationWindowGrid>

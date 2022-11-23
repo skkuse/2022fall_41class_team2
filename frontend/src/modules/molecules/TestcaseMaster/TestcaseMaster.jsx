@@ -14,34 +14,57 @@ const TestCaseHeaderContainer = styled.div`
   justify-content: space-between;
   align-items: center;
   /* width: 100%; */
-  background: #bfbfbf;
+  background: ${(props) => (props.darkMode ? "#525263" : "#bfbfbf")};
+  #bfbfbf;
+`;
+
+const ValidationButtonContainer = styled.div`
+  /* identical to box height */
+
+  text-align: center;
+
+  /* background ${(props) => (props.darkMode ? "#525263" : "#D8D8D8")}; */
+  color: #1e1e1e;
 `;
 
 const ValidationButton = styled.div`
+  width: 58px;
+  height: 30px;
+
+  display: flex;
+
+  justify-content: space-around;
+  align-items: center;
+
   font-family: "Gmarket Sans TTF";
   font-style: normal;
-  font-weight: 500;
+  font-weight: 700;
   font-size: 15.6237px;
   line-height: 18px;
   /* identical to box height */
 
   text-align: center;
-
-  color: #1e1e1e;
+  background: #d9d9d9;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  border-radius: 10px;
+  color: #000000;
 `;
 
-function TestcaseMaster({ bodyContent, testCases, ...restProps }) {
+function TestcaseMaster({ bodyContent, testCases, darkMode, ...restProps }) {
   const headerContent = "테스트 케이스";
   return (
     <DescWrapper>
-      <TestCaseHeaderContainer>
+      <TestCaseHeaderContainer darkMode={darkMode}>
         <EditorHeader
           content={headerContent}
           assignmentId={restProps.assignmentId}
+          darkMode={darkMode}
         />
 
         <div style={{ marginRight: "16.13px" }}>
-          <ValidationButton>검증</ValidationButton>
+          <ValidationButtonContainer darkMode={darkMode}>
+            <ValidationButton>검증</ValidationButton>
+          </ValidationButtonContainer>
         </div>
       </TestCaseHeaderContainer>
 
@@ -54,6 +77,7 @@ function TestcaseMaster({ bodyContent, testCases, ...restProps }) {
               output: ${testcase.output}
               `}
             assignmentId={restProps.assignmentId}
+            darkMode={darkMode}
           />
         );
       })}

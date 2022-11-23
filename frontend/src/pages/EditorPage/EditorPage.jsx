@@ -28,8 +28,6 @@ const EditorPageGrid = styled.div`
 
   width: 100vw;
   height: 100vh;
-
-  
 `;
 
 const ProblemWrapper = styled.div`
@@ -87,21 +85,28 @@ export const EditorPage = () => {
   if (!ass) {
     return <></>;
   }
-
+  // TODO: settingSelector에 따라서 LandingPageScenery의 배경을 바꿔야 함
+  const darkMode = true;
   return (
     <>
+      <Helmet
+        bodyAttributes={{
+          style: darkMode ? "background : #000000" : "background : #FFFFFF",
+        }}
+      />
       {/* Banner */}
       <Banner
         lectureName={lecture.name}
         reamainingTime={`${new Date(ass.deadline)}`}
         assignmentName={ass.name}
         assignment={ass}
+        darkMode={darkMode}
       />
       {/* Problem section*/}
       <EditorPageGrid>
         <ProblemWrapper style={{ marginLeft: "43px", marginTop: "25px" }}>
           {/* scroll test */}
-          <Problem bodyContent={ass.question} />
+          <Problem bodyContent={ass.question} darkMode={darkMode} />
         </ProblemWrapper>
         {/* TestCase */}
         <TestcaseWrapper style={{ marginLeft: "43px", marginTop: "9.77px" }}>
@@ -111,6 +116,7 @@ export const EditorPage = () => {
             input: [1,2,3,4]
             output: [소공개]`}
             testCases={ass.testcases}
+            darkMode={darkMode}
           />
         </TestcaseWrapper>
 
@@ -122,7 +128,7 @@ export const EditorPage = () => {
             marginRight: "43px",
           }}
         >
-          <CodeEditor assignment={ass} />
+          <CodeEditor assignment={ass} darkMode={darkMode} />
         </CodeEditorWrapper>
       </EditorPageGrid>
     </>

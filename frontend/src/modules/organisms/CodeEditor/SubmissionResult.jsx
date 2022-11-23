@@ -2,7 +2,7 @@
 
 import { SubmissionMaster } from "../../molecules";
 
-export const SubmissionResult = ({ resultObj, ...restProps }) => {
+export const SubmissionResult = ({ resultObj, darkMode, ...restProps }) => {
   // 예시용 데이터 오브젝트
   resultObj = {
     id: 0,
@@ -61,5 +61,5 @@ export const SubmissionResult = ({ resultObj, ...restProps }) => {
     },
   };
 
-  return <SubmissionMaster resultObj={resultObj} />;
+  return <SubmissionMaster resultObj={resultObj} darkMode={darkMode} />;
 };

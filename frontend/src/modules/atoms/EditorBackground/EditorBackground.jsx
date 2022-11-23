@@ -9,7 +9,7 @@ const FUNCTIONALITY = 2;
 const Bg = styled.div`
   width: 100%;
   height: 100%;
-  background: #eaeaea;
+  background: ${(props) => (props.darkMode ? "#1F1F32" : "#eaeaea")};
 
   padding: 18.55px 18.55px 18.55px 18.55px;
 
@@ -20,7 +20,7 @@ const Bg = styled.div`
   line-height: 18px;
   /* identical to box height */
 
-  color: #1e1e1e;
+  color: ${(props) => (props.darkMode ? "#D8D8D8" : "#1e1e1e")};
 
   overflow: scroll;
 `;
@@ -92,7 +92,7 @@ const EfficiencyHighlighter = styled.div`
 const FunctionalityHighlighter = styled.div`
   color: ${(props) => (props.active ? "#52C0E7" : "#1f1f32")};
 `;
-export const EditorBackground = ({ mode, content, ...restProps }) => {
+export const EditorBackground = ({ mode, content, darkMode, ...restProps }) => {
   const [activeIndexChart, setActiveIndexChart] = useState(READABILITY);
   const onButtonClickChart = useCallback(
     (flag) => {
@@ -110,10 +110,9 @@ export const EditorBackground = ({ mode, content, ...restProps }) => {
     [setActiveIndexDesc]
   );
   useEffect(() => {}, [activeIndexDesc]);
-  
+
   // TODO
   // data preprocessing for functionality results
-
 
   if (mode === "submit") {
     // SPECIAL CASE: ASSIGNMENT SUBMITTED
@@ -195,6 +194,6 @@ export const EditorBackground = ({ mode, content, ...restProps }) => {
       </Bg>
     );
   } else {
-    return <Bg>{content}</Bg>;
+    return <Bg darkMode={darkMode}>{content}</Bg>;
   }
 };

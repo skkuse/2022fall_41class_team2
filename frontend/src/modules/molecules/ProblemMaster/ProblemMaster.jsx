@@ -8,7 +8,7 @@ const DescWrapper = styled.div`
   height:100%
 `;
 
-function ProblemMaster({ bodyContent, ...restProps }) {
+function ProblemMaster({ bodyContent, darkMode,...restProps }) {
   // console.log(`Problem props: ${bodyContent}`);
   const headerContent = "문제/참조&제약사항";
   return (
@@ -16,10 +16,12 @@ function ProblemMaster({ bodyContent, ...restProps }) {
       <EditorHeader
         content={headerContent}
         assignmentId={restProps.assignmentId}
+        darkMode={darkMode}
       />
       <EditorBackground
         content={bodyContent}
         assignmentId={restProps.assignmentId}
+        darkMode={darkMode}
       />
     </DescWrapper>
   );
