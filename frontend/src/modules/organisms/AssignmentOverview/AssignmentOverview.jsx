@@ -274,6 +274,11 @@ const GridAligner = styled.div`
   align-items: center;
 `;
 
+const Separator = styled.div`
+  height: 50px;
+  width: 100%;
+`;
+
 export const AssignmentOverview = ({ className, darkMode, ...restProps }) => {
   const settingSelector = useSelector((state) => state.SettingReducer);
   const navigate = useNavigate();
@@ -340,11 +345,14 @@ export const AssignmentOverview = ({ className, darkMode, ...restProps }) => {
           {lectureSelector.results && lectureSelector.results.length ? (
             lectureSelector.results.map((lecture, index) => {
               return (
-                <LectureGroupComp
-                  key={JSON.stringify(lecture)}
-                  lecture={lecture}
-                  color={colorList[index]}
-                />
+                <>
+                  <LectureGroupComp
+                    key={JSON.stringify(lecture)}
+                    lecture={lecture}
+                    color={colorList[index]}
+                  />
+                  <Separator></Separator>
+                </>
               );
             })
           ) : (

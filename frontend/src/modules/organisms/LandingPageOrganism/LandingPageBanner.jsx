@@ -28,6 +28,9 @@ const BannerContainer = styled.div`
   background: ${(props) => (props.darkMode ? "#1F1F32" : "#FFFFFF")};
 
   box-shadow: 0px 11px 7px rgba(0, 0, 0, 0.05);
+
+  position: relative;
+  z-index: 10;
 `;
 
 const TopContainer = styled.div`

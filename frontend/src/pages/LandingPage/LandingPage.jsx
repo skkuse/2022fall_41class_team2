@@ -4,6 +4,7 @@ import React from "react";
 import { LandingPageBanner } from "../../modules/organisms/LandingPageOrganism/LandingPageBanner";
 import { LandingPageScenery } from "../../modules/organisms/LandingPageOrganism/LandingPageScenery";
 import { useDispatch, useSelector } from "react-redux";
+import { Helmet } from "react-helmet";
 
 export const LandingPage = (...restProps) => {
   const settingSelector = useSelector((state) => state.SettingReducer);
@@ -14,6 +15,11 @@ export const LandingPage = (...restProps) => {
     <>
       {/* Banner */}
       {/* TODO 다크 모드 state */}
+      <Helmet
+        bodyAttributes={{
+          style: darkMode ? "background : #000000" : "background : #ffffff",
+        }}
+      />
       <LandingPageBanner restProps={restProps} darkMode={darkMode} />
       {/* Scenery */}
       <LandingPageScenery darkMode={darkMode} />
