@@ -24,20 +24,25 @@ async function getLectureAPI(payload) {
         let lecture = result.data.data.results[index];
         let assResult = await apiClient.get("/api/assignments/?lecture_id="+ lecture.id);
         // alert(JSON.stringify(assResult));
-        if(!assResult.data.data.results){
+        console.log(assResult);
+        if(!assResult.data.data.results.length){
             let postAssResult = await apiClient.post("/api/assignments/", {
                 "name": "Assignment1",
                 "deadline": "2022-11-18T12:45:25.465Z",
                 "question": "피보나치 수열을 만드시오.",
                 "constraints": "",
-                "skeleton_code": "#include <stdio.h>",
-                "answer_code": "#include <stdio.h>",
+                "contents" : [{
+                    "skeleton_code": "#include <stdio.h>",
+                    "answer_code": "#include <stdio.h>",
+                    "language": "python"
+                }],
                 "lecture_id": lecture.id,
             });
             assResult = await apiClient.get("/api/assignments/?lecture_id="+ lecture.id);
         }
         lecture.assignments = assResult.data.data;
     }
+    console.log(result.data.data);
     return result.data.data;
 }
 

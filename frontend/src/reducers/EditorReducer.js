@@ -23,7 +23,7 @@ export function editorReducer(state = editorInitState, action) {
             };
 
         case CREATE_REPO:
-            alert("create repo")
+            // alert("create repo")
             let tempList = [...state.repoList];
             tempList.push(action.payload);
             // tempList.push({

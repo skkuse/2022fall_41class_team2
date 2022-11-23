@@ -72,6 +72,7 @@ export const EditorPage = () => {
           })
         })
       }else{
+        // alert(JSON.stringify(value.data.data));
         setAss(value.data.data);
       }
     })
