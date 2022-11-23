@@ -148,23 +148,22 @@ export const CodeEditor = ({assignment}) => {
     console.log(result.data.data.results);
     if(!result.data.data.results.length) {
       console.log("삽입");
-      const postResult = await addRepo(assignment.skeleton_code);
+      console.log(assignment);
+      const postResult = await addRepo(assignment.contents[0].skeleton_code);
       result = await apiClient.get(`/api/repos/?assignment_id=${assignment.id}`);
     }
     console.log(result);
     const monacoModelList = result.data.data.results.map((repo) => {
-      // return(makeMonacoModel(repo));
       return repo;
     })
-    // dispatch(saveRepoListAction(monacoModelList));
     return monacoModelList;
   }
 
   const addRepo = async(code) => {
-    const postResult = await  apiClient.post("/api/repos/", {
-      "language": settingSelector.language.toLowerCase(),
-      "code": code,
-      "assignment_id": assignment.id
+    const postResult = await apiClient.post("/api/repos/", {
+      language: assignment.contents[0].language, 
+      code:code,
+      assignment_id: assignment.id
     });
     return postResult;
   }

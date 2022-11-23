@@ -61,7 +61,8 @@ export const EditorPage = () => {
     setLecture(location.state.lecture);
     apiClient.get(`/api/assignments/${params.assignment_id}/`).then((value) => {
       // * 테케 없으면 새로 추가
-      if(!value.data.data.testcases.length) {
+      try {
+        if(!value.data.data.testcases.length) {
         apiClient.post("/api/testcases/", {
           input: "string",
           output: "string",
@@ -74,6 +75,10 @@ export const EditorPage = () => {
       }else{
         setAss(value.data.data);
       }
+      } catch (error) {
+        
+      }
+      
     })
   },[])
 
