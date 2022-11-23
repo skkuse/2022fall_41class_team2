@@ -62,25 +62,27 @@ export const EditorPage = () => {
     setLecture(location.state.lecture);
     apiClient.get(`/api/assignments/${params.assignment_id}/`).then((value) => {
       // * 테케 없으면 새로 추가
-      if (!value.data.data.testcases.length) {
-        apiClient
-          .post("/api/testcases/", {
-            input: "string",
-            output: "string",
-            assignment_id: params.assignment_id,
+      try {
+        if(!value.data.data.testcases.length) {
+        apiClient.post("/api/testcases/", {
+          input: "string",
+          output: "string",
+          assignment_id: params.assignment_id
+        }).then((value) => {
+          apiClient.get(`/api/assignments/${params.assignment_id}/`).then((value) => {
+            setAss(value.data.data);
           })
-          .then((value) => {
-            apiClient
-              .get(`/api/assignments/${params.assignment_id}/`)
-              .then((value) => {
-                setAss(value.data.data);
-              });
-          });
-      } else {
+        })
+      }else{
+        // alert(JSON.stringify(value.data.data));
         setAss(value.data.data);
       }
-    });
-  }, []);
+      } catch (error) {
+        
+      }
+      
+    })
+  },[])
 
   if (!ass) {
     return <></>;
