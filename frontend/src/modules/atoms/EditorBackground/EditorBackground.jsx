@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { useEffect, useState } from 'react';
 
 const Bg = styled.div`
   width: 100%;
@@ -19,6 +20,17 @@ const Bg = styled.div`
   overflow: scroll;
 `;
 
-export const EditorBackground = ({ content, ...restProps }) => {
-  return <Bg>{content}</Bg>;
+export const EditorBackground = ({ content,assignmentId,id,pfList, ...restProps }) => {
+  const [tcResult, setTcResult] = useState(null);
+  useEffect(() => {
+    if(pfList){
+      setTcResult(pfList.find((data, index) => {
+        return data.id == id
+      }));
+    }
+
+  }, [pfList])
+  return <Bg>{content} {tcResult? tcResult.is_pass? "P": " F" : ""}</Bg>;
 };
+
+

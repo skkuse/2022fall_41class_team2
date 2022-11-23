@@ -16,7 +16,7 @@ class API_CLIENT {
 
   setProfile() {
     if(getItemWithExpireTime("user")) {
-      console.log(getItemWithExpireTime("user"));
+      // console.log(getItemWithExpireTime("user"));
       let uid = getItemWithExpireTime("user").id;
       let token = getItemWithExpireTime("user").access;
 
@@ -32,7 +32,7 @@ class API_CLIENT {
 
   async get(url) {
     this.setProfile();
-    console.log(url);
+    // console.log(url);
     const result = await this.client.get(url);
     this.auth(result.status);
     return result;
