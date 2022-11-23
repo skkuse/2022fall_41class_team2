@@ -10,7 +10,7 @@ import styled from "styled-components";
 import { Helmet } from "react-helmet";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams, useLocation, useNavigate } from "react-router-dom";
-// import Editor, { useMonaco } from "@monaco-editor/react";
+import Editor, { DiffEditor, useMonaco } from "@monaco-editor/react";
 import { Resizable } from "re-resizable";
 import { useState, useEffect } from "react";
 import { render } from "react-dom";
@@ -75,7 +75,6 @@ const SubmissionWrapper = styled.div`
 
 const EditorWrapper = styled.div`
   width: 550px;
-
   height: 100%;
 `;
 const EditorHeaderWrapper = styled.div`
@@ -154,27 +153,10 @@ export const CodeEditor = ({assignment}) => {
     }
   }
 
-  const createDiffEditor = () => {
-    var originalModel = monaco.editor.createModel(repoSelector.selectedModel.content.code, 'text/plain');
-    var modifiedModel = monaco.editor.createModel(assignment.contents[0].answer_code, 'text/plain');
-    // const editor = window.document.getElementsByClassName('react-monaco-editor-container')[0];
-    const editor = window.document.getElementById('codeDiff');
-    console.log(editor);
-    var diffEditor = monaco.editor.createDiffEditor(editor);
-    diffEditor.setModel({
-      original: originalModel,
-      modified: modifiedModel
-    });
-    console.log(window.document.getElementById('codeDiff'));
-  }
-
-
-
-  
-
     useEffect(() => {
       switch (editMode.altMode) {
         case "실행":
+          // setSubmitComplete(true);
           break;
 
         case "채점":
@@ -183,7 +165,6 @@ export const CodeEditor = ({assignment}) => {
 
         case "제출":
           submitCode();
-          createDiffEditor();
           break;
       
         default:
@@ -245,73 +226,6 @@ export const CodeEditor = ({assignment}) => {
     
   }, [monaco]);
 
-  useEffect(() => {
-
-    if (settingSelector && repoSelector && repoSelector.selectedModel) {
-      const options = {
-        acceptSuggestionOnCommitCharacter: true,
-        acceptSuggestionOnEnter: "on",
-        accessibilitySupport: "auto",
-        autoIndent: false,
-        automaticLayout: true,
-        codeLens: true,
-        colorDecorators: true,
-        contextmenu: true,
-        cursorBlinking: "blink",
-        cursorSmoothCaretAnimation: false,
-        cursorStyle: "line",
-        disableLayerHinting: false,
-        disableMonospaceOptimizations: false,
-        dragAndDrop: false,
-        fixedOverflowWidgets: false,
-        folding: true,
-        foldingStrategy: "auto",
-        fontLigatures: false,
-        formatOnPaste: false,
-        formatOnType: false,
-        hideCursorInOverviewRuler: false,
-        highlightActiveIndentGuide: true,
-        links: true,
-        mouseWheelZoom: false,
-        multiCursorMergeOverlapping: true,
-        multiCursorModifier: "alt",
-        // model:model,
-        overviewRulerBorder: true,
-        overviewRulerLanes: 2,
-        quickSuggestions: true,
-        quickSuggestionsDelay: 100,
-        readOnly: false,
-        renderControlCharacters: false,
-        renderFinalNewline: true,
-        renderIndentGuides: true,
-        renderLineHighlight: "all",
-        renderWhitespace: "none",
-        revealHorizontalRightPadding: 30,
-        roundedSelection: true,
-        rulers: [],
-        scrollBeyondLastColumn: 5,
-        scrollBeyondLastLine: true,
-        selectOnLineNumbers: true,
-        selectionClipboard: true,
-        selectionHighlight: true,
-        showFoldingControls: "mouseover",
-        smoothScrolling: false,
-        suggestOnTriggerCharacters: true,
-        wordBasedSuggestions: true,
-        wordSeparators: "~!@#$%^&*()-=+[{]}|;:'\",.<>/?",
-        wordWrap: "off",
-        wordWrapBreakAfterCharacters: "\t})]?|&,;",
-        wordWrapBreakBeforeCharacters: "{([+",
-        wordWrapBreakObtrusiveCharacters: ".",
-        wordWrapColumn: 80,
-        wordWrapMinified: true,
-        wrappingIndent: "none",
-      };
-
-      setMonacoOption(options);
-    }
-    
-  }, [repoSelector, repoSelector.selectedModel, settingSelector])
 
   if(!(repoSelector && repoSelector.selectedModel)) {
     return <></>;
@@ -348,18 +262,13 @@ export const CodeEditor = ({assignment}) => {
             </EditorHeaderWrapper>
             <div style={{ marginLeft: "12.42px", marginTop: "24.83px" }}>
               <EditorWrapper>
-                <pre id="code">
-                  print("hello world")
-                </pre>
-                <MonacoEditor
+                <Editor
                   width="1180px"
                   height="820px"
                   language={repoSelector.selectedModel.content.language}
                   theme="vs-light"
-                  data-lang="python"
                   value={repoSelector.selectedModel.content.code}
                   onChange={(e)=>{
-                    monaco.editor.colorizeElement(window.document.getElementsByClassName("mtk1")[0]);
                     let repoTemp= repoSelector.selectedModel;
                     repoTemp.content.code = e;
                     dispatch(saveRepoAction(repoTemp));
@@ -370,7 +279,6 @@ export const CodeEditor = ({assignment}) => {
                     })
                     
                   }}
-                  options={monacoOption}
                 />
               </EditorWrapper>
             </div>
@@ -406,26 +314,23 @@ export const CodeEditor = ({assignment}) => {
                 <EditorWrapper>
                   {
                     submitComplete?
-                    <div 
-                    style={{
-                      width: "560px",
-                      height: "820px"
-                    }}
-                    id="codeDiff"
-                    >
-                    </div>
+                    <DiffEditor 
+                    width="560px"
+                    height="820px"
+                    language={repoSelector.selectedModel.content.language}
+                    original={repoSelector.selectedModel.content.code}
+                    modified={assignment.contents[0].answer_code}
+                    />
+                   
                   :
-                  <MonacoEditor
+                  <Editor
                     width="560px"
                     height="820px"
                     theme="light"
                     value={assignment.contents[0].answer_code}
                     language={repoSelector.selectedModel.content.language}
-                    options={monacoOption}
                   /> 
                   }
-                  
-                  
                 </EditorWrapper>
               </div>
               
