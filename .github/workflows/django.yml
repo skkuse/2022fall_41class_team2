@@ -25,6 +25,10 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install -r backend/requirements.txt
+        python backend/manage.py makemigrations --settings=backend.settings.test
+        python backend/manage.py migrate --settings=backend.settings.test
     - name: Run Tests
+      env:
+        OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
       run: |
         python backend/manage.py test --settings=backend.settings.test backend

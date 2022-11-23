@@ -11,7 +11,21 @@ import { Button } from "./Button/Button";
 import { DropdownSelector } from "./DropdownSelector/DropdownSelector";
 import { SettingsIcon } from "./Icons/SettingsIcon/SettingsIcon";
 import { LoginIcon } from "./Icons/LoginIcon/LoginIcon";
-import { BannerIcon } from "./Icons";
+import {
+  BannerIcon,
+  MonitorIcon,
+  DuplicateIcon,
+  ResetIcon,
+  DownloadIcon,
+  UploadIcon,
+  Save1,
+  Save2,
+  Save3,
+} from "./Icons";
+
+import { AssignmentName, Deadline, LectureName } from "./OverviewElements";
+import { EditorBackground } from "./EditorBackground/EditorBackground";
+import { EditorHeader } from "./EditorHeader/EditorHeader";
 
 export {
   Column,
@@ -25,4 +39,17 @@ export {
   LoginIcon,
   BannerIcon,
   DropdownSelector,
+  AssignmentName,
+  Deadline,
+  LectureName,
+  MonitorIcon,
+  DuplicateIcon,
+  ResetIcon,
+  DownloadIcon,
+  UploadIcon,
+  Save1,
+  Save2,
+  Save3,
+  EditorBackground,
+  EditorHeader,
 };

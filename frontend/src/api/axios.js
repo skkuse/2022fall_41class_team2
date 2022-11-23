@@ -24,7 +24,7 @@ class API_CLIENT {
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
-          'Authorization': `Token ${token}`
+          'Authorization': `Bearer ${token}`
         },
       });
     }
@@ -46,14 +46,30 @@ class API_CLIENT {
 
   }
 
+  async put(url, data) {
+    this.setProfile();
+    const result = await this.client.put(url, data);
+    this.auth(result.status);
+    return result;
+
+  }
+
+  async delete(url) {
+    this.setProfile();
+    const result = await this.client.delete(url);
+    this.auth(result.status);
+    return result;
+
+  }
+
   auth(status) {
     switch (status) {
-      case 403:
+      case 401 || 403:
         removeItem("user");
         break;
     
       default:
-        setItemWithExpireTime("user",true,1000*60*60);
+        setItemWithExpireTime(getItemWithExpireTime("user"),true,1000*60*60);
         break;
     }
   }

@@ -6,13 +6,15 @@ CREATE TABLE `lectures` (
 
 CREATE TABLE `users` (
   `user_id` int PRIMARY KEY AUTO_INCREMENT,
+  `nickname` varchar(255),
+  `oauth_id` varchar(255),
   `name` varchar(255),
   `eamil` varchar(255),
-  `nickname` varchar(255),
   `created_at` timestamp DEFAULT (now()),
   `last_login` timestamp DEFAULT (now()),
   `profile_image_url` varchar(255),
-  `github_api_url` varchar(255)
+  `github_api_url` varchar(255),
+  `github_profile_url` varchar(255)
 );
 
 CREATE TABLE `enrollments` (
@@ -29,8 +31,7 @@ CREATE TABLE `assignments` (
   `deadline` timestamp DEFAULT (now()),
   `question` varchar(255),
   `constraints` varchar(255),
-  `skeleton_code` varchar(255),
-  `answer_code` varchar(255)
+  `contents: language, skeleton_code, answer_code` json
 );
 
 CREATE TABLE `testcases` (
@@ -48,43 +49,44 @@ CREATE TABLE `repo` (
   `assignment_id` int,
   `created_at` timestamp DEFAULT (now()),
   `modified_at` timestamp DEFAULT (now()),
-  `content` varchar(255),
-  `result_id` int
+  `content: language, code` json
 );
 
 CREATE TABLE `result` (
   `result_id` int PRIMARY KEY AUTO_INCREMENT,
-  `code_explain` varchar(255),
-  `references` varchar(255),
-  `functionality_result_id` int,
-  `plagiarism_result_id` int,
-  `efficiency_result_id` int,
-  `readability_result_id` int
+  `repo_id` int,
+  `code_description` varchar(255),
+  `references` json
 );
 
 CREATE TABLE `functionality_result` (
-  `functionality_result_id` int PRIMARY KEY AUTO_INCREMENT
+  `functionality_result_id` int PRIMARY KEY AUTO_INCREMENT,
+  `result_id` int,
+  `testcase_results` json
 );
 
 CREATE TABLE `plagiarism_result` (
-  `plagiarism_result_id` int PRIMARY KEY AUTO_INCREMENT
+  `plagiarism_result_id` int PRIMARY KEY AUTO_INCREMENT,
+  `result_id` int,
+  `num_files` int,
+  `similarity_score` int
 );
 
 CREATE TABLE `efficiency_result` (
   `efficiency_result_id` int PRIMARY KEY AUTO_INCREMENT,
-  `line_of_codes_score` int,
-  `reservation_words_score` int,
-  `data_flow_complexity_score` int,
-  `control_flow_complexity_score` int
+  `result_id` int,
+  `loc_score` int,
+  `dataflow_complexity_score` int,
+  `controlflow_complexity_score` int,
+  `reservation_words_score` int
 );
 
 CREATE TABLE `readability_result` (
   `readability_result_id` int PRIMARY KEY AUTO_INCREMENT,
-  `mypy_score` int,
-  `pylint_score` int,
-  `eradicate_score` int,
-  `randon_score` int,
-  `pycodestyle_score` int
+  `result_id` int,
+  `pylint_result` int,
+  `mypy_result` int,
+  `pycodestyle_result` int
 );
 
 ALTER TABLE `lectures` ADD FOREIGN KEY (`instructor_id`) REFERENCES `users` (`user_id`);
@@ -101,12 +103,12 @@ ALTER TABLE `repo` ADD FOREIGN KEY (`author_id`) REFERENCES `users` (`user_id`);
 
 ALTER TABLE `repo` ADD FOREIGN KEY (`assignment_id`) REFERENCES `assignments` (`assignment_id`);
 
-ALTER TABLE `repo` ADD FOREIGN KEY (`result_id`) REFERENCES `result` (`result_id`);
+ALTER TABLE `result` ADD FOREIGN KEY (`repo_id`) REFERENCES `repo` (`repo_id`);
 
-ALTER TABLE `result` ADD FOREIGN KEY (`functionality_result_id`) REFERENCES `functionality_result` (`functionality_result_id`);
+ALTER TABLE `functionality_result` ADD FOREIGN KEY (`result_id`) REFERENCES `result` (`result_id`);
 
-ALTER TABLE `result` ADD FOREIGN KEY (`plagiarism_result_id`) REFERENCES `plagiarism_result` (`plagiarism_result_id`);
+ALTER TABLE `plagiarism_result` ADD FOREIGN KEY (`result_id`) REFERENCES `result` (`result_id`);
 
-ALTER TABLE `result` ADD FOREIGN KEY (`efficiency_result_id`) REFERENCES `efficiency_result` (`efficiency_result_id`);
+ALTER TABLE `efficiency_result` ADD FOREIGN KEY (`result_id`) REFERENCES `result` (`result_id`);
 
-ALTER TABLE `result` ADD FOREIGN KEY (`readability_result_id`) REFERENCES `readability_result` (`readability_result_id`);
+ALTER TABLE `readability_result` ADD FOREIGN KEY (`result_id`) REFERENCES `result` (`result_id`);

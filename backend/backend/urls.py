@@ -39,3 +39,23 @@ urlpatterns += [
 urlpatterns += [
     path('lectures/', include('lecture.urls'), name='lectures'),
 ]
+
+urlpatterns += [
+    path('enrollments/', include('enrollment.urls'), name='enrollments'),
+]
+
+urlpatterns += [
+    path('assignments/', include('assignment.urls'), name='assignment'),
+]
+
+urlpatterns += [
+    path('testcases/', include('testcase.urls'), name='testcases'),
+]
+
+urlpatterns += [
+    path('repos/', include('repo.urls'), name='repos')
+]
+
+urlpatterns += [
+    path('outputs/', include('output.urls'), name='outputs')
+]
