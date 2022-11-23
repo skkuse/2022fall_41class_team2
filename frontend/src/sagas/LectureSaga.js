@@ -16,25 +16,29 @@ async function getLectureAPI(payload) {
         result.data.data.results.push(postResult.data.id);
     }
 
-    // apiClient.delete("/api/lectures/1/");
-    // apiClient.delete("/api/lectures/2/");
-    // alert(JSON.stringify(result.data.data));
-
     for (const index in result.data.data.results) {
         let lecture = result.data.data.results[index];
         let assResult = await apiClient.get("/api/assignments/?lecture_id="+ lecture.id);
         // alert(JSON.stringify(assResult));
-        if(!assResult.data.data.results){
-            let postAssResult = await apiClient.post("/api/assignments/", {
-                "name": "Assignment1",
-                "deadline": "2022-11-18T12:45:25.465Z",
-                "question": "피보나치 수열을 만드시오.",
-                "constraints": "",
-                "skeleton_code": "#include <stdio.h>",
-                "answer_code": "#include <stdio.h>",
-                "lecture_id": lecture.id,
-            });
-            assResult = await apiClient.get("/api/assignments/?lecture_id="+ lecture.id);
+        if(!assResult.data.data.results.length){
+            try {
+                let postAssResult = await apiClient.post("/api/assignments/", {
+                    "name": "Assignment1",
+                    "deadline": "2022-11-18T12:45:25.465Z",
+                    "question": "피보나치 수열을 만드시오.",
+                    "constraints": "",
+                    "contents": [{
+                        "skeleton_code": "#include <stdio.h>",
+                        "answer_code": "#include <stdio.h>",
+                        "language": "python"
+                    }],
+                    "lecture_id": lecture.id,
+                });
+                assResult = await apiClient.get("/api/assignments/?lecture_id="+ lecture.id);
+            } catch (error) {
+                console.log(error);
+            }
+            
         }
         lecture.assignments = assResult.data.data;
     }
