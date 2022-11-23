@@ -11,7 +11,7 @@ async function getLectureAPI(payload) {
     let result = await apiClient.get("/api/lectures/");
     if(result.status == 200 && result.data.data.results.length == 0) {
         const postResult = await apiClient.post("/api/lectures/", {
-            name: "예시) 소프트웨어공학개론"
+            name: "예시) 소프트웨어공학개론4"
         });
         result.data.data.results.push(postResult.data.id);
     }
