@@ -8,7 +8,7 @@ export function setItemWithExpireTime(keyName, keyValue, tts) {
   
     // 객체를 JSON 문자열로 변환
     const objString = JSON.stringify(obj);
-    console.log(objString);
+    // console.log(objString);
   
     // setItem
     window.localStorage.setItem(keyName, objString);
@@ -19,7 +19,7 @@ export function setItemWithExpireTime(keyName, keyValue, tts) {
 export function getItemWithExpireTime(keyName) {
     // localStorage 값 읽기 (문자열)
     const objString = window.localStorage.getItem(keyName);
-    console.log(objString);
+    // console.log(objString);
     
     // null 체크
     if(!objString) {
@@ -28,7 +28,7 @@ export function getItemWithExpireTime(keyName) {
     
     // 문자열을 객체로 변환
     const obj = JSON.parse(objString);
-    console.log(obj);
+    // console.log(obj);
     
     
     // 현재 시간과 localStorage의 expire 시간 비교

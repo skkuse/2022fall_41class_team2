@@ -64,9 +64,10 @@ export const EditorPage = () => {
       try {
         if(!value.data.data.testcases.length) {
         apiClient.post("/api/testcases/", {
-          input: "string",
-          output: "string",
-          assignment_id: params.assignment_id
+          input: "nums = [100,200,300,400]",
+          output: "[0,1]",
+          assignment_id: params.assignment_id,
+          is_hidden: false
         }).then((value) => {
           apiClient.get(`/api/assignments/${params.assignment_id}/`).then((value) => {
             setAss(value.data.data);

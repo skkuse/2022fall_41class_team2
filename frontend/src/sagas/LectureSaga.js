@@ -9,34 +9,37 @@ import { GET_LECTURES, GET_LECTURES_FAIL, GET_LECTURES_SUCCESS, LECTURE_ACTION_T
 
 async function getLectureAPI(payload) {
     let result = await apiClient.get("/api/lectures/");
+    // * 강의 삭제 코드
+    // for (const lecture of result.data.data.results) {
+    //     try {
+    //         await apiClient.delete(`/api/lectures/${lecture.id}/`);
+    //     } catch (error) {
+    //     }
+    // }
+    // result = await apiClient.get("/api/lectures/");
+    
+    // * 강의 추가 코드
+    // const postResult = await apiClient.post("/api/lectures/", {
+    //     name: "예시) 소프트웨어공학개론"+new Date().getTime()
+    // });
+    // result.data.data.results.push(postResult.data.data);
+
     if(result.status == 200 && result.data.data.results.length == 0) {
         const postResult = await apiClient.post("/api/lectures/", {
-            name: "예시) 소프트웨어공학개론4"
+            name: "예시) 소프트웨어공학개론"
         });
-        result.data.data.results.push(postResult.data.id);
+        result.data.data.results.push(postResult.data.data);
     }
+
+    console.log(result);
 
     for (const index in result.data.data.results) {
         let lecture = result.data.data.results[index];
+        if(!lecture){
+            continue;
+        }
         let assResult = await apiClient.get("/api/assignments/?lecture_id="+ lecture.id);
         // alert(JSON.stringify(assResult));
-<<<<<<< HEAD
-        console.log(assResult);
-        if(!assResult.data.data.results.length){
-            let postAssResult = await apiClient.post("/api/assignments/", {
-                "name": "Assignment1",
-                "deadline": "2022-11-18T12:45:25.465Z",
-                "question": "피보나치 수열을 만드시오.",
-                "constraints": "",
-                "contents" : [{
-                    "skeleton_code": "#include <stdio.h>",
-                    "answer_code": "#include <stdio.h>",
-                    "language": "python"
-                }],
-                "lecture_id": lecture.id,
-            });
-            assResult = await apiClient.get("/api/assignments/?lecture_id="+ lecture.id);
-=======
         if(!assResult.data.data.results.length){
             try {
                 let postAssResult = await apiClient.post("/api/assignments/", {
@@ -45,8 +48,8 @@ async function getLectureAPI(payload) {
                     "question": "피보나치 수열을 만드시오.",
                     "constraints": "",
                     "contents": [{
-                        "skeleton_code": "#include <stdio.h>",
-                        "answer_code": "#include <stdio.h>",
+                        "skeleton_code": "print(\"Hello, World!\")",
+                        "answer_code": "print(\"Hello, World!\")",
                         "language": "python"
                     }],
                     "lecture_id": lecture.id,
@@ -55,8 +58,6 @@ async function getLectureAPI(payload) {
             } catch (error) {
                 console.log(error);
             }
-            
->>>>>>> main
         }
         lecture.assignments = assResult.data.data;
     }

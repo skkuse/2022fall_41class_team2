@@ -298,7 +298,6 @@ export const AssignmentOverview = ({ className, ...restProps }) => {
     ["#B57FB3", "#C8ADC7", "#D2C4D1"],
     ["#EADB80", "#E3DBAE", "#DFDBC5"],
     ["#E098AE", "#DEBAC5", "#DDCBD0"],
-    [],
   ]
 
   if(!lectureSelector) {
@@ -336,11 +335,13 @@ export const AssignmentOverview = ({ className, ...restProps }) => {
           {
             lectureSelector.results && lectureSelector.results.length ?
             lectureSelector.results.map((lecture, index) => {
-              return <LectureGroupComp 
-              key={JSON.stringify(lecture)} 
-              lecture={lecture}
-              color={colorList[index]}
+              return ( 
+              <LectureGroupComp 
+                key={JSON.stringify(lecture)} 
+                lecture={lecture}
+                color={colorList[(colorList.length-1) % (index + 1)]}
               />
+              )
             }) :
             <div>
               아직 지정된 강의가 없습니다.
@@ -357,6 +358,11 @@ export const AssignmentOverview = ({ className, ...restProps }) => {
 
 const LectureGroupComp = ({lecture, color}) => {
   return (
+    // <>
+    //   {
+    //     JSON.stringify(lecture.assignments)
+    //   }
+    // </>
     <LectureGroup>
       <NameContainer>
         <LectureName name={`${lecture.name}`} background={color[0]} />

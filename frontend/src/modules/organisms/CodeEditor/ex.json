@@ -1,0 +1,64 @@
+{
+    "code": 201,
+    "message": "Created",
+    "data": {
+        "id": 8,
+        "references": {},
+        "code_description": "1. The first line of the code is a shebang line. It tells the operating system that the file is a Python file.\n2. The second line is a comment.\n3. The third line is a docstring. It is a documentation string.\n4. The fourth line is a function definition.",
+        "functionality_result": {
+            "id": 2,
+            "testcase_results": [
+                {
+                    "is_hidden": false,
+                    "input": "20 30 10",
+                    "is_error": false,
+                    "expected_output": "20",
+                    "actual_output": "Hello world",
+                    "is_pass": false
+                },
+                {
+                    "is_hidden": false,
+                    "input": "30 30 10",
+                    "is_error": false,
+                    "expected_output": "30",
+                    "actual_output": "Hello world",
+                    "is_pass": false
+                },
+                {
+                    "is_hidden": true,
+                    "input": null,
+                    "is_error": false,
+                    "expected_output": null,
+                    "actual_output": null,
+                    "is_pass": false
+                },
+                {
+                    "is_hidden": false,
+                    "input": "20 10 10",
+                    "is_error": false,
+                    "expected_output": "10",
+                    "actual_output": "Hello world",
+                    "is_pass": false
+                }
+            ]
+        },
+        "efficiency_result": {
+            "id": 2,
+            "loc_score": 5,
+            "control_flow_complexity_score": 2,
+            "reservation_words_score": 2.5,
+            "data_flow_complexity_score": 95.5223880597015
+        },
+        "plagiarism_result": {
+            "id": 2,
+            "num_files_compared": 4,
+            "similarity_score": 0
+        },
+        "readability_result": {
+            "id": 2,
+            "pylint_score": 0,
+            "pycodestyle_score": 9,
+            "mypy_score": 10
+        }
+    }
+}

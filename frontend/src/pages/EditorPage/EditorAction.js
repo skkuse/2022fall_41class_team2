@@ -4,6 +4,13 @@ export const GET_REPO = "GET_REPO";
 export const CHANGE_REPO = "CHANGE_REPO";
 export const CREATE_REPO = "CREATE_REPO";
 export const UPDATE_REPO = "UPDATE_REPO";
+export const CLEAR_REPO = "CLEAR_REPO";
+
+export const clearRepoAction = () => {
+    return {
+        type: CLEAR_REPO
+    }
+}
 
 export const updateRepoAction  = (code) => {
     return {
