@@ -191,15 +191,25 @@ def execute_container(base_dir: str, image: str, command: str):
     volumes = {
         base_dir: {'bind': CONTAINER_CODE_DIR, 'mode': 'rw'},
     }
-    response = client.containers.run(
+    container = client.containers.run(
         image=image,
         command=command,
         volumes=volumes,
         working_dir=CONTAINER_CODE_DIR,
-        remove=True,
-        detach=False,
+        remove=False,
+        detach=True,
     )
 
+    exit_status = container.wait()['StatusCode']
+    if exit_status == 0:
+        out = container.logs(stdout=True, stderr=False, stream=True, follow=True)
+    else:
+        out = container.logs(stdout=False, stderr=True)
+    container.remove()
+    if exit_status != 0:
+        raise ContainerError(container, exit_status, command, image, out)
+
+    response = b''.join([line for line in out])
     return {
         'exit_status': 0,
         'output': response.decode('utf-8'),
