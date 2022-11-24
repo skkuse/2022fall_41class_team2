@@ -24,8 +24,8 @@ const PlagiarismIndicator = styled.div`
   background: #bfbfbf;
 `;
 
-export const SubmissionMaster = ({ resultObj, darkMode,...restProps }) => {
-  console.log(resultObj);
+export const SubmissionMaster = ({ resultObj, darkMode, ...restProps }) => {
+  console.log(`SubmissionMaster ${resultObj}`);
   const id = resultObj.id;
   const plagiarism = resultObj.plagiarism_result;
 

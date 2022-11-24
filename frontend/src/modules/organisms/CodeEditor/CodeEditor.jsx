@@ -286,8 +286,8 @@ export const CodeEditor = ({ assignment, darkMode }) => {
             <div style={{ marginLeft: "12.42px", marginTop: "24.83px" }}>
               <EditorWrapper>
                 <Editor
-                  width="1180px"
-                  height="820px"
+                  // width="1180px"
+                  // height="820px"
                   language={repoSelector.selectedModel.content.language}
                   theme="vs-light"
                   value={repoSelector.selectedModel.content.code}
@@ -336,8 +336,8 @@ export const CodeEditor = ({ assignment, darkMode }) => {
                   {
                     submitComplete?
                     <DiffEditor 
-                    width="560px"
-                    height="820px"
+                    // width="560px"
+                    // height="820px"
                     language={repoSelector.selectedModel.content.language}
                     original={repoSelector.selectedModel.content.code}
                     modified={assignment.contents[0].answer_code}
@@ -345,8 +345,8 @@ export const CodeEditor = ({ assignment, darkMode }) => {
                    
                   :
                   <Editor
-                    width="560px"
-                    height="820px"
+                    // width="560px"
+                    // height="820px"
                     theme="light"
                     value={assignment.contents[0].answer_code}
                     language={repoSelector.selectedModel.content.language}
@@ -392,3 +392,30 @@ export const CodeEditor = ({ assignment, darkMode }) => {
     </>
   );
 }
+
+// export const makeMonacoModel = (repo, dispatch) => {
+//   let model = monaco.editor.createModel(`${(repo.content.code)}`.replace("\\n","<br>"), "python");
+//   model.onDidChangeContent((e) => {
+//     console.log(e);
+//     let codeTempList = model.getLinesContent();
+//     let codeTemp = "";
+//     codeTempList.forEach(element => {
+//       if(element == "") {
+//         codeTemp+= "\n";
+//       }
+//       else{
+//         codeTemp+=element;
+//       }
+//     });
+    
+//     repo.content = {
+//       code: codeTemp,
+//       language: "python"
+//     }
+
+//     console.log("?ASDgsdg");
+
+//     // dispatch(saveRepoAction(repo));
+//   })
+//   return model;
+// }
