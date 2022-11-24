@@ -4,15 +4,16 @@ from pathlib import Path
 from rest_framework import generics, status, fields
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from rest_framework.exceptions import NotAuthenticated, PermissionDenied, ParseError
-from backend.exceptions import InternalServerError
-from output import utils_execution, utils_code_explain, utils_functionality, utils_readability, utils_efficiency, utils_plagiarism
-from testcase.models import Testcase
+from backend.settings.base import BASE_DIR, TESTING
+from drf_spectacular.utils import extend_schema_view, extend_schema, inline_serializer, OpenApiParameter
+from rest_framework.exceptions import NotAuthenticated, PermissionDenied
+from backend.exceptions import BadRequestError, InternalServerError
 from repo.models import Repo
 from output.models import Result
+from testcase.models import Testcase
 from output.serializers import ResultSerializer, TestcaseResultSerializer
-from drf_spectacular.utils import extend_schema_view, extend_schema, inline_serializer, OpenApiParameter
-from backend.settings.base import BASE_DIR, TESTING
+from output import utils_execution, utils_code_explain, utils_functionality, utils_readability, utils_efficiency, utils_plagiarism
+
 
 SERVER_CODE_DIR = str(BASE_DIR) + os.environ['SERVER_CODE_DIR'] if not TESTING else str(BASE_DIR) + '/temp/'
 MAX_RESULT_NUM = 3
@@ -81,13 +82,13 @@ def retrieve_testcase_output(request, testcase_id):
 
     try:
         testcase = Testcase.objects.get(pk=testcase_id)
-    except Testcase.DoesNotExist:
-        raise ParseError
-    except Testcase.MultipleObjectsReturned:
-        raise InternalServerError
+    except Testcase.DoesNotExist as e:
+        raise BadRequestError(detail=e)
+    except Testcase.MultipleObjectsReturned as e:
+        raise InternalServerError(detail=e)
 
     if testcase.is_hidden:
-        raise ParseError("Hidden testcase cannot be executed explicitly")
+        raise BadRequestError(detail='Hidden testcase cannot be executed explicitly')
 
     ret = utils_execution.run(
         base_dir=SERVER_CODE_DIR,
@@ -178,10 +179,10 @@ class ResultListOrCreate(generics.ListCreateAPIView):
 
         try:
             repo = Repo.objects.get(pk=repo_id)
-        except Repo.DoesNotExist:
-            raise ParseError
-        except Repo.MultipleObjectsReturned:
-            raise InternalServerError
+        except Repo.DoesNotExist as e:
+            raise BadRequestError(detail=e)
+        except Repo.MultipleObjectsReturned as e:
+            raise InternalServerError(detail=e)
 
         # Get necessary instances
         user = self.request.user
@@ -196,7 +197,7 @@ class ResultListOrCreate(generics.ListCreateAPIView):
             repo__assignment=assignment,
             repo__author=user,
         ).count() >= MAX_RESULT_NUM:
-            raise ParseError(detail="Submission could not be over 3 times.")
+            raise BadRequestError(detail=f'Submission could not be over {MAX_RESULT_NUM} times.')
 
         # When code is non-executable just return result instance
         if utils_execution.run(
@@ -288,10 +289,10 @@ class ResultRetrieve(generics.RetrieveAPIView):
         try:
             result_id = self.kwargs.get(self.lookup_field)
             result = Result.objects.get(pk=result_id)
-        except Result.DoesNotExist:
-            raise ParseError
-        except Result.MultipleObjectsReturned:
-            raise InternalServerError
+        except Result.DoesNotExist as e:
+            raise BadRequestError(detail=e)
+        except Result.MultipleObjectsReturned as e:
+            raise InternalServerError(detail=e)
 
         user = self.request.user
         author = result.repo.author

@@ -1,4 +1,3 @@
-from rest_framework.exceptions import ParseError
 from lecture.models import Lecture
 from rest_framework import generics, status
 from rest_framework.response import Response
@@ -6,7 +5,7 @@ from drf_spectacular.utils import extend_schema_view, extend_schema
 from enrollment.models import Enrollment
 from enrollment.serializers import EnrollmentSerializer
 from rest_framework.exceptions import NotAuthenticated, PermissionDenied
-from backend.exceptions import InternalServerError
+from backend.exceptions import BadRequestError, InternalServerError
 
 
 @extend_schema_view(
@@ -43,16 +42,16 @@ class EnrollmentListOrCreate(generics.ListCreateAPIView):
         try:
             lecture_id = self.request.data.get(self.lookup_field)
             lecture = Lecture.objects.get(pk=lecture_id)
-        except Lecture.DoesNotExist:
-            raise ParseError
-        except Lecture.MultipleObjectsReturned:
-            raise InternalServerError
+        except Lecture.DoesNotExist as e:
+            raise BadRequestError(detail=e)
+        except Lecture.MultipleObjectsReturned as e:
+            raise InternalServerError(detail=e)
 
         user = self.request.user
         if Enrollment.objects.filter(lecture=lecture, student=user).exists():
-            raise ParseError
+            raise BadRequestError(detail='already enrolled user')
         if lecture.instructor == user:
-            raise ParseError
+            raise BadRequestError(detail='instructor cannot be enrolled')
 
         return serializer.save(student=user, lecture=lecture)
 
@@ -84,10 +83,10 @@ class EnrollmentRetrieveOrDestroy(generics.RetrieveDestroyAPIView):
         enrollment_id = self.kwargs.get(self.lookup_field)
         try:
             enrollment = Enrollment.objects.get(pk=enrollment_id)
-        except Enrollment.DoesNotExist:
-            raise ParseError
-        except Enrollment.MultipleObjectsReturned:
-            raise InternalServerError
+        except Enrollment.DoesNotExist as e:
+            raise BadRequestError(detail=e)
+        except Enrollment.MultipleObjectsReturned as e:
+            raise InternalServerError(detail=e)
 
         if not enrollment.student == self.request.user:
             raise PermissionDenied
@@ -100,7 +99,7 @@ class EnrollmentRetrieveOrDestroy(generics.RetrieveDestroyAPIView):
         try:
             self.perform_destroy(instance)
             return Response(status=status.HTTP_204_NO_CONTENT)
-        except Enrollment.DoesNotExist:
-            raise ParseError
-        except Enrollment.MultipleObjectsReturned:
-            raise InternalServerError
+        except Enrollment.DoesNotExist as e:
+            raise BadRequestError(detail=e)
+        except Enrollment.MultipleObjectsReturned as e:
+            raise InternalServerError(detail=e)

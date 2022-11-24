@@ -1,6 +1,6 @@
 from rest_framework import generics
-from rest_framework.exceptions import ParseError, NotAuthenticated, PermissionDenied
-from backend.exceptions import InternalServerError
+from rest_framework.exceptions import NotAuthenticated, PermissionDenied
+from backend.exceptions import BadRequestError, InternalServerError
 from assignment.models import Assignment
 from repo.models import Repo
 from repo.serializers import RepoSerializer
@@ -48,10 +48,10 @@ class RepoListOrCreate(generics.ListCreateAPIView):
         try:
             assignment_id = request.data.get(self.lookup_param_field)
             assignment = Assignment.objects.get(pk=assignment_id)
-        except Assignment.DoesNotExist:
-            raise ParseError
-        except Assignment.MultipleObjectsReturned:
-            raise InternalServerError
+        except Assignment.DoesNotExist as e:
+            raise BadRequestError(detail=e)
+        except Assignment.MultipleObjectsReturned as e:
+            raise InternalServerError(detail=e)
 
         num_repo = Repo.objects.filter(
             author=request.user,
@@ -61,7 +61,7 @@ class RepoListOrCreate(generics.ListCreateAPIView):
         if num_repo < MAX_REPO:
             return super().create(request=request, *args, **kwargs)
         else:
-            raise ParseError(detail="Repo cannot be more than three instances.")
+            raise BadRequestError(detail=f'Repo cannot be more than {MAX_REPO} instances.')
 
     def get_queryset(self):
         assignment_id = self.request.GET.get(self.lookup_param_field)
@@ -130,10 +130,10 @@ class RepoRetrieveOrUpdateOrDestroy(generics.RetrieveUpdateDestroyAPIView):
         try:
             repo_id = self.kwargs.get(self.lookup_field)
             repo = Repo.objects.get(pk=repo_id)
-        except Repo.DoesNotExist:
-            raise ParseError
-        except Repo.MultipleObjectsReturned:
-            raise InternalServerError
+        except Repo.DoesNotExist as e:
+            raise BadRequestError(detail=e)
+        except Repo.MultipleObjectsReturned as e:
+            raise InternalServerError(detail=e)
 
         user = self.request.user
         if user.is_anonymous:

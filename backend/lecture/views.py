@@ -1,10 +1,9 @@
 from rest_framework import generics, status
 from rest_framework.response import Response
-from rest_framework.exceptions import ParseError
 from drf_spectacular.utils import extend_schema_view, extend_schema
 from lecture.models import Lecture
 from lecture.serializers import LectureSerializer
-from backend.exceptions import InternalServerError
+from backend.exceptions import BadRequestError, InternalServerError
 
 
 @extend_schema_view(
@@ -65,10 +64,10 @@ class LectureRetrieveOrDestroy(generics.RetrieveDestroyAPIView):
         try:
             lecture_id = self.kwargs.get(self.lookup_field)
             return Lecture.objects.get(pk=lecture_id)
-        except Lecture.DoesNotExist:
-            raise ParseError
-        except Lecture.MultipleObjectsReturned:
-            raise InternalServerError
+        except Lecture.DoesNotExist as e:
+            raise BadRequestError(detail=e)
+        except Lecture.MultipleObjectsReturned as e:
+            raise InternalServerError(detail=e)
 
     def delete(self, request, *args, **kwargs):
         instance = self.get_object()
