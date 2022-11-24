@@ -1,18 +1,16 @@
 import requests
-from rest_framework import status
 from rest_framework_simplejwt.tokens import RefreshToken
-from json.decoder import JSONDecodeError
-from rest_framework.exceptions import APIException
+from backend.exceptions import InternalServerError
 
 
 def handle_request(method, url=None, **kwargs):
     response = requests.request(method, url, **kwargs)
     if not response.ok:
-        raise APIException(detail=response.reason, code=response.status_code)
+        raise InternalServerError(detail=response.reason)
 
     content = response.json()
     if content.get('error') is not None:
-        raise APIException(detail=JSONDecodeError(content.get('error')), code=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        raise InternalServerError(detail=content.get('error'))
 
     return content
 
