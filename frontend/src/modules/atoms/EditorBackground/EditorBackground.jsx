@@ -92,7 +92,7 @@ const EfficiencyHighlighter = styled.div`
 const FunctionalityHighlighter = styled.div`
   color: ${(props) => (props.active ? "#52C0E7" : "#1f1f32")};
 `;
-export const EditorBackground = ({ mode, content, darkMode, ...restProps }) => {
+export const EditorBackground = ({ mode, content, darkMode, assignmentId,id,pfList,...restProps }) => {
   const [activeIndexChart, setActiveIndexChart] = useState(READABILITY);
   const onButtonClickChart = useCallback(
     (flag) => {
@@ -197,3 +197,5 @@ export const EditorBackground = ({ mode, content, darkMode, ...restProps }) => {
     return <Bg darkMode={darkMode}>{content}</Bg>;
   }
 };
+
+

@@ -302,8 +302,7 @@ export const AssignmentOverview = ({ className, darkMode, ...restProps }) => {
     ["#B57FB3", "#C8ADC7", "#D2C4D1"],
     ["#EADB80", "#E3DBAE", "#DFDBC5"],
     ["#E098AE", "#DEBAC5", "#DDCBD0"],
-    [],
-  ];
+  ]
 
   if (!lectureSelector) {
     return <></>;
@@ -346,12 +345,14 @@ export const AssignmentOverview = ({ className, darkMode, ...restProps }) => {
             lectureSelector.results.map((lecture, index) => {
               return (
                 <>
-                  <LectureGroupComp
-                    key={JSON.stringify(lecture)}
-                    lecture={lecture}
-                    color={colorList[index]}
+                  ( 
+              <LectureGroupComp
+                      key={JSON.stringify(lecture)}
+                      lecture={lecture}
+                      color={colorList[(colorList.length-1) % (index + 1)]}
                   />
-                  <Separator></Separator>
+                   )
+             <Separator></Separator>
                 </>
               );
             })
@@ -366,6 +367,11 @@ export const AssignmentOverview = ({ className, darkMode, ...restProps }) => {
 
 const LectureGroupComp = ({ lecture, color }) => {
   return (
+    // <>
+    //   {
+    //     JSON.stringify(lecture.assignments)
+    //   }
+    // </>
     <LectureGroup>
       <NameContainer>
         <LectureName name={`${lecture.name}`} background={color[0]} />

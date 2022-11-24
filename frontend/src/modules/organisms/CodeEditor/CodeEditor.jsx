@@ -10,16 +10,17 @@ import styled from "styled-components";
 import { Helmet } from "react-helmet";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams, useLocation, useNavigate } from "react-router-dom";
-import Editor, { useMonaco } from "@monaco-editor/react";
+import Editor, { DiffEditor, useMonaco } from "@monaco-editor/react";
 import { Resizable } from "re-resizable";
 import { useState, useEffect } from "react";
 import { render } from "react-dom";
 import MonacoEditor from "react-monaco-editor";
-import { apiClient } from "./../../../api/axios";
-import { saveRepoListAction } from "../../../pages/EditorPage/EditorAction";
-import { monaco } from "react-monaco-editor";
-import { saveRepoAction } from "./../../../pages/EditorPage/EditorAction";
+import { apiClient } from './../../../api/axios';
+import { clearRepoAction, saveRepoListAction } from "../../../pages/EditorPage/EditorAction";
+import { monaco } from 'react-monaco-editor';
+import { saveRepoAction } from './../../../pages/EditorPage/EditorAction';
 import { createRef } from "react";
+import { changeRepoAction } from './../../../pages/EditorPage/EditorAction';
 
 const EvaluationWindowGrid = styled.div`
   display: inline-grid;
@@ -140,7 +141,11 @@ export const CodeEditor = ({ assignment, darkMode }) => {
   const dispatch = useDispatch();
   const settingSelector = useSelector((state) => state.SettingReducer);
   const repoSelector = useSelector((state) => state.editorReducer);
+
+  const [submitComplete, setSubmitComplete] = useState(false);
   let repoList = [];
+
+  const [submitResult, setSubmitResult] = useState(null);
 
   const changeMode = ({ src, ...restProps }) => {
     // altMode : none, grading, execution, submission
@@ -154,22 +159,57 @@ export const CodeEditor = ({ assignment, darkMode }) => {
     // console.log(editMode);
   };
 
-  useEffect(() => {
-    console.log(editMode);
-  }, [editMode]);
+  const submitCode = async() => {
+    try {
+      const result = await apiClient.post("/api/outputs/results/", {
+        repo_id: repoSelector.selectedModel.id,
+        language: repoSelector.selectedModel.content.language,
+        code: repoSelector.selectedModel.content.code
+      });
+      setSubmitResult(result.data);
+      setSubmitComplete(true);
+    } catch (error) {
+      alert("제출은 4회 이상 할 수 없습니다.")
+    }
+  }
 
-  const fetchRepoList = async () => {
-    let result = await apiClient.get(
-      `/api/repos/?assignment_id=${assignment.id}`
-    );
+    useEffect(() => {
+      switch (editMode.altMode) {
+        case "실행":
+          // setSubmitComplete(true);
+          break;
+
+        case "채점":
+        
+          break;
+
+        case "제출":
+          submitCode();
+          break;
+      
+        default:
+          break;
+      }
+      console.log(editMode);
+    }, [editMode]);
+
+
+  const findByLanguage = (contents) => {
+    const userLanguage = settingSelector.language.toLowerCase();
+    return contents.find((content) => content.language == userLanguage);
+  }
+
+
+
+  const fetchRepoList = async() => {
+    let result = await apiClient.get(`/api/repos/?assignment_id=${assignment.id}`);
     console.log(result.data.data.results);
-    if (!result.data.data.results.length) {
-      console.log("삽입");
-      console.log(assignment);
-      const postResult = await addRepo(assignment.contents[0].skeleton_code);
+    if(!result.data.data.results.length) {
+      console.log("삽입" +JSON.stringify( assignment.contents));
+      const userSkeleton = findByLanguage(assignment.contents);
+      const postResult = await addRepo(userSkeleton.skeleton_code);
       result = await apiClient.get(`/api/repos/?assignment_id=${assignment.id}`);
     }
-    console.log(result);
     const monacoModelList = result.data.data.results.map((repo) => {
       return repo;
     })
@@ -177,94 +217,37 @@ export const CodeEditor = ({ assignment, darkMode }) => {
   };
 
   const addRepo = async(code) => {
-    const postResult = await apiClient.post("/api/repos/", {
-      language: assignment.contents[0].language, 
-      code:code,
-      assignment_id: assignment.id
-    });
-    return postResult;
-  };
+    if(code) {
+      const postResult = await apiClient.post("/api/repos/", {
+        language: settingSelector.language.toLowerCase(), 
+        code: code,
+        assignment_id: assignment.id
+      });
+      return postResult;
+    }
+  }
 
   const handleRepo = async () => {
     repoList = await fetchRepoList();
     dispatch(saveRepoListAction(repoList));
-  };
+    dispatch(changeRepoAction(repoList[repoList.length - 1]));
+  }
 
   useEffect(() => {
     handleRepo();
-  }, []);
+    return ()=>{
+        // * 다른 과제로 들어갈 때 저장된 코드 비우기
+        dispatch(clearRepoAction());
+    }
+  },[]);
 
   useEffect(() => {
     if (!monaco) return;
+    
   }, [monaco]);
 
-  useEffect(() => {
-    if (settingSelector && repoSelector && repoSelector.selectedModel) {
-      const options = {
-        acceptSuggestionOnCommitCharacter: true,
-        acceptSuggestionOnEnter: "on",
-        accessibilitySupport: "auto",
-        autoIndent: false,
-        automaticLayout: true,
-        codeLens: true,
-        colorDecorators: true,
-        contextmenu: true,
-        cursorBlinking: "blink",
-        cursorSmoothCaretAnimation: false,
-        cursorStyle: "line",
-        disableLayerHinting: false,
-        disableMonospaceOptimizations: false,
-        dragAndDrop: false,
-        fixedOverflowWidgets: false,
-        folding: true,
-        foldingStrategy: "auto",
-        fontLigatures: false,
-        formatOnPaste: false,
-        formatOnType: false,
-        hideCursorInOverviewRuler: false,
-        highlightActiveIndentGuide: true,
-        links: true,
-        mouseWheelZoom: false,
-        multiCursorMergeOverlapping: true,
-        multiCursorModifier: "alt",
-        // model:model,
-        overviewRulerBorder: true,
-        overviewRulerLanes: 2,
-        quickSuggestions: true,
-        quickSuggestionsDelay: 100,
-        readOnly: false,
-        renderControlCharacters: false,
-        renderFinalNewline: true,
-        renderIndentGuides: true,
-        renderLineHighlight: "all",
-        renderWhitespace: "none",
-        revealHorizontalRightPadding: 30,
-        roundedSelection: true,
-        rulers: [],
-        scrollBeyondLastColumn: 5,
-        scrollBeyondLastLine: true,
-        selectOnLineNumbers: true,
-        selectionClipboard: true,
-        selectionHighlight: true,
-        showFoldingControls: "mouseover",
-        smoothScrolling: false,
-        suggestOnTriggerCharacters: true,
-        wordBasedSuggestions: true,
-        wordSeparators: "~!@#$%^&*()-=+[{]}|;:'\",.<>/?",
-        wordWrap: "off",
-        wordWrapBreakAfterCharacters: "\t})]?|&,;",
-        wordWrapBreakBeforeCharacters: "{([+",
-        wordWrapBreakObtrusiveCharacters: ".",
-        wordWrapColumn: 80,
-        wordWrapMinified: true,
-        wrappingIndent: "none",
-      };
 
-      setMonacoOption(options);
-    }
-  }, [repoSelector, repoSelector.selectedModel, settingSelector]);
-
-  if (!(repoSelector && repoSelector.selectedModel)) {
+  if(!(repoSelector && repoSelector.selectedModel)) {
     return <></>;
   }
 
@@ -302,13 +285,14 @@ export const CodeEditor = ({ assignment, darkMode }) => {
             </EditorHeaderWrapper>
             <div style={{ marginLeft: "12.42px", marginTop: "24.83px" }}>
               <EditorWrapper>
-                <MonacoEditor
+                <Editor
+                  width="1180px"
+                  height="820px"
                   language={repoSelector.selectedModel.content.language}
                   theme="vs-light"
                   value={repoSelector.selectedModel.content.code}
-                  onChange={(e) => {
-                    console.log(e);
-                    let repoTemp = repoSelector.selectedModel;
+                  onChange={(e)=>{
+                    let repoTemp= repoSelector.selectedModel;
                     repoTemp.content.code = e;
                     dispatch(saveRepoAction(repoTemp));
                     const result = apiClient.put(
@@ -320,7 +304,6 @@ export const CodeEditor = ({ assignment, darkMode }) => {
                       }
                     );
                   }}
-                  options={monacoOption}
                 />
               </EditorWrapper>
             </div>
@@ -350,14 +333,28 @@ export const CodeEditor = ({ assignment, darkMode }) => {
               </EditorHeaderWrapper>
               <div style={{ marginLeft: "12.42px", marginTop: "24.83px" }}>
                 <EditorWrapper>
-                  <MonacoEditor
+                  {
+                    submitComplete?
+                    <DiffEditor 
+                    width="560px"
+                    height="820px"
+                    language={repoSelector.selectedModel.content.language}
+                    original={repoSelector.selectedModel.content.code}
+                    modified={assignment.contents[0].answer_code}
+                    />
+                   
+                  :
+                  <Editor
+                    width="560px"
+                    height="820px"
                     theme="light"
-                    value="function hello() {<br/>  alert('Hello world!');<br/>}"
-                    language={settingSelector.language.toLowerCase()}
-                    options={monacoOption}
-                  />
+                    value={assignment.contents[0].answer_code}
+                    language={repoSelector.selectedModel.content.language}
+                  /> 
+                  }
                 </EditorWrapper>
               </div>
+              
               {/* 실행 결과*/}
               {editMode.altMode === "실행" && (
                 <TerminalWrapper
@@ -379,13 +376,13 @@ export const CodeEditor = ({ assignment, darkMode }) => {
                 </GradingWrapper>
               )}
               {/* 제출 결과*/}
-              {editMode.altMode === "제출" && (
+              {editMode.altMode === "제출" && submitResult.data && (
                 <TerminalWrapper
                   style={{ marginLeft: "12.72px" }}
                   edit={editMode.edit}
                   altMode={editMode.altMode}
                 >
-                  <SubmissionResult darkMode={darkMode} />
+                  <SubmissionResult darkMode={darkMode} submitResult={submitResult}/>
                 </TerminalWrapper>
               )}
             </EvaluationWindowGrid>
@@ -394,31 +391,4 @@ export const CodeEditor = ({ assignment, darkMode }) => {
       </EditorWindowWrapper>
     </>
   );
-};
-
-// export const makeMonacoModel = (repo, dispatch) => {
-//   let model = monaco.editor.createModel(`${(repo.content.code)}`.replace("\\n","<br>"), "python");
-//   model.onDidChangeContent((e) => {
-//     console.log(e);
-//     let codeTempList = model.getLinesContent();
-//     let codeTemp = "";
-//     codeTempList.forEach(element => {
-//       if(element == "") {
-//         codeTemp+= "\n";
-//       }
-//       else{
-//         codeTemp+=element;
-//       }
-//     });
-
-//     repo.content = {
-//       code: codeTemp,
-//       language: "python"
-//     }
-
-//     console.log("?ASDgsdg");
-
-//     // dispatch(saveRepoAction(repo));
-//   })
-//   return model;
-// }
+}

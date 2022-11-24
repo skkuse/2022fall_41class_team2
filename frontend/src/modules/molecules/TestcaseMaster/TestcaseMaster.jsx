@@ -1,5 +1,8 @@
 import styled from "styled-components";
 import { EditorBackground, EditorHeader } from "../../atoms/";
+import { apiClient } from './../../../api/axios';
+import { useSelector } from 'react-redux';
+import { useState } from 'react';
 
 const DescWrapper = styled.div`
   display: flex;
@@ -52,6 +55,22 @@ const ValidationButton = styled.div`
 
 function TestcaseMaster({ bodyContent, testCases, darkMode, ...restProps }) {
   const headerContent = "테스트 케이스";
+  const repoSelector = useSelector((state) => state.editorReducer);
+
+  const [pfList, setPfList] = useState(null);
+
+  const executeTestCase = async(testcase_id) => {
+    try {
+      const result = await apiClient.post(`/api/outputs/testcases/${testcase_id}/`, {
+        language: repoSelector.selectedModel.content.language,
+        code: repoSelector.selectedModel.content.code
+      });
+      return result;
+
+    } catch (error) {
+    }
+  }
+
   return (
     <DescWrapper>
       <TestCaseHeaderContainer darkMode={darkMode}>
@@ -63,11 +82,23 @@ function TestcaseMaster({ bodyContent, testCases, darkMode, ...restProps }) {
 
         <div style={{ marginRight: "16.13px" }}>
           <ValidationButtonContainer darkMode={darkMode}>
-            <ValidationButton>검증</ValidationButton>
+            <ValidationButton onClick={async()=>{
+            let tempPfList = [];
+            for (const tc of testCases) {
+              const result = await executeTestCase(tc.id);
+              if(result) {
+                tempPfList.push({
+                  ...result.data.data,
+                  id: tc.id
+                });
+              }
+              
+            }
+            setPfList(tempPfList);
+          }}>검증</ValidationButton>
           </ValidationButtonContainer>
         </div>
       </TestCaseHeaderContainer>
-
       {/* // TODO: testcase 개수만큼 pooling */}
       {testCases.map((testcase, index) => {
         return (
@@ -78,6 +109,8 @@ function TestcaseMaster({ bodyContent, testCases, darkMode, ...restProps }) {
               `}
             assignmentId={restProps.assignmentId}
             darkMode={darkMode}
+              id={testcase.id}
+              pfList={pfList}
           />
         );
       })}
