@@ -4,7 +4,7 @@ from lecture.models import Lecture
 from assignment.models import Assignment
 from testcase.models import Testcase
 from repo.models import Repo
-from output.models import Result, FunctionalityResult, ReadabilityResult, EfficiencyResult, PlagiarismResult
+from output.models import Result, FunctionalityResult
 
 
 class TestResult(TestCase):

@@ -12,9 +12,9 @@ from repo.models import Repo
 from output.models import Result
 from output.serializers import ResultSerializer, TestcaseResultSerializer
 from drf_spectacular.utils import extend_schema_view, extend_schema, inline_serializer, OpenApiParameter
-from backend.settings.base import BASE_DIR
+from backend.settings.base import BASE_DIR, TESTING
 
-SERVER_CODE_DIR = str(BASE_DIR) + os.environ['SERVER_CODE_DIR']
+SERVER_CODE_DIR = str(BASE_DIR) + os.environ['SERVER_CODE_DIR'] if not TESTING else str(BASE_DIR) + '/temp/'
 MAX_RESULT_NUM = 3
 
 
