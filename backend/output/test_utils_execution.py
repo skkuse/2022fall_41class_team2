@@ -57,7 +57,7 @@ def solution():
         response = run(SERVER_CODE_DIR, 'python', raw_code, raw_input)
 
         self.assertEqual(response.get('exit_status'), 0)
-        self.assertEqual(response.get('output'), '10.2\n')
+        self.assertEqual(response.get('output'), '10.2')
 
     def test_run_javascript(self):
         raw_code = '''
@@ -88,7 +88,7 @@ let solution = () => {
         response = run(SERVER_CODE_DIR, 'javascript', raw_code, raw_input)
 
         self.assertEqual(response.get('exit_status'), 0)
-        self.assertEqual(response.get('output'), '10.2\n')
+        self.assertEqual(response.get('output'), '10.2')
 
     def test_run_c(self):
         raw_code = '''
@@ -115,7 +115,7 @@ void solution() {
         response = run(SERVER_CODE_DIR, 'c', raw_code, raw_input)
 
         self.assertEqual(response.get('exit_status'), 0)
-        self.assertEqual(response.get('output'), '10.2\n')
+        self.assertEqual(response.get('output'), '10.2')
 
     def test_run_cpp(self):
         raw_code = '''
@@ -144,4 +144,4 @@ void solution() {
         response = run(SERVER_CODE_DIR, 'cpp', raw_code, raw_input)
 
         self.assertEqual(response.get('exit_status'), 0)
-        self.assertEqual(response.get('output'), '10.2\n')
+        self.assertEqual(response.get('output'), '10.2')
