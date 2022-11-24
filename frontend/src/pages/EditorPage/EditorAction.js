@@ -5,12 +5,31 @@ export const CHANGE_REPO = "CHANGE_REPO";
 export const CREATE_REPO = "CREATE_REPO";
 export const UPDATE_REPO = "UPDATE_REPO";
 export const CLEAR_REPO = "CLEAR_REPO";
+export const READY_CHANGE_SELECTED_REPO = "READY_CHANGE_SELECTED_REPO";
+export const READY_CREATE_SELECTED_REPO = "READY_CREATE_SELECTED_REPO";
 
 export const clearRepoAction = () => {
     return {
         type: CLEAR_REPO
     }
 }
+
+
+export const readyChangeSelectedRepoAction = (prevId) => {
+    return {
+        type: READY_CHANGE_SELECTED_REPO,
+        payload: prevId
+    }
+}
+
+
+export const readyCreateSelectedRepoAction = (prevId) => {
+    return {
+        type: READY_CREATE_SELECTED_REPO,
+        payload: prevId
+    }
+}
+
 
 export const updateRepoAction  = (code) => {
     return {

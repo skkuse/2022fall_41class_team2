@@ -26,8 +26,11 @@ const PlagiarismIndicator = styled.div`
 
 export const SubmissionMaster = ({ resultObj, darkMode, ...restProps }) => {
   console.log(`SubmissionMaster ${resultObj}`);
-  const id = resultObj.id;
-  const plagiarism = resultObj.plagiarism_result;
+  const data = resultObj.data;
+
+  console.log(data);
+  const id = data.id;
+  const plagiarism = data.plagiarism_result;
 
   const headerContent = "제출결과";
   return (
@@ -45,7 +48,7 @@ export const SubmissionMaster = ({ resultObj, darkMode, ...restProps }) => {
       <EditorBackground
         mode="submit"
         assignmentId={id}
-        content={resultObj}
+        content={data}
         darkMode={darkMode}
       />
     </DescWrapper>

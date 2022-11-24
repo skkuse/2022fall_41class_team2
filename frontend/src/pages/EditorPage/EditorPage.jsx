@@ -51,6 +51,7 @@ export const EditorPage = () => {
 
   const [lecture, setLecture] = useState();
   const [ass, setAss] = useState();
+  const [changeRepo, setChangeRepo] = useState(false);
 
   const settingSelector = useSelector((state) => state.SettingReducer);
 
@@ -61,6 +62,7 @@ export const EditorPage = () => {
   useEffect(() => {
     setLecture(location.state.lecture);
     apiClient.get(`/api/assignments/${params.assignment_id}/`).then((value) => {
+      setAss(value.data.data);
       // * 테케 없으면 새로 추가
       if(!value.data.data.testcases.length) {
         apiClient.post("/api/testcases/", {
@@ -97,6 +99,8 @@ export const EditorPage = () => {
         assignmentName={ass.name}
         assignment={ass}
         darkMode={darkMode}
+        changeRepo={changeRepo}
+        setChangeRepo={setChangeRepo}
       />
       {/* Problem section*/}
       <EditorPageGrid>
@@ -124,7 +128,12 @@ export const EditorPage = () => {
             marginRight: "43px",
           }}
         >
-          <CodeEditor assignment={ass} darkMode={darkMode} />
+          <CodeEditor 
+            assignment={ass} 
+            darkMode={darkMode} 
+            changeRepo={changeRepo}
+            setChangeRepo={setChangeRepo}
+          />
         </CodeEditorWrapper>
       </EditorPageGrid>
     </>

@@ -32,7 +32,7 @@ const GridContainer = styled.div`
   width: 1210px;
   grid-template-columns: 1fr 3.5fr 1fr;
   grid-template-areas: "a b c";
-  align-itmes: center;
+  align-items: center;
 `;
 
 const ButtonContainer = styled.div`
@@ -107,7 +107,6 @@ const LectureGroup = styled.div`
   width: 100%;
 
   display: grid;
-
   grid-template-columns: 1fr 7.6fr;
   grid-template-rows: repeat(${(props) => props.numAssignment}, 68px)[last-line];
 `;

@@ -134,7 +134,7 @@ const CoreButton = styled.div`
   cursor: pointer;
 `;
 
-export const CodeEditor = ({ assignment, darkMode }) => {
+export const CodeEditor = ({ assignment, darkMode, changeRepo, setChangeRepo }) => {
   console.log(assignment);
 
   const headerContent = "코드 입력";
@@ -153,6 +153,7 @@ export const CodeEditor = ({ assignment, darkMode }) => {
   let repoList = [];
 
   const [submitResult, setSubmitResult] = useState(null);
+  const [submitLoading, setSubmitLoading] = useState(null);
 
   const changeMode = ({ src, ...restProps }) => {
     // altMode : none, grading, execution, submission
@@ -167,6 +168,7 @@ export const CodeEditor = ({ assignment, darkMode }) => {
   };
 
   const submitCode = async () => {
+    setSubmitLoading(true);
     try {
       const result = await apiClient.post("/api/outputs/results/", {
         repo_id: repoSelector.selectedModel.id,
@@ -177,7 +179,9 @@ export const CodeEditor = ({ assignment, darkMode }) => {
       setSubmitComplete(true);
     } catch (error) {
       alert("제출은 4회 이상 할 수 없습니다.");
+      setSubmitComplete(false);
     }
+    setSubmitLoading(false);
   };
 
   useEffect(() => {
@@ -252,8 +256,14 @@ export const CodeEditor = ({ assignment, darkMode }) => {
     if (!monaco) return;
   }, [monaco]);
 
-  if (!(repoSelector && repoSelector.selectedModel)) {
-    return <></>;
+  // useEffect(() => {
+  //   alert("false");
+  //   setChangeRepo(false);
+  // },[repoSelector.selectedModel])
+
+  if (!(repoSelector && repoSelector.selectedModel && repoSelector.repoCreateInfo && repoSelector.repoChangeInfo)) {
+    console.log(repoSelector);
+    return <></>
   }
 
   console.log(editorRef);
@@ -290,15 +300,45 @@ export const CodeEditor = ({ assignment, darkMode }) => {
               </div>
             </EditorHeaderWrapper>
             <div style={{ marginLeft: "12.42px", marginTop: "24.83px" }}>
-              <EditorWrapper>
-                <Editor
+              <EditorWrapper style={{position:"relative"}}>
+                {/* {
+                  repoSelector.repoList.map((repo) => {
+                    return (
+                      <div style={{color:"white"}}>
+                        {
+                          repo.content.code
+                        }
+                      </div>
+                    )
+                  })
+                }
+                <h1 style={{color:"white"}}>{JSON.stringify(changeRepo)}</h1>
+                
+                <div style={{color:"white"}}>
+                    {
+                      JSON.stringify(repoSelector.repoCreateInfo + "fdf")
+                    }
+                  </div>
+
+                  <div style={{color:"white"}}>
+                    {
+                      JSON.stringify(repoSelector.selectedModel.content.code)
+                    }
+                  </div> */}
+
+                {repoSelector.selectedModel && <Editor
                   // width="1180px"
                   // height="820px"
                   language={repoSelector.selectedModel.content.language}
                   theme={darkMode ? "vs-dark" : "light"}
                   value={repoSelector.selectedModel.content.code}
                   onChange={(e) => {
-                    let repoTemp = repoSelector.selectedModel;
+                    if(repoSelector.repoChangeInfo.isChanging || repoSelector.repoCreateInfo.isCreating ) {
+                      return;
+                    }
+                    let repoTemp = {
+                      ...repoSelector.selectedModel
+                    };
                     repoTemp.content.code = e;
                     dispatch(saveRepoAction(repoTemp));
                     const result = apiClient.put(
@@ -310,7 +350,14 @@ export const CodeEditor = ({ assignment, darkMode }) => {
                       }
                     );
                   }}
-                />
+                />}
+
+                {
+                  (repoSelector.repoChangeInfo.isChanging || repoSelector.repoCreateInfo.isCreating) && 
+                  <div style={{width:"100%", height: "100%", backgroundColor: "rgba(255,255,255, 0.1)", position:"absolute", top: 0, left:0, zIndex: 1000}}>
+                      
+                  </div>
+                }
               </EditorWrapper>
             </div>
           </>
@@ -405,6 +452,21 @@ export const CodeEditor = ({ assignment, darkMode }) => {
           </>
         )}
       </EditorWindowWrapper>
+
+      {
+        submitLoading
+        ?
+        <div style={{
+          display: "flex", alignItems:"center", justifyContent:"center",
+          position:"absolute", zIndex:10000, top: 0, left: 0,
+          width: "100vw", height: "140vh", backgroundColor: "rgba(255,255,255,0.5)"}}>
+            
+            Loading...
+
+        </div>
+        :
+        <></>
+      }
     </>
   );
 };

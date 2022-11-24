@@ -3,5 +3,5 @@
 import { SubmissionMaster } from "../../molecules";
 
 export const SubmissionResult = ({ submitResult, darkMode, ...restProps }) => {
-  return <SubmissionMaster resultObj={JSON.stringify(submitResult)} darkMode={darkMode} />;
+  return <SubmissionMaster resultObj={submitResult} darkMode={darkMode} />;
 };

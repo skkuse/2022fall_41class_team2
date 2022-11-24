@@ -18,7 +18,10 @@ import {
 import { useDispatch } from "react-redux";
 import {
   changeRepoAction,
+  clearSelectedRepoAction,
   createRepoAction,
+  readyChangeSelectedRepoAction,
+  readyCreateSelectedRepoAction,
   saveRepoListAction,
   updateRepoAction,
 } from "./../../../pages/EditorPage/EditorAction";
@@ -64,11 +67,13 @@ export const Banner = ({
   assignment,
   saveState,
   danger,
-  darkMode,
+  darkMode, changeRepo, setChangeRepo
 }) => {
   const repoSelector = useSelector((state) => state.editorReducer);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
+  
   const [remainTime, setRemainTime] = useState(
     getTimeDiff(new Date(assignment.deadline), new Date())
   );
@@ -78,6 +83,11 @@ export const Banner = ({
       setRemainTime(getTimeDiff(new Date(assignment.deadline), new Date()));
     }, 1000);
   }, []);
+
+  const findByLanguage = (contents) => {
+    const userLanguage = repoSelector.selectedModel.content.language.toLowerCase();
+    return contents.find((content) => content.language == userLanguage);
+  };
 
   /* saveState는 임시 저장 세 번까지를 구현하려고 넣어보았습니다 @bw-99 어떻게 구현하는지에 따라서 달라질 것 같습니다. */
   if (!repoSelector) {
@@ -137,7 +147,8 @@ export const Banner = ({
       <div
         style={{ marginLeft: "14.86px" }}
         onClick={() => {
-          const skeletonCode = assignment.skeleton_code;
+          const skeletonCode = findByLanguage(assignment.contents).skeleton_code;
+          console.log(skeletonCode);
           dispatch(updateRepoAction(skeletonCode));
         }}
       >
@@ -176,25 +187,70 @@ export const Banner = ({
           repoSelector={repoSelector}
           index={0}
           assignment={assignment}
+          changeRepo={changeRepo}
+          setChangeRepo={setChangeRepo}
         />
         <SaveButtonComp
           repoSelector={repoSelector}
           index={1}
           assignment={assignment}
+          changeRepo={changeRepo}
+          setChangeRepo={setChangeRepo}
         />
         <SaveButtonComp
           repoSelector={repoSelector}
           index={2}
           assignment={assignment}
+          changeRepo={changeRepo}
+          setChangeRepo={setChangeRepo}
         />
       </div>
     </Bg>
   );
 };
 
-const SaveButtonComp = ({ repoSelector, index, assignment }) => {
+const SaveButtonComp = ({ repoSelector, index, assignment, changeRepo, setChangeRepo }) => {
   const dispatch = useDispatch();
   const isSaved = repoSelector.repoList.length - 1 >= index;
+
+  const findByLanguage = (contents) => {
+    const userLanguage = repoSelector.selectedModel.content.language.toLowerCase();
+    return contents.find((content) => content.language == userLanguage);
+  };
+
+  // * change repo
+  useEffect(()=>{
+    if(
+      repoSelector &&
+      repoSelector.repoChangeInfo &&
+      repoSelector.repoChangeInfo.isChanging && 
+      isSaved && 
+      repoSelector.selectedModel.id != repoSelector.repoList[index].id &&
+      repoSelector.repoChangeInfo.prevId == index
+      ) {
+      dispatch(changeRepoAction(repoSelector.repoList[index]));
+    }
+  }, )
+
+  // * create repo
+  useEffect(()=>{
+    if(
+      repoSelector &&
+      repoSelector.repoCreateInfo &&
+      repoSelector.repoCreateInfo.isCreating && 
+      !isSaved &&
+      repoSelector.repoCreateInfo.prevId == index
+      ) {
+        const skeletonCode = findByLanguage(assignment.contents).skeleton_code;
+        apiClient.post(`/api/repos/`, {
+          language: "python",
+          code: skeletonCode,
+          assignment_id: assignment.id,
+        }).then((result)=>{
+          dispatch(createRepoAction(result.data.data));
+        })
+    }
+  }, )
 
   return (
     <div
@@ -218,18 +274,19 @@ const SaveButtonComp = ({ repoSelector, index, assignment }) => {
         }
         // * 코드 불러오기
         else if (isSaved) {
-          // alert("코드 불러오기")
-          dispatch(changeRepoAction(repoSelector.repoList[index]));
+          dispatch(readyChangeSelectedRepoAction(index));
+          // // setChangeRepo(true);
+          // setTimeout(() => {
+          //   dispatch(changeRepoAction(repoSelector.repoList[index]));
+          //   // setChangeRepo(false);
+          // }, 100);
+
         }
         // * 저장소 새로 추가
         else {
           // alert("코드 추가");
-          const result = await apiClient.post(`/api/repos/`, {
-            language: "python",
-            code: "code",
-            assignment_id: assignment.id,
-          });
-          dispatch(createRepoAction(result.data.data));
+          dispatch(readyCreateSelectedRepoAction(index));
+          
         }
       }}
     >
