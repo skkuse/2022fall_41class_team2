@@ -1,11 +1,7 @@
 import os
-import logging
 
 from uuid import uuid4
-from rest_framework import status
-from rest_framework.exceptions import APIException
-
-logger = logging.getLogger(__name__)
+from backend.exceptions import InternalServerError
 
 
 def generate_files(base_dir: str, contents: [str], suffixes: [str]):
@@ -23,8 +19,7 @@ def generate_files(base_dir: str, contents: [str], suffixes: [str]):
             filenames.append(filename)
         return filenames
     except Exception as e:
-        logger.exception(e)
-        raise APIException(detail='Generating files are failed.', code=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        raise InternalServerError(detail=e)
 
 
 def delete_files(full_filenames: [str]):

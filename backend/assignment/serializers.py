@@ -15,7 +15,7 @@ class ContentSerializer(serializers.Serializer):
         return super().to_representation(instance=instance)
 
 
-class TestcaseSerializer(serializers.ModelSerializer):
+class AssignmentTestcaseSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Testcase
@@ -35,7 +35,7 @@ class AssignmentSerializer(serializers.ModelSerializer):
     contents = serializers.ListField(
         child=ContentSerializer(),
     )
-    testcases = TestcaseSerializer(many=True, read_only=True)
+    testcases = AssignmentTestcaseSerializer(many=True, read_only=True)
 
     class Meta:
         model = Assignment

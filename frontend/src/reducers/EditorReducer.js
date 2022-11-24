@@ -1,5 +1,5 @@
 import { CHANGE_REPO, SAVE_REPO, SAVE_REPO_LIST, UPDATE_REPO } from "../pages/EditorPage/EditorAction";
-import { GET_REPO, CREATE_REPO } from './../pages/EditorPage/EditorAction';
+import { GET_REPO, CREATE_REPO, CLEAR_REPO } from './../pages/EditorPage/EditorAction';
 
 let editorInitState = {
     repoList: [],
@@ -21,6 +21,13 @@ export function editorReducer(state = editorInitState, action) {
                 repoList : action.payload,
                 selectedModel: action.payload[action.payload.length - 1]
             };
+        
+        // * 다른 과제로 들어갈 때 저장된 코드 비우기
+        case CLEAR_REPO:
+            return {
+                repoList: [],
+                selectedModel: null
+            }
 
         case CREATE_REPO:
             // alert("create repo")

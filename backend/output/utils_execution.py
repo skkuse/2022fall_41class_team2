@@ -1,11 +1,9 @@
 import docker
 import os
-import logging
 
-from rest_framework import status
-from rest_framework.exceptions import APIException
-from docker.errors import DockerException, ContainerError
 from output.utils import generate_files, delete_files
+from docker.errors import DockerException, ContainerError
+from backend.exceptions import BadRequestError, InternalServerError
 
 CONTAINER_CODE_DIR = os.environ['CONTAINER_CODE_DIR']
 
@@ -17,13 +15,11 @@ PYTHON_IMAGE = os.environ['PYTHON_IMAGE']
 NODE_IMAGE = os.environ['NODE_IMAGE']
 GCC_IMAGE = os.environ['GCC_IMAGE']
 
-logger = logging.getLogger(__name__)
-
 
 def run(base_dir: str, language: str, raw_code: str, raw_input: str, temporary: bool = True):
     language = language.lower()
     if language not in SUPPORT_LANGUAGE:
-        raise APIException(detail=f'{language} does not supported.', code=status.HTTP_400_BAD_REQUEST)
+        raise BadRequestError(detail=f'{language} does not supported.')
 
     code_filename = None
     input_filename = None
@@ -75,8 +71,7 @@ def run(base_dir: str, language: str, raw_code: str, raw_input: str, temporary: 
             'output': output,
         }
     except DockerException as e:
-        logger.exception(e)
-        raise APIException(detail='Docker engine exception is occur.', code=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        raise InternalServerError(detail=e)
     finally:
         if temporary:
             full_filenames = [base_dir + filename for filename in [code_filename, input_filename]]
@@ -191,15 +186,25 @@ def execute_container(base_dir: str, image: str, command: str):
     volumes = {
         base_dir: {'bind': CONTAINER_CODE_DIR, 'mode': 'rw'},
     }
-    response = client.containers.run(
+    container = client.containers.run(
         image=image,
         command=command,
         volumes=volumes,
         working_dir=CONTAINER_CODE_DIR,
-        remove=True,
-        detach=False,
+        remove=False,
+        detach=True,
     )
 
+    exit_status = container.wait()['StatusCode']
+    if exit_status == 0:
+        out = container.logs(stdout=True, stderr=False, stream=True, follow=True)
+    else:
+        out = container.logs(stdout=False, stderr=True)
+    container.remove()
+    if exit_status != 0:
+        raise ContainerError(container, exit_status, command, image, out)
+
+    response = b''.join([line for line in out])
     return {
         'exit_status': 0,
         'output': response.decode('utf-8'),

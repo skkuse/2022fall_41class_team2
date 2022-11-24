@@ -5,8 +5,7 @@ const DescWrapper = styled.div`
   display: flex;
   flex-direction: column;
 
-  width: 598px;
-  height: 880px;
+  height: 100%;
 `;
 
 const PlagiarismIndicator = styled.div`
@@ -25,20 +24,29 @@ const PlagiarismIndicator = styled.div`
   background: #bfbfbf;
 `;
 
-export const SubmissionMaster = ({ bodyContent, ...restProps }) => {
+export const SubmissionMaster = ({ resultObj, darkMode, ...restProps }) => {
+  console.log(`SubmissionMaster ${resultObj}`);
+  const id = resultObj.id;
+  const plagiarism = resultObj.plagiarism_result;
+
   const headerContent = "제출결과";
   return (
     <DescWrapper>
-      <PlagiarismIndicator>
+      <PlagiarismIndicator darkMode={darkMode}>
         <EditorHeader
           content={headerContent}
           assignmentId={restProps.assignmentId}
+          darkMode={darkMode}
         />
-        <div style={{ marginRight: "11px" }}>표절률 00%</div>
+        <div style={{ marginRight: "11px" }}>
+          표절률 {plagiarism.similarity_score}%
+        </div>
       </PlagiarismIndicator>
       <EditorBackground
-        content={bodyContent}
-        assignmentId={restProps.assignmentId}
+        mode="submit"
+        assignmentId={id}
+        content={resultObj}
+        darkMode={darkMode}
       />
     </DescWrapper>
   );

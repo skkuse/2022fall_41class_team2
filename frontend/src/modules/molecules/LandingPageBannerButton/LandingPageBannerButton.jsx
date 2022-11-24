@@ -6,6 +6,7 @@ export const LandingPageBannerButton = ({
   children,
   className,
   as,
+  darkMode,
   ...restProps
 }) => {
   return (
@@ -15,7 +16,11 @@ export const LandingPageBannerButton = ({
       style={{ textDecoration: "none" }}
       {...restProps}
     >
-      <BannerIcon children={children} className={className} />
+      <BannerIcon
+        children={children}
+        className={className}
+        darkMode={darkMode}
+      />
     </Link>
   );
 };

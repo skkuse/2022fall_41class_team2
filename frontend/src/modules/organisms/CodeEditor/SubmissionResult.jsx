@@ -2,6 +2,6 @@
 
 import { SubmissionMaster } from "../../molecules";
 
-export const SubmissionResult = () => {
-  return <SubmissionMaster bodyContent={"결과 그래프..."} />;
+export const SubmissionResult = ({ submitResult, darkMode, ...restProps }) => {
+  return <SubmissionMaster resultObj={JSON.stringify(submitResult)} darkMode={darkMode} />;
 };

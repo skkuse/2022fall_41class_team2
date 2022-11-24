@@ -292,9 +292,8 @@ export const SettingsBox = ({ className, ...restProps }) => {
                 dispatch(settingChangeBg(currentBack));
                 dispatch(settingChangeLg(currentLang));
                 dispatch(settingChangeTh(currentTheme));
-                // navigate("/");
+                navigate(-1);
               }}
-              to="/"
               className={`${className} common-login-and-register-button`}
               style={{ textDecoration: "none" }}
             >

@@ -49,6 +49,63 @@ class TestAssignment(TestCase):
         self.assertEqual(assignment.contents[0].get('skeleton_code'), contents[0].get('skeleton_code'))
         self.assertEqual(assignment.contents[0].get('answer_code'), contents[0].get('answer_code'))
 
+    def test_assignment_save_with_very_long_question_and_constraints(self):
+        instructor = User.objects.create(
+            nickname='mock-instructor-nickname',
+            oauth_id='mock-oauth-id',
+        )
+        lecture_name = 'dummy-lecture-name'
+        lecture = Lecture.objects.create(
+            name=lecture_name,
+            instructor=instructor,
+        )
+        another_question = '''
+Given an array of integers nums and an integer target, return indices of the two numbers such that they add up to target.
+
+You may assume that each input would have exactly one solution, and you may not use the same element twice.
+
+You can return the answer in any order.
+ 
+ 
+ 
+ Example 1:
+ 
+ Input: nums = [2,7,11,15], target = 9
+ Output: [0,1]
+ Explanation: Because nums[0] + nums[1] == 9, we return [0, 1].
+ 
+ Example 2:
+ 
+ Input: nums = [3,2,4], target = 6
+ Output: [1,2]
+ 
+ Example 3:
+ 
+ Input: nums = [3,3], target = 6
+ Output: [0,1]
+  
+  
+  
+'''
+        another_constraints = '''
+0123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789
+0123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789
+0123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789
+0123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789
+0123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789
+'''
+
+        assignment = Assignment.objects.create(
+            lecture=lecture,
+            name=name,
+            deadline=deadline,
+            question=another_question,
+            constraints=another_constraints,
+            contents=contents,
+        )
+
+        self.assertIsNotNone(assignment.id)
+
     def test_assignment_save_with_very_long_answer_code_field(self):
         instructor = User.objects.create(
             nickname='mock-instructor-nickname',

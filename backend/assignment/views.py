@@ -5,8 +5,7 @@ from rest_framework.exceptions import PermissionDenied
 from rest_framework.response import Response
 from assignment.models import Assignment
 from assignment.serializers import AssignmentSerializer
-from backend.exceptions import InternalServerError
-from rest_framework.exceptions import ParseError
+from backend.exceptions import BadRequestError, InternalServerError
 
 
 @extend_schema_view(
@@ -45,7 +44,7 @@ class AssignmentListOrCreate(generics.ListCreateAPIView):
         return Assignment.objects.filter(lecture_id=lecture_id).all()
 
     def perform_create(self, serializer):
-        lecture_id = self.request.data.get('lecture_id')
+        lecture_id = self.request.data.get(self.lookup_param_field)
         lecture = Lecture.objects.get(pk=lecture_id)
         if lecture.instructor == self.request.user:
             serializer.save(lecture=lecture)
@@ -81,10 +80,10 @@ class AssignmentRetrieveOrDestroy(generics.RetrieveDestroyAPIView):
         try:
             assignment_id = self.kwargs.get(self.lookup_field)
             return Assignment.objects.get(pk=assignment_id)
-        except Assignment.DoesNotExist:
-            raise ParseError
-        except Assignment.MultipleObjectsReturned:
-            raise InternalServerError
+        except Assignment.DoesNotExist as e:
+            raise BadRequestError(detail=e)
+        except Assignment.MultipleObjectsReturned as e:
+            raise InternalServerError(detail=e)
 
     def delete(self, request, *args, **kwargs):
         instance = self.get_object()

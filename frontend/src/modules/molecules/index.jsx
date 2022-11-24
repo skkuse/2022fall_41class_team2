@@ -10,9 +10,7 @@ import { DuplicateFuncButton } from "./DuplicateFuncButton/DuplicateFuncButton";
 import { ResetFuncButton } from "./ResetFuncButton/ResetFuncButton";
 import { DownloadFuncButton } from "./DownloadFuncButton/DownloadFuncButton";
 import { UploadFuncButton } from "./UploadFuncButton/UploadFuncButton";
-import { Save1FuncButton } from "./Save1FuncButton/Save1FuncButton";
-import { Save2FuncButton } from "./Save2FuncButton/Save2FuncButton";
-import { Save3FuncButton } from "./Save3FuncButton/Save3FuncButton";
+import { SaveFuncButton } from "./SaveFuncButton/SaveFuncButton";
 import { TerminalMaster } from "./TerminalMaster/TerminalMaster";
 import { GradingMaster } from "./GradingMaster/GradingMaster";
 import { SubmissionMaster } from "./SubmissionMaster/SubmissionMaster";
@@ -28,9 +26,7 @@ export {
   ResetFuncButton,
   DownloadFuncButton,
   UploadFuncButton,
-  Save1FuncButton,
-  Save2FuncButton,
-  Save3FuncButton,
+  SaveFuncButton,
   TerminalMaster,
   GradingMaster,
   SubmissionMaster,

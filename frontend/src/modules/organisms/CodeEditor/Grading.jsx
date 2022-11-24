@@ -2,6 +2,6 @@
 
 import { GradingMaster } from "../../molecules";
 
-export const Grading = () => {
-  return <GradingMaster bodyContent={"총점: 60점 ..."} />;
+export const Grading = ({darkMode}) => {
+  return <GradingMaster bodyContent={"총점: 60점 ..."} darkMode={darkMode} />;
 };
