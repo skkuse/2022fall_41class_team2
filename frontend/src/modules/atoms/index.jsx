@@ -26,6 +26,7 @@ import {
 import { AssignmentName, Deadline, LectureName } from "./OverviewElements";
 import { EditorBackground } from "./EditorBackground/EditorBackground";
 import { EditorHeader } from "./EditorHeader/EditorHeader";
+import { ResultVis } from "./ResultVis/ResultVis";
 
 export {
   Column,
@@ -52,4 +53,5 @@ export {
   Save3,
   EditorBackground,
   EditorHeader,
+  ResultVis,
 };

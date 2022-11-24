@@ -2,6 +2,6 @@
 
 import { TerminalMaster } from "../../molecules";
 
-export const Terminal = () => {
-  return <TerminalMaster bodyContent={"실행결과"}/>;
+export const Terminal = ({ darkMode }) => {
+  return <TerminalMaster bodyContent={"실행결과"} darkMode={darkMode} />;
 };

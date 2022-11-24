@@ -6,6 +6,7 @@ import styled from "styled-components";
 export const LectureNameStyle = styled.div`
   display: flex;
   align-items: center;
+  justify-content: center;
 
   font-family: "Gmarket Sans TTF";
   font-style: normal;
@@ -21,7 +22,6 @@ export const LectureNameStyle = styled.div`
 
   color: #000000;
   background: ${(props) => props.background};
-
 `;
 
 export const LectureName = ({ name, background, ...resProps }) => {
