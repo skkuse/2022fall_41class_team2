@@ -83,6 +83,45 @@ const Button = styled.div`
   text-align: center;
 `;
 
+const TestCaseInput = styled.div`
+  display: flex;
+`;
+const TestCaseOutput = styled.div`
+  display: flex;
+`;
+const TestCaseResult = styled.div`
+  display: flex;
+`;
+
+const TestCaseSeparator = styled.div`
+  box-sizing: border-box;
+
+  position: absolute;
+  width: 450px;
+  height: 0px;
+
+  border: 4px solid #bfbfbf;
+  transform: rotate(180deg);
+`;
+
+const TestCaseMasterContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+`;
+const TestCaseIOContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+
+  justify-content: space-around;
+
+  min-height: 80px;
+`;
+// const TestCaseResultContainer = styled.div`
+//   display: flex;
+// `;
+
 const ReadabilityHighlighter = styled.div`
   color: ${(props) => (props.active ? "#FF9A3C" : "#1f1f32")};
 `;
@@ -92,7 +131,16 @@ const EfficiencyHighlighter = styled.div`
 const FunctionalityHighlighter = styled.div`
   color: ${(props) => (props.active ? "#52C0E7" : "#1f1f32")};
 `;
-export const EditorBackground = ({ mode, content, darkMode, assignmentId,id,pfList,...restProps }) => {
+export const EditorBackground = ({
+  mode,
+  content,
+  darkMode,
+  assignmentId,
+  id,
+  pfList,
+
+  ...restProps
+}) => {
   const [activeIndexChart, setActiveIndexChart] = useState(READABILITY);
   const onButtonClickChart = useCallback(
     (flag) => {
@@ -114,7 +162,21 @@ export const EditorBackground = ({ mode, content, darkMode, assignmentId,id,pfLi
   // TODO
   // data preprocessing for functionality results
 
-  if (mode === "submit") {
+  if (mode === "testcase") {
+    // console.log(content.input);
+    return (
+      <Bg darkMode={darkMode}>
+        <TestCaseMasterContainer>
+          <TestCaseIOContainer>
+            <TestCaseInput>Input: {content.input}</TestCaseInput>
+            <TestCaseOutput>Output: {content.output}</TestCaseOutput>
+          </TestCaseIOContainer>
+          <TestCaseResult>RESULT HERE</TestCaseResult>
+        </TestCaseMasterContainer>
+      </Bg>
+    );
+    // return <Bg darkMode={darkMode}>{content}</Bg>;
+  } else if (mode === "submit") {
     // SPECIAL CASE: ASSIGNMENT SUBMITTED
 
     return (
@@ -194,8 +256,7 @@ export const EditorBackground = ({ mode, content, darkMode, assignmentId,id,pfLi
       </Bg>
     );
   } else {
+    // general display
     return <Bg darkMode={darkMode}>{content}</Bg>;
   }
 };
-
-

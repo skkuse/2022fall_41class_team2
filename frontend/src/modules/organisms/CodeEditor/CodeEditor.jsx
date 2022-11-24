@@ -257,6 +257,7 @@ export const CodeEditor = ({ assignment, darkMode }) => {
   }
 
   console.log(editorRef);
+  console.log(`SubmitResult ${submitResult}`);
 
   return (
     <>
@@ -344,6 +345,7 @@ export const CodeEditor = ({ assignment, darkMode }) => {
                 <EditorWrapper>
                   {submitComplete ? (
                     <DiffEditor
+                      // TODO : inline diff로 변경?
                       // width="560px"
                       // height="820px"
                       language={repoSelector.selectedModel.content.language}
@@ -384,18 +386,21 @@ export const CodeEditor = ({ assignment, darkMode }) => {
                 </GradingWrapper>
               )}
               {/* 제출 결과*/}
-              {editMode.altMode === "제출" && submitResult && submitResult.data && (
-                <TerminalWrapper
-                  style={{ marginLeft: "12.72px" }}
-                  edit={editMode.edit}
-                  altMode={editMode.altMode}
-                >
-                  <SubmissionResult
-                    darkMode={darkMode}
-                    submitResult={submitResult}
-                  />
-                </TerminalWrapper>
-              )}
+
+              {editMode.altMode === "제출" &&
+                submitResult &&
+                submitResult.data && (
+                  <TerminalWrapper
+                    style={{ marginLeft: "12.72px" }}
+                    edit={editMode.edit}
+                    altMode={editMode.altMode}
+                  >
+                    <SubmissionResult
+                      darkMode={darkMode}
+                      submitResult={submitResult}
+                    />
+                  </TerminalWrapper>
+                )}
             </EvaluationWindowGrid>
           </>
         )}

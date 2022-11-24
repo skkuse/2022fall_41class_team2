@@ -20,6 +20,12 @@ const TestCaseHeaderContainer = styled.div`
   background: ${(props) => (props.darkMode ? "#525263" : "#bfbfbf")};
   #bfbfbf;
 `;
+const TestCaseContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+
+  height: 100%;
+`;
 
 const ValidationButtonContainer = styled.div`
   /* identical to box height */
@@ -55,17 +61,6 @@ const ValidationButton = styled.div`
   cursor: pointer;
 `;
 
-const TestCaseSeparator = styled.div`
-  box-sizing: border-box;
-
-  position: absolute;
-  width: 450px;
-  height: 0px;
-
-  border: 4px solid #bfbfbf;
-  transform: rotate(180deg);
-`;
-
 function TestcaseMaster({ bodyContent, testCases, darkMode, ...restProps }) {
   const headerContent = "테스트 케이스";
   const repoSelector = useSelector((state) => state.editorReducer);
@@ -85,6 +80,7 @@ function TestcaseMaster({ bodyContent, testCases, darkMode, ...restProps }) {
     } catch (error) {}
   };
 
+  console.log(`testcases: ${JSON.stringify(testCases)}`);
   return (
     <DescWrapper>
       <TestCaseHeaderContainer darkMode={darkMode}>
@@ -117,21 +113,26 @@ function TestcaseMaster({ bodyContent, testCases, darkMode, ...restProps }) {
         </div>
       </TestCaseHeaderContainer>
       {/* // TODO: testcase 개수만큼 pooling */}
+
       {testCases.map((testcase, index) => {
+        // console.log(testcase);
+        // console.log(`testcase: ${JSON.stringify(testcase)}`);
+        // testcase = JSON.stringify(testcase);
         return (
-          <>
-            <TestCaseSeparator></TestCaseSeparator>
+          <TestCaseContainer>
             <EditorBackground
-              content={`테스트케이스 ${index}>
-              input: ${testcase.input}
-              output: ${testcase.output}
-              `}
+              mode="testcase"
+              content={{
+                테스트케이스: index,
+                input: testcase.input,
+                output: testcase.output,
+              }}
               assignmentId={restProps.assignmentId}
               darkMode={darkMode}
               id={testcase.id}
               pfList={pfList}
             />
-          </>
+          </TestCaseContainer>
         );
       })}
       {/* <EditorBackground
