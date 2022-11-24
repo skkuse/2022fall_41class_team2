@@ -355,7 +355,7 @@ export const CodeEditor = ({assignment}) => {
                 </GradingWrapper>
               )}
               {/* 제출 결과*/}
-              {editMode.altMode === "제출" && submitResult.data && (
+              {editMode.altMode === "제출" && submitResult && submitResult.data && (
                 <TerminalWrapper
                   style={{ marginLeft: "12.72px" }}
                   edit={editMode.edit}
