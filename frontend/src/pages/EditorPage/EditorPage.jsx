@@ -60,6 +60,7 @@ export const EditorPage = () => {
   useEffect(() => {
     setLecture(location.state.lecture);
     apiClient.get(`/api/assignments/${params.assignment_id}/`).then((value) => {
+      setAss(value.data.data);
       // * 테케 없으면 새로 추가
       try {
         if(!value.data.data.testcases.length) {

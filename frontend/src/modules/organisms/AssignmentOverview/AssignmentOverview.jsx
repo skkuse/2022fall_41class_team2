@@ -178,7 +178,7 @@ const GridContainer = styled.div`
   width: 1210px;
   grid-template-columns: 1fr 3.5fr 1fr;
   grid-template-areas: "a b c";
-  align-itmes: center;
+  align-items: center;
 `;
 
 const ButtonContainer = styled.div`
@@ -387,6 +387,10 @@ const LectureGroupComp = ({lecture, color}) => {
                     background={color[1]}
                     submission={false}
                   ></AssignmentName>
+
+                  {/* {
+                    "lecture.assignments.results.length = " + JSON.stringify(lecture.assignments.results.length)
+                  } */}
                     
                   <Deadline
                     danger={false}

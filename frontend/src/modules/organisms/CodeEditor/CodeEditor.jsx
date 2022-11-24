@@ -149,7 +149,8 @@ export const CodeEditor = ({assignment}) => {
       setSubmitResult(result.data);
       setSubmitComplete(true);
     } catch (error) {
-      alert("제출은 4회 이상 할 수 없습니다.")
+      alert("제출은 4회 이상 할 수 없습니다.");
+      setSubmitComplete(false);
     }
   }
 
@@ -356,6 +357,7 @@ export const CodeEditor = ({assignment}) => {
               )}
               {/* 제출 결과*/}
               {editMode.altMode === "제출" && submitResult && submitResult.data && (
+                
                 <TerminalWrapper
                   style={{ marginLeft: "12.72px" }}
                   edit={editMode.edit}
