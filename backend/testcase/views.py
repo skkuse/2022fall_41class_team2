@@ -13,12 +13,14 @@ from drf_spectacular.utils import extend_schema_view, extend_schema, OpenApiPara
     list=[
         extend_schema(
             description='List testcases associated an assignment',
+            methods=['GET'],
             responses={
                 200: TestcaseSerializer(many=True),
             },
         ),
         extend_schema(
             description='Create a testcase when user is an instructor',
+            methods=['POST'],
             responses={
                 201: TestcaseSerializer,
                 400: None,
@@ -35,7 +37,7 @@ class TestcaseListOrCreate(generics.ListCreateAPIView):
 
     @extend_schema(
         parameters=[
-            OpenApiParameter(name='assignment_id', required=True, type=int),
+            OpenApiParameter(name=lookup_param_field, required=True, type=int),
         ],
     )
     def get(self, request, *args, **kwargs):
@@ -79,6 +81,7 @@ class TestcaseListOrCreate(generics.ListCreateAPIView):
     list=[
         extend_schema(
             description='Retrieve a testcase associated user and hidden info',
+            methods=['GET'],
             responses={
                 200: TestcaseSerializer,
                 400: None,
@@ -88,6 +91,7 @@ class TestcaseListOrCreate(generics.ListCreateAPIView):
         ),
         extend_schema(
             description='Destroy a testcase when user is an instructor',
+            methods=['POST'],
             responses={
                 204: None,
                 401: None,

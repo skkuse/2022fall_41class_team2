@@ -41,7 +41,6 @@ class LectureListOrCreate(generics.ListCreateAPIView):
         extend_schema(
             description='Retrieve a lecture associated with user if exist',
             methods=['GET'],
-            request=None,
             responses={
                 200: LectureSerializer,
                 400: None,
@@ -51,7 +50,6 @@ class LectureListOrCreate(generics.ListCreateAPIView):
         extend_schema(
             description='Destroy a lecture when user is an instructor',
             methods=['DELETE'],
-            request=None,
             responses={
                 204: None,
                 401: None,

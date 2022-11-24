@@ -45,7 +45,7 @@ class AssignmentListOrCreate(generics.ListCreateAPIView):
         return Assignment.objects.filter(lecture_id=lecture_id).all()
 
     def perform_create(self, serializer):
-        lecture_id = self.request.data.get('lecture_id')
+        lecture_id = self.request.data.get(self.lookup_param_field)
         lecture = Lecture.objects.get(pk=lecture_id)
         if lecture.instructor == self.request.user:
             serializer.save(lecture=lecture)

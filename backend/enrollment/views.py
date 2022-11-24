@@ -62,7 +62,6 @@ class EnrollmentListOrCreate(generics.ListCreateAPIView):
         extend_schema(
             description='Get a enrollment information associated with user',
             methods=['GET'],
-            request=None,
             responses={
                 200: EnrollmentSerializer,
             },
@@ -70,7 +69,6 @@ class EnrollmentListOrCreate(generics.ListCreateAPIView):
         extend_schema(
             description='Delete a lecture when user is an instructor',
             methods=['DELETE'],
-            request='user_auth',
             responses={
                 204: None,
                 401: None,

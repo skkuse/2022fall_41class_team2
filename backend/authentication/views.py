@@ -17,7 +17,7 @@ GITHUB_CALLBACK_URI = os.environ['GITHUB_CALLBACK_URI']
 
 @extend_schema(
     description='Get a User Details',
-    request=None,
+    methods=['GET'],
     responses={
         200: UserSerializer,
     },
@@ -41,7 +41,7 @@ def user_detail(request, user_id):
     parameters=[
         OpenApiParameter(name='code', required=True, type=str),
     ],
-    request=None,
+    methods=['GET', 'POST'],
     responses={
         200: inline_serializer(
             name='user_auth',
