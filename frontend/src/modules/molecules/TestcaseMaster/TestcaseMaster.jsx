@@ -1,8 +1,8 @@
 import styled from "styled-components";
 import { EditorBackground, EditorHeader } from "../../atoms/";
-import { apiClient } from './../../../api/axios';
-import { useSelector } from 'react-redux';
-import { useState } from 'react';
+import { apiClient } from "./../../../api/axios";
+import { useSelector } from "react-redux";
+import { useState } from "react";
 
 const DescWrapper = styled.div`
   display: flex;
@@ -51,6 +51,19 @@ const ValidationButton = styled.div`
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
   border-radius: 10px;
   color: #000000;
+
+  cursor: pointer;
+`;
+
+const TestCaseSeparator = styled.div`
+  box-sizing: border-box;
+
+  position: absolute;
+  width: 450px;
+  height: 0px;
+
+  border: 4px solid #bfbfbf;
+  transform: rotate(180deg);
 `;
 
 function TestcaseMaster({ bodyContent, testCases, darkMode, ...restProps }) {
@@ -59,17 +72,18 @@ function TestcaseMaster({ bodyContent, testCases, darkMode, ...restProps }) {
 
   const [pfList, setPfList] = useState(null);
 
-  const executeTestCase = async(testcase_id) => {
+  const executeTestCase = async (testcase_id) => {
     try {
-      const result = await apiClient.post(`/api/outputs/testcases/${testcase_id}/`, {
-        language: repoSelector.selectedModel.content.language,
-        code: repoSelector.selectedModel.content.code
-      });
+      const result = await apiClient.post(
+        `/api/outputs/testcases/${testcase_id}/`,
+        {
+          language: repoSelector.selectedModel.content.language,
+          code: repoSelector.selectedModel.content.code,
+        }
+      );
       return result;
-
-    } catch (error) {
-    }
-  }
+    } catch (error) {}
+  };
 
   return (
     <DescWrapper>
@@ -82,36 +96,42 @@ function TestcaseMaster({ bodyContent, testCases, darkMode, ...restProps }) {
 
         <div style={{ marginRight: "16.13px" }}>
           <ValidationButtonContainer darkMode={darkMode}>
-            <ValidationButton onClick={async()=>{
-            let tempPfList = [];
-            for (const tc of testCases) {
-              const result = await executeTestCase(tc.id);
-              if(result) {
-                tempPfList.push({
-                  ...result.data.data,
-                  id: tc.id
-                });
-              }
-              
-            }
-            setPfList(tempPfList);
-          }}>검증</ValidationButton>
+            <ValidationButton
+              onClick={async () => {
+                let tempPfList = [];
+                for (const tc of testCases) {
+                  const result = await executeTestCase(tc.id);
+                  if (result) {
+                    tempPfList.push({
+                      ...result.data.data,
+                      id: tc.id,
+                    });
+                  }
+                }
+                setPfList(tempPfList);
+              }}
+            >
+              검증
+            </ValidationButton>
           </ValidationButtonContainer>
         </div>
       </TestCaseHeaderContainer>
       {/* // TODO: testcase 개수만큼 pooling */}
       {testCases.map((testcase, index) => {
         return (
-          <EditorBackground
-            content={`테스트케이스 ${index}>
+          <>
+            <TestCaseSeparator></TestCaseSeparator>
+            <EditorBackground
+              content={`테스트케이스 ${index}>
               input: ${testcase.input}
               output: ${testcase.output}
               `}
-            assignmentId={restProps.assignmentId}
-            darkMode={darkMode}
+              assignmentId={restProps.assignmentId}
+              darkMode={darkMode}
               id={testcase.id}
               pfList={pfList}
-          />
+            />
+          </>
         );
       })}
       {/* <EditorBackground

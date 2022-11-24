@@ -17,6 +17,8 @@ const Header = styled.div`
   color: ${(props) => (props.darkMode ? "#d8d8d8" : "#1e1e1e")};
   
   padding 0 14.02px 0 14.02px;
+
+  cursor: pointer;
 `;
 
 export const EditorHeader = ({ content, darkMode, ...restProps }) => {

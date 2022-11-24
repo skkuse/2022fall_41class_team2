@@ -302,7 +302,7 @@ export const AssignmentOverview = ({ className, darkMode, ...restProps }) => {
     ["#B57FB3", "#C8ADC7", "#D2C4D1"],
     ["#EADB80", "#E3DBAE", "#DFDBC5"],
     ["#E098AE", "#DEBAC5", "#DDCBD0"],
-  ]
+  ];
 
   if (!lectureSelector) {
     return <></>;
@@ -329,9 +329,9 @@ export const AssignmentOverview = ({ className, darkMode, ...restProps }) => {
                 <ListIndicatorBox>
                   <Text>강의 목록</Text>
                 </ListIndicatorBox>
-                <ListIndicatorBox>
+                {/* <ListIndicatorBox>
                   <Text>정렬 기준</Text>
-                </ListIndicatorBox>
+                </ListIndicatorBox> */}
               </ButtonContainer>
               <ListDivLine></ListDivLine>
             </MiddleContainer>
@@ -345,14 +345,13 @@ export const AssignmentOverview = ({ className, darkMode, ...restProps }) => {
             lectureSelector.results.map((lecture, index) => {
               return (
                 <>
-                  ( 
-              <LectureGroupComp
-                      key={JSON.stringify(lecture)}
-                      lecture={lecture}
-                      color={colorList[(colorList.length-1) % (index + 1)]}
+                  <LectureGroupComp
+                    key={JSON.stringify(lecture)}
+                    lecture={lecture}
+                    color={colorList[(colorList.length - 1) % (index + 1)]}
                   />
-                   )
-             <Separator></Separator>
+
+                  <Separator></Separator>
                 </>
               );
             })
@@ -366,17 +365,19 @@ export const AssignmentOverview = ({ className, darkMode, ...restProps }) => {
 };
 
 const LectureGroupComp = ({ lecture, color }) => {
+  // console.log(JSON.stringify(lecture));
   return (
-    // <>
-    //   {
-    //     JSON.stringify(lecture.assignments)
-    //   }
-    // </>
     <LectureGroup>
+      {/* <>
+      {
+        JSON.stringify(lecture.assignments)
+      }
+    </> */}
       <NameContainer>
         <LectureName name={`${lecture.name}`} background={color[0]} />
       </NameContainer>
       {/* TODO: 과제 개수만큼 pooling */}
+
       <AssignmentGrid numAssignment={`${lecture.assignments.results.length}`}>
         {lecture.assignments.results.map((ass) => {
           return (
@@ -389,7 +390,11 @@ const LectureGroupComp = ({ lecture, color }) => {
               state={{
                 lecture: lecture,
               }}
-              style={{ textDecoration: "none" }}
+              style={{
+                textDecoration: "none",
+                flexBasis: "auto",
+                content: "fill",
+              }}
             >
               <AssignmentBlockContainer>
                 <AssignmentName
