@@ -1,14 +1,23 @@
-import { CHANGE_REPO, SAVE_REPO, SAVE_REPO_LIST, UPDATE_REPO } from "../pages/EditorPage/EditorAction";
-import { GET_REPO, CREATE_REPO, CLEAR_REPO } from './../pages/EditorPage/EditorAction';
+import { CHANGE_REPO, CLEAR_SELECTED_REPO, READY_CHANGE_SELECTED_REPO, SAVE_REPO, SAVE_REPO_LIST, UPDATE_REPO } from "../pages/EditorPage/EditorAction";
+import { GET_REPO, CREATE_REPO, CLEAR_REPO, READY_CREATE_SELECTED_REPO } from './../pages/EditorPage/EditorAction';
 
 let editorInitState = {
     repoList: [],
-    selectedModel: null
+    selectedModel: null,
+    repoChangeInfo: {
+        isChanging: false,
+        prevId: null,
+    },
+    repoCreateInfo: {
+        isCreating: false,
+        prevId: null,
+    },
 };
 
 export function editorReducer(state = editorInitState, action) {
     switch (action.type) {
         case SAVE_REPO_LIST:
+            console.log("SAVE_REPO_LIST");
             if(state.selectedModel) {
                 return { 
                     ...state, 
@@ -24,13 +33,37 @@ export function editorReducer(state = editorInitState, action) {
         
         // * 다른 과제로 들어갈 때 저장된 코드 비우기
         case CLEAR_REPO:
+            console.log("CLEAR_REPO");
             return {
+                ...state,
                 repoList: [],
                 selectedModel: null
             }
 
+        case READY_CREATE_SELECTED_REPO:
+            console.log("READY_CREATE_SELECTED_REPO");
+            return {
+                ...state,
+                repoCreateInfo: {
+                    isCreating: true,
+                    prevId: action.payload
+                },
+            }
+
+
+        case READY_CHANGE_SELECTED_REPO:
+            console.log("READY_CHANGE_SELECTED_REPO");
+            return {
+                ...state,
+                repoChangeInfo: {
+                    isChanging: true,
+                    prevId: action.payload
+                },
+                // selectedModel: null
+            }
+
         case CREATE_REPO:
-            // alert("create repo")
+            console.log("create repo")
             let tempList = [...state.repoList];
             tempList.push(action.payload);
             // tempList.push({
@@ -42,16 +75,26 @@ export function editorReducer(state = editorInitState, action) {
             return {
                 ...state,
                 repoList: tempList,
-                selectedModel: action.payload
+                selectedModel: action.payload,
+                repoCreateInfo: {
+                    isCreating: false,
+                    prevId: action.payload
+                },
             }
 
         case CHANGE_REPO:
+            console.log("CHANGE_REPO " + JSON.stringify(action.payload));
             return {
                 ...state,
-                selectedModel: action.payload
+                selectedModel: action.payload,
+                repoChangeInfo: {
+                    isChanging: false,
+                    prevId: action.payload
+                },
             }
 
         case UPDATE_REPO:
+            console.log("UPDATE_REPO");
             let modelTemp = state.selectedModel;
             modelTemp.content.code = action.payload;
             return {
@@ -60,6 +103,7 @@ export function editorReducer(state = editorInitState, action) {
             }
 
         case SAVE_REPO:
+            console.log("SAVE_REPO");
             console.log(action);
             let repoListTemp = [...state.repoList];
             for (const idx in repoListTemp) {
@@ -70,10 +114,11 @@ export function editorReducer(state = editorInitState, action) {
            
             return {
                 ...state, 
-                repoListTemp: repoListTemp
+                repoList: repoListTemp
             }
 
         case GET_REPO:
+            console.log("GET_REPO");
             console.log(action);
             const id = action.payload;
             let selectedModel = state.repoList.filter((repo) => repo.id = id);
@@ -85,6 +130,8 @@ export function editorReducer(state = editorInitState, action) {
         
         
       default:
-        return state;
+        return {
+            ...state,
+        };
     }
 }

@@ -10,8 +10,8 @@ import { AssignmentOverview } from "../../modules/organisms";
 
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
-import { getLectureAction } from './../MainPage/MainAction';
-import { apiClient } from './../../api/axios';
+import { getLectureAction } from "./../MainPage/MainAction";
+import { apiClient } from "./../../api/axios";
 
 const GeneralContainer = styled.div`
   display: flex;
@@ -34,9 +34,7 @@ export const OverviewPage = (...restProps) => {
   const dispatch = useDispatch();
   const settingSelector = useSelector((state) => state.SettingReducer);
 
-  const lectureSelector = useSelector((state) =>
-    state.LectureReducer.lectures
-  );   
+  const lectureSelector = useSelector((state) => state.LectureReducer.lectures);
 
   useEffect(() => {
     // 강의 데이터 없을 시 추가하기
@@ -54,23 +52,23 @@ export const OverviewPage = (...restProps) => {
     //   }
     // })
     dispatch(getLectureAction());
-  },[]);
+  }, []);
 
+  // TODO: settingSelector에 따라서 LandingPageScenery의 배경을 바꿔야 함
+  const darkMode = true;
 
-  if(lectureSelector) {
+  if (lectureSelector) {
     return (
       <>
         {/* Banner */}
         <div style={{ position: "sticky" }}>
-          <LandingPageBanner restProps={restProps} />
+          <LandingPageBanner restProps={restProps} darkMode={darkMode} />
         </div>
         {/* List design */}
-        <AssignmentOverview />
+        <AssignmentOverview darkMode={darkMode} />
       </>
     );
   }
 
   return <></>;
-
-
 };

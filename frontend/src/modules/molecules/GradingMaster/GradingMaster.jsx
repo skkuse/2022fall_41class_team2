@@ -5,21 +5,22 @@ const DescWrapper = styled.div`
   display: flex;
   flex-direction: column;
 
-  width: 598px;
-  height: 880px;
+  height: 100%;
 `;
 
-export const GradingMaster = ({ bodyContent, ...restProps }) => {
+export const GradingMaster = ({ bodyContent, darkMode,...restProps }) => {
   const headerContent = "채점결과";
   return (
     <DescWrapper>
       <EditorHeader
         content={headerContent}
         assignmentId={restProps.assignmentId}
+        darkMode={darkMode}
       />
       <EditorBackground
         content={bodyContent}
         assignmentId={restProps.assignmentId}
+        darkMode={darkMode}
       />
     </DescWrapper>
   );
