@@ -1,8 +1,8 @@
 from django.db.models import Q
 from rest_framework import generics, status
 from rest_framework.response import Response
-from rest_framework.exceptions import ParseError, PermissionDenied
-from backend.exceptions import InternalServerError
+from rest_framework.exceptions import PermissionDenied
+from backend.exceptions import BadRequestError, InternalServerError
 from assignment.models import Assignment
 from testcase.models import Testcase
 from testcase.serializers import TestcaseSerializer
@@ -13,12 +13,14 @@ from drf_spectacular.utils import extend_schema_view, extend_schema, OpenApiPara
     list=[
         extend_schema(
             description='List testcases associated an assignment',
+            methods=['GET'],
             responses={
                 200: TestcaseSerializer(many=True),
             },
         ),
         extend_schema(
             description='Create a testcase when user is an instructor',
+            methods=['POST'],
             responses={
                 201: TestcaseSerializer,
                 400: None,
@@ -35,7 +37,7 @@ class TestcaseListOrCreate(generics.ListCreateAPIView):
 
     @extend_schema(
         parameters=[
-            OpenApiParameter(name='assignment_id', required=True, type=int),
+            OpenApiParameter(name=lookup_param_field, required=True, type=int),
         ],
     )
     def get(self, request, *args, **kwargs):
@@ -64,10 +66,10 @@ class TestcaseListOrCreate(generics.ListCreateAPIView):
         try:
             assignment_id = self.request.data.get(self.lookup_param_field)
             assignment = Assignment.objects.get(pk=assignment_id)
-        except Assignment.DoesNotExist:
-            raise ParseError
-        except Assignment.MultipleObjectsReturned:
-            raise InternalServerError
+        except Assignment.DoesNotExist as e:
+            raise BadRequestError(detail=e)
+        except Assignment.MultipleObjectsReturned as e:
+            raise InternalServerError(detail=e)
 
         if assignment.lecture.instructor == self.request.user:
             return serializer.save()
@@ -79,6 +81,7 @@ class TestcaseListOrCreate(generics.ListCreateAPIView):
     list=[
         extend_schema(
             description='Retrieve a testcase associated user and hidden info',
+            methods=['GET'],
             responses={
                 200: TestcaseSerializer,
                 400: None,
@@ -88,6 +91,7 @@ class TestcaseListOrCreate(generics.ListCreateAPIView):
         ),
         extend_schema(
             description='Destroy a testcase when user is an instructor',
+            methods=['POST'],
             responses={
                 204: None,
                 401: None,
@@ -104,10 +108,10 @@ class TestcaseRetrieveOrDestroy(generics.RetrieveDestroyAPIView):
         try:
             testcase_id = self.kwargs.get(self.lookup_field)
             testcase = Testcase.objects.get(pk=testcase_id)
-        except Testcase.DoesNotExist:
-            raise ParseError
-        except Testcase.MultipleObjectsReturned:
-            raise InternalServerError
+        except Testcase.DoesNotExist as e:
+            raise BadRequestError(detail=e)
+        except Testcase.MultipleObjectsReturned as e:
+            raise InternalServerError(detail=e)
 
         user = self.request.user
         instructor = testcase.assignment.lecture.instructor

@@ -1,15 +1,16 @@
 from django.db import models
 from django.utils import timezone
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
+from backend.exceptions import InternalServerError
 
 
 class UserManager(BaseUserManager):
 
     def update_or_create_user(self, nickname: str = None, oauth_id: str = None, **extra):
         if not nickname:
-            raise ValueError('must have user nickname field')
+            raise InternalServerError(detail='must have user nickname field')
         if not oauth_id:
-            raise ValueError('must have user oauth id field')
+            raise InternalServerError(detail='must have user oauth id field')
 
         for key in extra:
             if not extra[key]:

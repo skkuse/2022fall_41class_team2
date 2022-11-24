@@ -6,8 +6,8 @@ class Assignment(models.Model):
     lecture = models.ForeignKey('lecture.Lecture', on_delete=models.PROTECT, related_name='assignments')
     name = models.CharField(max_length=255, blank=True, default='')
     deadline = models.DateTimeField(blank=True, default=timezone.now)
-    question = models.CharField(max_length=255, blank=True, default='')
-    constraints = models.CharField(max_length=255, blank=True, default='')
+    question = models.TextField(blank=True, default='')
+    constraints = models.TextField(blank=True, default='')
     contents = models.JSONField(default=list)
 
     class Meta:

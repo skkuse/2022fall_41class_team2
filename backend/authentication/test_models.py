@@ -71,12 +71,12 @@ class TestUserManager(TestCase):
         self.assertEqual(user.name, name)
 
     def test_create_user_without_nickname_field(self):
-        with self.assertRaises(ValueError):
+        with self.assertRaises(Exception):
             oauth_id = 'new-oauth-id'
             User.objects.update_or_create_user(oauth_id=oauth_id)
 
     def test_create_user_without_oauth_id_field(self):
-        with self.assertRaises(ValueError):
+        with self.assertRaises(Exception):
             nickname = 'new-nickname'
             User.objects.update_or_create_user(nickname=nickname)
 

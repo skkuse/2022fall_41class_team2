@@ -252,7 +252,6 @@ class TestLectureRetrieveOrDestroy(TestCase):
 
         self.assertEqual(response.status_code, 200)
 
-    # todo: create this case
     def test_assignment_retrieve_when_non_exist_assignment(self):
         student = User.objects.get(oauth_id=self.mock_student_oauth_id)
         dne_assignment_id = 100
