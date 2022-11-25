@@ -1,6 +1,7 @@
-from datetime import datetime
+from datetime import timedelta
 from unittest.mock import patch
 from django.test import TestCase
+from django.utils import timezone
 from rest_framework.test import APIClient
 from authentication.models import User
 from lecture.models import Lecture
@@ -216,6 +217,7 @@ class TestResultListOrCreate(TestCase):
         assignment = Assignment.objects.create(
             name=self.mock_assignment_name,
             lecture=lecture,
+            deadline=timezone.now() + timedelta(days=1),
         )
         testcase_1 = Testcase.objects.create(
             assignment=assignment,
@@ -416,7 +418,7 @@ def solution():
 
         self.assertEqual(response.status_code, 401)
 
-    @patch('django.utils.timezone.now', return_value=datetime(2099, 12, 31, 23, 59, 59))
+    @patch('django.utils.timezone.now', return_value=timezone.now() + timedelta(weeks=1))
     def test_results_create_when_deadline_exceed(self, mock_now):
         student = User.objects.get(oauth_id=self.mock_student_oauth_id)
         repo = Repo.objects.first()

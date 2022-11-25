@@ -9,9 +9,9 @@ from backend.settings.base import BASE_DIR, TESTING
 from drf_spectacular.utils import extend_schema_view, extend_schema, inline_serializer, OpenApiParameter
 from rest_framework.exceptions import NotAuthenticated, PermissionDenied
 from backend.exceptions import BadRequestError, InternalServerError
+from testcase.models import Testcase
 from repo.models import Repo
 from output.models import Result
-from testcase.models import Testcase
 from output.utils import string_compare_considered_type
 from output.serializers import ResultSerializer, TestcaseResultSerializer
 from output import utils_execution, utils_code_explain, utils_functionality, utils_readability, utils_efficiency, utils_plagiarism
@@ -198,8 +198,8 @@ class ResultListOrCreate(generics.ListCreateAPIView):
 
         if repo.author != user:
             raise PermissionDenied
+        repo.update_content(language=language, code=raw_code)
 
-        t = timezone.now().astimezone()
         if assignment.deadline.astimezone() < timezone.now().astimezone():
             raise BadRequestError(detail='Exceed assignment deadline')
 
