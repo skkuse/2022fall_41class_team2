@@ -1,6 +1,7 @@
 import os
 
 from pathlib import Path
+from django.utils import timezone
 from rest_framework import generics, status, fields
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -197,6 +198,10 @@ class ResultListOrCreate(generics.ListCreateAPIView):
 
         if repo.author != user:
             raise PermissionDenied
+
+        t = timezone.now().astimezone()
+        if assignment.deadline.astimezone() < timezone.now().astimezone():
+            raise BadRequestError(detail='Exceed assignment deadline')
 
         if Result.objects.filter(
             repo__assignment=assignment,

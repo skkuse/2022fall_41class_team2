@@ -1,3 +1,5 @@
+from datetime import datetime
+from unittest.mock import patch
 from django.test import TestCase
 from rest_framework.test import APIClient
 from authentication.models import User
@@ -413,6 +415,22 @@ def solution():
         response = client.post('/outputs/results/', data=data, format='json')
 
         self.assertEqual(response.status_code, 401)
+
+    @patch('django.utils.timezone.now', return_value=datetime(2099, 12, 31, 23, 59, 59))
+    def test_results_create_when_deadline_exceed(self, mock_now):
+        student = User.objects.get(oauth_id=self.mock_student_oauth_id)
+        repo = Repo.objects.first()
+        data = {
+            'repo_id': repo.id,
+            'language': 'python',
+            'code': 'dummy-code',
+        }
+
+        client = APIClient()
+        client.force_authenticate(user=student)
+        response = client.post('/outputs/results/', data=data, format='json')
+
+        self.assertEqual(response.status_code, 400)
 
     def test_results_create_when_exceed_possible_attempts(self):
         student = User.objects.get(oauth_id=self.mock_student_oauth_id)
