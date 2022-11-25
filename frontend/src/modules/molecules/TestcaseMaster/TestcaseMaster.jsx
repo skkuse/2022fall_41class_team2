@@ -18,7 +18,7 @@ const TestCaseHeaderContainer = styled.div`
   align-items: center;
   /* width: 100%; */
   background: ${(props) => (props.darkMode ? "#525263" : "#bfbfbf")};
-  #bfbfbf;
+  /* #bfbfbf; */
 `;
 const TestCaseContainer = styled.div`
   display: flex;
