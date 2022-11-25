@@ -232,6 +232,7 @@ class ResultListOrCreate(generics.ListCreateAPIView):
         # Run Code Description Module
         code_description = utils_code_explain.run(
             raw_code=raw_code,
+            language=language,
         )
         data = request.data
         data.update({'code_description': code_description})
@@ -254,12 +255,14 @@ class ResultListOrCreate(generics.ListCreateAPIView):
         utils_readability.run(
             result_id=result.id,
             full_filename=full_filename,
+            language=language,
         )
 
         # Run Efficiency Module
         utils_efficiency.run(
             result_id=result.id,
             full_filename=full_filename,
+            language=language,
         )
 
         # Run Plagiarism Module
@@ -268,6 +271,7 @@ class ResultListOrCreate(generics.ListCreateAPIView):
             full_filename=full_filename,
             test_dir=base_dir,
             ref_dir=base_dir,
+            language=language,
         )
 
         return Response(

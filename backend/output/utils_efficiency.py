@@ -3,17 +3,22 @@ import subprocess
 
 from output.serializers import EfficiencyResultSerializer
 
+EFFICIENCY_SUPPORT_LANGUAGE = ['python']
+
 LOC_FIELD = 'loc_score'
 CONTROL_FLOW_COMPLEXITY_FIELD = 'control_flow_complexity_score'
 RESERVATION_WORDS_FIELD = 'reservation_words_score'
 DATA_FLOW_COMPLEXITY_FIELD = 'data_flow_complexity_score'
 
 # todo: incorrect data flow complexity score is being used
-#       for the purposes of a working module. Will apply appropriate 
-#       changes upon TA's email reply 
-#       -yj(11/21) 
+#       for the purposes of a working module. Will apply appropriate
+#       changes upon TA's email reply
+#       -yj(11/21)
 
-def run(result_id: int, full_filename: str):
+def run(result_id: int, full_filename: str, language: str = 'python'):
+    if language.lower() not in EFFICIENCY_SUPPORT_LANGUAGE:
+        return
+
     multimetric_output = execute_multimetric(full_filename=full_filename)
 
     data = dict({

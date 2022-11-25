@@ -302,6 +302,44 @@ def solution():
         self.assertIsNotNone(ret.get('plagiarism_result'))
         self.assertIsNotNone(ret.get('readability_result'))
 
+    def test_results_create_not_python(self):
+        student = User.objects.get(oauth_id=self.mock_student_oauth_id)
+        repo = Repo.objects.first()
+        data = {
+            'repo_id': repo.id,
+            'language': 'cpp',
+            'code': '''
+#include <iostream>
+
+using namespace std;
+
+void solution() {
+    int size = 0;
+    cin >> size;
+
+    float ret = 0;
+    while (size--) {
+        float num = 0;
+        cin >> num;
+        ret += num;
+    }
+
+    cout << ret << \'\\n\';
+}
+''',
+        }
+
+        client = APIClient()
+        client.force_authenticate(user=student)
+        response = client.post('/outputs/results/', data=data, format='json')
+        ret = response.data
+
+        self.assertIsNotNone(ret.get('id'))
+        self.assertIsNotNone(ret.get('functionality_result'))
+        self.assertIsNone(ret.get('efficiency_result'))
+        self.assertIsNone(ret.get('plagiarism_result'))
+        self.assertIsNone(ret.get('readability_result'))
+
     def test_results_create_when_code_is_not_executable(self):
         student = User.objects.get(oauth_id=self.mock_student_oauth_id)
         repo = Repo.objects.first()
