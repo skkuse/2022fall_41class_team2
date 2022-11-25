@@ -16,12 +16,12 @@ const PlagiarismIndicator = styled.div`
   line-height: 22px;
   text-align: center;
 
-  color: #3c3c3c;
+  color: ${(props) => (props.darkMode ? "#d8d8d8" : "#1e1e1e")};
 
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: #bfbfbf;
+  background: ${(props) => (props.darkMode ? "#525263" : "#bfbfbf")};
 `;
 
 export const SubmissionMaster = ({ resultObj, darkMode, ...restProps }) => {
