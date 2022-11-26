@@ -9,6 +9,7 @@ from backend.settings.base import BASE_DIR, TESTING
 from drf_spectacular.utils import extend_schema_view, extend_schema, inline_serializer, OpenApiParameter
 from rest_framework.exceptions import NotAuthenticated, PermissionDenied
 from backend.exceptions import BadRequestError, InternalServerError
+from assignment.models import Assignment
 from testcase.models import Testcase
 from repo.models import Repo
 from output.models import Result
@@ -22,7 +23,7 @@ MAX_RESULT_NUM = 3
 
 
 @extend_schema(
-    description='Retrieve the output of exercise',
+    description='Execute an exercise',
     methods=['POST'],
     request=inline_serializer(
         name='request_output_exercises',
@@ -43,7 +44,7 @@ MAX_RESULT_NUM = 3
     },
 )
 @api_view(['POST'])
-def retrieve_exercise_output(request):
+def execute_exercise_output(request):
     data = request.data
     language = data.get('language')
     raw_code = data.get('code')
@@ -63,7 +64,7 @@ def retrieve_exercise_output(request):
 
 
 @extend_schema(
-    description='Retrieve the output of testcase',
+    description='Execute a testcase',
     methods=['POST'],
     request=inline_serializer(
         name='request_output_testcase',
@@ -79,7 +80,7 @@ def retrieve_exercise_output(request):
     },
 )
 @api_view(['POST'])
-def retrieve_testcase_output(request, testcase_id):
+def execute_testcase_output(request, testcase_id):
     language = request.data.get('language')
     raw_code = request.data.get('code')
 
@@ -101,15 +102,15 @@ def retrieve_testcase_output(request, testcase_id):
     )
 
     is_error = True
-    actual_output = None
     is_pass = False
+    actual_output = ret.get('output')
 
     if ret.get('exit_status') == 0:
         is_error = False
-        actual_output = ret.get('output')
         is_pass = string_compare_considered_type(actual_output, testcase.output)
 
     serializer = TestcaseResultSerializer(instance={
+        'id': testcase.id,
         'is_hidden': testcase.is_hidden,
         'input': testcase.input,
         'is_error': is_error,
@@ -120,6 +121,50 @@ def retrieve_testcase_output(request, testcase_id):
 
     return Response(
         data=serializer.data,
+        status=status.HTTP_200_OK,
+    )
+
+
+@extend_schema(
+    description='Execute all testcases',
+    methods=['POST'],
+    request=inline_serializer(
+        name='request_output_testcases',
+        fields={
+            'language': fields.CharField(),
+            'code': fields.CharField(),
+            'assignment_id': fields.IntegerField(),
+        },
+    ),
+    responses={
+        200: TestcaseResultSerializer(many=True),
+        400: None,
+        500: None,
+    },
+)
+@api_view(['POST'])
+def execute_testcases_output(request):
+    language = request.data.get('language')
+    raw_code = request.data.get('code')
+    assignment_id = request.data.get('assignment_id')
+
+    try:
+        assignment = Assignment.objects.get(pk=assignment_id)
+    except Assignment.DoesNotExist as e:
+        raise BadRequestError(detail=e)
+    except Assignment.MultipleObjectsReturned as e:
+        raise InternalServerError(detail=e)
+
+    results = utils_functionality.generate_testcase_results(
+        base_dir=SERVER_CODE_DIR,
+        language=language,
+        raw_code=raw_code,
+        testcases=assignment.testcases.all(),
+        blind=True,
+    )
+
+    return Response(
+        data=results,
         status=status.HTTP_200_OK,
     )
 
