@@ -1,12 +1,14 @@
 import docker
 import os
+import socket
 
+from docker.errors import APIError
 from output.utils import generate_files, delete_files
 from docker.errors import DockerException, ContainerError
 from backend.exceptions import BadRequestError, InternalServerError
 
 CONTAINER_CODE_DIR = os.environ['CONTAINER_CODE_DIR']
-
+CONTAINER_TIMEOUT = 10
 EXECUTED_FUNCTION_NAME = 'solution'
 
 SUPPORT_LANGUAGE = ['python', 'javascript', 'c', 'cpp']
@@ -194,12 +196,18 @@ def execute_container(base_dir: str, image: str, command: str):
         detach=True,
     )
 
-    exit_status = container.wait()['StatusCode']
-    if exit_status == 0:
-        out = container.logs(stdout=True, stderr=False, stream=True, follow=True)
-    else:
-        out = container.logs(stdout=False, stderr=True)
-    container.remove()
+    try:
+        exit_status = container.wait(timeout=CONTAINER_TIMEOUT).get('StatusCode')
+        if exit_status == 0:
+            out = container.logs(stdout=True, stderr=False, stream=True, follow=True)
+        else:
+            out = container.logs(stdout=False, stderr=True)
+    except (socket.error, APIError) as e:
+        exit_status = 1
+        out = str(e).encode('utf-8')
+
+    container.remove(force=True)
+
     if exit_status != 0:
         raise ContainerError(container, exit_status, command, image, out)
 
