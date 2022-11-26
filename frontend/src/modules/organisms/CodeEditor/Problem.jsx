@@ -7,9 +7,13 @@
 
 import ProblemMaster from "../../molecules/ProblemMaster/ProblemMaster";
 
-export const Problem = ({ headerContent, bodyContent, ...restProps }) => {
+export const Problem = ({ headerContent, bodyContent, darkMode, ...restProps }) => {
   
   return (
-    <ProblemMaster headerContent={headerContent} bodyContent={bodyContent} />
+    <ProblemMaster
+      headerContent={headerContent}
+      bodyContent={bodyContent}
+      darkMode={darkMode}
+    />
   );
 };

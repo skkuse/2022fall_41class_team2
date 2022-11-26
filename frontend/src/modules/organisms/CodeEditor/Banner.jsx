@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 
+
+
 import { MonitorIcon, Img } from "../../atoms";
-import { useSelector } from 'react-redux';
+import { useSelector } from "react-redux";
 import {
   ExitButton,
   SettingsButton,
@@ -10,15 +12,21 @@ import {
   ResetFuncButton,
   DownloadFuncButton,
   UploadFuncButton,
-  Save1FuncButton,
-  Save2FuncButton,
-  Save3FuncButton,
+  SaveFuncButton,
 } from "../../molecules";
 // import { makeMonacoModel } from "./CodeEditor";
-import { useDispatch } from 'react-redux';
-import { changeRepoAction, createRepoAction, saveRepoListAction, updateRepoAction } from './../../../pages/EditorPage/EditorAction';
-import { apiClient } from './../../../api/axios';
-import { useNavigate } from 'react-router-dom';
+import { useDispatch } from "react-redux";
+import {
+  changeRepoAction,
+  clearSelectedRepoAction,
+  createRepoAction,
+  readyChangeSelectedRepoAction,
+  readyCreateSelectedRepoAction,
+  saveRepoListAction,
+  updateRepoAction,
+} from "./../../../pages/EditorPage/EditorAction";
+import { apiClient } from "./../../../api/axios";
+import { useNavigate } from "react-router-dom";
 import { getTimeDiff } from "../AssignmentOverview/AssignmentOverview";
 
 const Wrapper = styled.div`
@@ -29,7 +37,7 @@ const Bg = styled.div`
   display: flex;
   align-items: center;
 
-  background: #3c3c3c;
+  background: ${(props) => (props.darkMode ? "#30303E" : "#3c3c3c")};
 
   padding: 0 40.91px 0 52px;
 
@@ -59,31 +67,35 @@ export const Banner = ({
   assignment,
   saveState,
   danger,
+  darkMode, changeRepo, setChangeRepo
 }) => {
-
   const repoSelector = useSelector((state) => state.editorReducer);
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const [remainTime, setRemainTime] = useState(getTimeDiff(new Date(assignment.deadline),  new Date()));
 
-
+  
+  const [remainTime, setRemainTime] = useState(
+    getTimeDiff(new Date(assignment.deadline), new Date())
+  );
 
   useEffect(() => {
-    setInterval(()=>{
-      setRemainTime(getTimeDiff(new Date(assignment.deadline),  new Date()));
-    }, 1000)
-    
-  },[])
+    setInterval(() => {
+      setRemainTime(getTimeDiff(new Date(assignment.deadline), new Date()));
+    }, 1000);
+  }, []);
 
+  const findByLanguage = (contents) => {
+    const userLanguage = repoSelector.selectedModel.content.language.toLowerCase();
+    return contents.find((content) => content.language == userLanguage);
+  };
 
   /* saveState는 임시 저장 세 번까지를 구현하려고 넣어보았습니다 @bw-99 어떻게 구현하는지에 따라서 달라질 것 같습니다. */
-  if(!repoSelector) {
+  if (!repoSelector) {
     return <></>;
   }
 
-
   return (
-    <Bg>
+    <Bg darkMode={darkMode}>
       {/* {
         JSON.stringify(`${repoSelector}`)
       } */}
@@ -121,102 +133,177 @@ export const Banner = ({
       </div>
       {/* Functools */}
       {/* duplicate */}
-      <div  onClick={()=>{
-        navigator.clipboard.writeText(repoSelector.selectedModel.content.code);
-      }}>
-        <DuplicateFuncButton/>
+      <div
+        onClick={() => {
+          navigator.clipboard.writeText(
+            repoSelector.selectedModel.content.code
+          );
+        }}
+      >
+        <DuplicateFuncButton />
       </div>
-      
+
       {/* reset */}
-      <div style={{ marginLeft: "14.86px" }} onClick={()=>{
-        const skeletonCode = assignment.skeleton_code;
-        dispatch(updateRepoAction(skeletonCode));
-      }}>
+      <div
+        style={{ marginLeft: "14.86px" }}
+        onClick={() => {
+          const skeletonCode = findByLanguage(assignment.contents).skeleton_code;
+          console.log(skeletonCode);
+          dispatch(updateRepoAction(skeletonCode));
+        }}
+      >
         <ResetFuncButton />
       </div>
       {/* download */}
-      <div style={{ marginLeft: "14.86px" }} onClick={()=>{
-        const file = new Blob([repoSelector.selectedModel.content.code], {
-          type: "text/plain;charset=utf-8}"
-        });
+      <div
+        style={{ marginLeft: "14.86px" }}
+        onClick={() => {
+          const file = new Blob([repoSelector.selectedModel.content.code], {
+            type: "text/plain;charset=utf-8}",
+          });
 
-        const element = document.createElement("a");
-        element.href = URL.createObjectURL(file);
-        element.download = `${assignment.name}.txt`;
+          const element = document.createElement("a");
+          element.href = URL.createObjectURL(file);
+          element.download = `${assignment.name}.txt`;
 
-        document.body.appendChild(element);
-        element.click();
-      }}>
+          document.body.appendChild(element);
+          element.click();
+        }}
+      >
         <DownloadFuncButton />
       </div>
       {/* upload */}
-      <div style={{ marginLeft: "14.86px" }} onClick={()=>{
-        
-      }}>
+      <div style={{ marginLeft: "14.86px" }} onClick={() => {}}>
         <UploadFuncButton />
       </div>
-      <div style={{
-        marginLeft: "calc(47.86px - 14.86px)",
-        display: "flex",
-      }}>
+      <div
+        style={{
+          marginLeft: "calc(47.86px - 14.86px)",
+          display: "flex",
+        }}
+      >
         {/* save */}
-        <SaveButtonComp repoSelector={repoSelector} index={0} assignment={assignment}/>
-        <SaveButtonComp repoSelector={repoSelector} index={1} assignment={assignment}/>
-        <SaveButtonComp repoSelector={repoSelector} index={2} assignment={assignment}/>
+        <SaveButtonComp
+          repoSelector={repoSelector}
+          index={0}
+          assignment={assignment}
+          changeRepo={changeRepo}
+          setChangeRepo={setChangeRepo}
+        />
+        <SaveButtonComp
+          repoSelector={repoSelector}
+          index={1}
+          assignment={assignment}
+          changeRepo={changeRepo}
+          setChangeRepo={setChangeRepo}
+        />
+        <SaveButtonComp
+          repoSelector={repoSelector}
+          index={2}
+          assignment={assignment}
+          changeRepo={changeRepo}
+          setChangeRepo={setChangeRepo}
+        />
       </div>
-
     </Bg>
   );
 };
 
-const SaveButtonComp = ({repoSelector, index, assignment}) => {
+const SaveButtonComp = ({ repoSelector, index, assignment, changeRepo, setChangeRepo }) => {
   const dispatch = useDispatch();
   const isSaved = repoSelector.repoList.length - 1 >= index;
-  
-  return (
-    <div style={{ marginLeft: "14.86px" }} onClick={async () => {
-      // * 코드 저장
-      if(isSaved && repoSelector.selectedModel.id == repoSelector.repoList[index].id) {
-        console.log(assignment.id);
-        const result = await apiClient.put(`/api/repos/${repoSelector.selectedModel.id}/`,{
-          language: repoSelector.selectedModel.content.language,
-          code: repoSelector.selectedModel.content.code,
-          assignment_id: assignment.id
-        })
-        console.log(result.data);
-      }
-      // * 코드 불러오기
-      else if(isSaved) {
-        // alert("코드 불러오기")
-        dispatch(changeRepoAction(repoSelector.repoList[index]));
-      }
-      // * 저장소 새로 추가
-      else {
-        // alert("코드 추가");
-        const result = await apiClient.post(`/api/repos/`,{
+
+  const findByLanguage = (contents) => {
+    const userLanguage = repoSelector.selectedModel.content.language.toLowerCase();
+    return contents.find((content) => content.language == userLanguage);
+  };
+
+  // * change repo
+  useEffect(()=>{
+    if(
+      repoSelector &&
+      repoSelector.repoChangeInfo &&
+      repoSelector.repoChangeInfo.isChanging && 
+      isSaved && 
+      repoSelector.selectedModel.id != repoSelector.repoList[index].id &&
+      repoSelector.repoChangeInfo.prevId == index
+      ) {
+      dispatch(changeRepoAction(repoSelector.repoList[index]));
+    }
+  }, )
+
+  // * create repo
+  useEffect(()=>{
+    if(
+      repoSelector &&
+      repoSelector.repoCreateInfo &&
+      repoSelector.repoCreateInfo.isCreating && 
+      !isSaved &&
+      repoSelector.repoCreateInfo.prevId == index
+      ) {
+        const skeletonCode = findByLanguage(assignment.contents).skeleton_code;
+        apiClient.post(`/api/repos/`, {
           language: "python",
-          code: "code",
-          assignment_id: assignment.id
+          code: skeletonCode,
+          assignment_id: assignment.id,
+        }).then((result)=>{
+          dispatch(createRepoAction(result.data.data));
         })
-        dispatch(createRepoAction(result.data.data));
-      }
-    }}>
-      <Save1FuncButton saved={isSaved} />
+    }
+  }, )
+
+  return (
+    <div
+      style={{ marginLeft: "14.86px" }}
+      onClick={async () => {
+        // * 코드 저장
+        if (
+          isSaved &&
+          repoSelector.selectedModel.id === repoSelector.repoList[index].id
+        ) {
+          console.log(assignment.id);
+          const result = await apiClient.put(
+            `/api/repos/${repoSelector.selectedModel.id}/`,
+            {
+              language: repoSelector.selectedModel.content.language,
+              code: repoSelector.selectedModel.content.code,
+              assignment_id: assignment.id,
+            }
+          );
+          console.log(result.data);
+        }
+        // * 코드 불러오기
+        else if (isSaved) {
+          dispatch(readyChangeSelectedRepoAction(index));
+          // // setChangeRepo(true);
+          // setTimeout(() => {
+          //   dispatch(changeRepoAction(repoSelector.repoList[index]));
+          //   // setChangeRepo(false);
+          // }, 100);
+
+        }
+        // * 저장소 새로 추가
+        else {
+          // alert("코드 추가");
+          dispatch(readyCreateSelectedRepoAction(index));
+          
+        }
+      }}
+    >
+      <SaveFuncButton slot={index} saved={isSaved} />
     </div>
   );
-}
-
+};
 
 const changeList2String = (lines) => {
   let codeTempList = lines;
   let codeTemp = "";
-  codeTempList.forEach(element => {
-    if(element == '') {
-      codeTemp+= "\n";
-    }
-    else{
-      codeTemp+=element;
+  codeTempList.forEach((element) => {
+    if (element == "") {
+      codeTemp += "\n";
+    } else {
+      codeTemp += element;
     }
   });
   return codeTemp;
-}
+};

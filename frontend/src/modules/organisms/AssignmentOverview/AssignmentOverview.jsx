@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
+import { Helmet } from "react-helmet";
 
 /* Custom modules */
 import { Text } from "../../atoms";
@@ -13,18 +14,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { useParams, useLocation, useNavigate } from "react-router-dom";
 
 /* Styled components */
-const Box = styled.div`
-  display: flex;
-  width: 559px;
-  height: 671px;
-  background: #f9f9f9;
-  box-shadow: -2px 8px 99px rgba(0, 0, 0, 0.25);
-  border-radius: 10px;
-
-  align-items: center;
-  justify-content: center;
-`;
-
 const GeneralContainer = styled.div`
   display: flex;
   flex-wrap: wrap;
@@ -36,141 +25,6 @@ const GeneralContainer = styled.div`
   height: 100%;
 `;
 
-const SettingsIconWrapper = styled.div`
-  margin-top: 16px;
-  margin-left: 20px;
-  margin-bottom: 0px;
-  width: 38px;
-  height: 38px;
-
-  align-self: flex-start;
-`;
-
-const TitleContainer = styled.div`
-  display: flex;
-  font-family: "Gmarket Sans TTF";
-  font-style: normal;
-  font-weight: 700;
-  font-size: 52.392px;
-  line-height: 60px;
-  text-align: center;
-
-  color: #3d3c78;
-`;
-
-const Exclamation = styled.div`
-  font-family: "Gmarket Sans TTF";
-  font-style: normal;
-  font-weight: 700;
-  font-size: 52.392px;
-  line-height: 60px;
-  text-align: center;
-
-  color: #3d3c78;
-
-  transform: rotate(15.07deg);
-`;
-
-const BackgroundColorSelectorContainer = styled.div`
-  font-family: "Gmarket Sans TTF";
-  font-style: normal;
-  font-weight: 400;
-  font-size: 32px;
-  line-height: 37px;
-  text-align: center;
-
-  color: #000000;
-
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  // align-self: flex-start;
-`;
-
-const SettingsSelectorContainer = styled.div`
-  height: 145px;
-
-  margin-right: 0px;
-  font-family: "Gmarket Sans TTF";
-  font-style: normal;
-  font-weight: 400;
-  font-size: 32px;
-  line-height: 37px;
-  text-align: start;
-
-  color: #000000;
-
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-
-  align-self: flex-start;
-`;
-
-const SettingsContainer = styled.div`
-  width: 350px;
-  height: 256px;
-
-  display: flex;
-  flex-direction: column;
-  justify-content: space-evenly;
-`;
-
-const LoginButtonContainer = styled.div`
-  width: 295px;
-  height: 72px;
-  background: #555488;
-  border-radius: 63.9px;
-
-  display: flex;
-  flex-direction: column;
-  font-family: "Gmarket Sans TTF";
-  font-style: normal;
-  font-weight: 700;
-  font-size: 28.775px;
-  line-height: 33px;
-  text-align: center;
-  justify-content: center;
-  color: #ffffff;
-
-  cursor: pointer;
-`;
-
-const CodeEditorSelectorContainer = styled.div`
-  display: flex;
-  flex-direction: row;
-
-  justify-content: space-between;
-  text-align: center;
-  font-family: "Gmarket Sans TTF";
-  font-style: normal;
-  font-weight: 500;
-  font-size: 20px;
-  line-height: 23px;
-  text-align: center;
-
-  color: #000000;
-`;
-
-const StyledHtmlSelect = styled.select`
-  width: 147px;
-  text-align: center;
-
-  font-family: "Gmarket Sans TTF";
-  font-style: normal;
-  font-weight: 300;
-  font-size: 16px;
-  line-height: 18px;
-
-  padding: 0;
-  margin: 0 0 0 10px;
-  height: 25px !important;
-
-  background: #fff;
-  border: 2px solid #bfbfbf;
-  border-radius: 5px;
-`;
-
 const GridContainer = styled.div`
   position: sticky;
 
@@ -178,7 +32,7 @@ const GridContainer = styled.div`
   width: 1210px;
   grid-template-columns: 1fr 3.5fr 1fr;
   grid-template-areas: "a b c";
-  align-itmes: center;
+  align-items: center;
 `;
 
 const ButtonContainer = styled.div`
@@ -222,27 +76,25 @@ const TopContainer = styled.div`
   justify-content: space-between;
 `;
 
-const BottomContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-`;
-
 const NameContainer = styled.div`
   width: auto;
 
   display: flex;
 
   align-items: stretch;
+
+  grid-row: 1 / last-line;
+  
 `;
 
 const AssignmentGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(1, 1fr);
-  grid-template-rows: repeat(${(props) => props.numAssignment}, 1fr);
+  grid-template-rows: repeat(${(props) => props.numAssignment}, 68px);
   row-gap: 4px;
   grid-column-gap: 1px;
   width: 100%;
+  
 `;
 const AssignmentBlockContainer = styled.div`
   display: flex;
@@ -253,11 +105,10 @@ const AssignmentBlockContainer = styled.div`
 
 const LectureGroup = styled.div`
   width: 100%;
-  height: 100%;
-  display: grid;
 
+  display: grid;
   grid-template-columns: 1fr 7.6fr;
-  grid-template-rows: auto;
+  grid-template-rows: repeat(${(props) => props.numAssignment}, 68px)[last-line];
 `;
 
 const MiddleContainer = styled.div`
@@ -273,7 +124,12 @@ const GridAligner = styled.div`
   align-items: center;
 `;
 
-export const AssignmentOverview = ({ className, ...restProps }) => {
+const Separator = styled.div`
+  height: 50px;
+  width: 100%;
+`;
+
+export const AssignmentOverview = ({ className, darkMode, ...restProps }) => {
   const settingSelector = useSelector((state) => state.SettingReducer);
   const navigate = useNavigate();
 
@@ -283,9 +139,7 @@ export const AssignmentOverview = ({ className, ...restProps }) => {
     settingSelector.backgroundColor
   );
 
-  const lectureSelector = useSelector((state) =>
-    state.LectureReducer.lectures
-  );   
+  const lectureSelector = useSelector((state) => state.LectureReducer.lectures);
 
   // Language options
   const [currentLang, setCurrentLang] = useState(settingSelector.language);
@@ -293,19 +147,24 @@ export const AssignmentOverview = ({ className, ...restProps }) => {
 
   const colorList = [
     ["#B1D3C5", "#C6D7D0", "#D1D9D6"],
-    ["#6ECEDA","#A5D5DB", "#C0D8DB"],
+    ["#6ECEDA", "#A5D5DB", "#C0D8DB"],
     ["#D18063", "#D6AE9F", "#D9C5BD"],
     ["#B57FB3", "#C8ADC7", "#D2C4D1"],
     ["#EADB80", "#E3DBAE", "#DFDBC5"],
     ["#E098AE", "#DEBAC5", "#DDCBD0"],
-  ]
+  ];
 
-  if(!lectureSelector) {
-    return <></>; 
+  if (!lectureSelector) {
+    return <></>;
   }
 
   return (
     <>
+      <Helmet
+        bodyAttributes={{
+          style: darkMode ? "background : #000000" : "background : #FFFFFF",
+        }}
+      />
       <GridAligner>
         <GridContainer>
           <TopContainer style={{ marginTop: "66px" }}>
@@ -320,9 +179,9 @@ export const AssignmentOverview = ({ className, ...restProps }) => {
                 <ListIndicatorBox>
                   <Text>강의 목록</Text>
                 </ListIndicatorBox>
-                <ListIndicatorBox>
+                {/* <ListIndicatorBox>
                   <Text>정렬 기준</Text>
-                </ListIndicatorBox>
+                </ListIndicatorBox> */}
               </ButtonContainer>
               <ListDivLine></ListDivLine>
             </MiddleContainer>
@@ -332,80 +191,87 @@ export const AssignmentOverview = ({ className, ...restProps }) => {
         <div style={{ marginTop: "25px" }}></div>
         <GeneralContainer>
           {/* TODO 강의 개수만큼 pooling */}
-          {
-            lectureSelector.results && lectureSelector.results.length ?
+          {lectureSelector.results && lectureSelector.results.length ? (
             lectureSelector.results.map((lecture, index) => {
-              return ( 
-              <LectureGroupComp 
-                key={JSON.stringify(lecture)} 
-                lecture={lecture}
-                color={colorList[(colorList.length-1) % (index + 1)]}
-              />
-              )
-            }) :
-            <div>
-              아직 지정된 강의가 없습니다.
-            </div>
-          }
-          
+              return (
+                <>
+                  <LectureGroupComp
+                    key={JSON.stringify(lecture)}
+                    lecture={lecture}
+                    color={colorList[(colorList.length - 1) % (index + 1)]}
+                  />
 
-
+                  <Separator></Separator>
+                </>
+              );
+            })
+          ) : (
+            <div>아직 지정된 강의가 없습니다.</div>
+          )}
         </GeneralContainer>
       </GridAligner>
     </>
   );
 };
 
-const LectureGroupComp = ({lecture, color}) => {
+const LectureGroupComp = ({ lecture, color }) => {
+  // console.log(JSON.stringify(lecture));
   return (
-    // <>
-    //   {
-    //     JSON.stringify(lecture.assignments)
-    //   }
-    // </>
-    <LectureGroup>
+    <LectureGroup numAssignment={`${lecture.assignments.results.length}`}>
+      {/* <>
+      {
+        JSON.stringify(lecture.assignments)
+      }
+    </> */}
       <NameContainer>
         <LectureName name={`${lecture.name}`} background={color[0]} />
       </NameContainer>
       {/* TODO: 과제 개수만큼 pooling */}
+
       <AssignmentGrid numAssignment={`${lecture.assignments.results.length}`}>
-        {
-          lecture.assignments.results.map((ass) => {
-            return (
-              <Link key={JSON.stringify(ass)} 
-              to={{
-                pathname: `/assignment/${ass.id}`,
-                // state:"asdfasdf"
-              }} 
-              state={{
-                lecture: lecture
-              }}
-              style={{ textDecoration: "none" }}>
+        {lecture.assignments.results.map((ass) => {
+          return (
+            <>
+              <Link
+                key={JSON.stringify(ass)}
+                to={{
+                  pathname: `/assignment/${ass.id}`,
+                  // state:"asdfasdf"
+                }}
+                state={{
+                  lecture: lecture,
+                }}
+                style={{
+                  textDecoration: "none",
+                  flexBasis: "auto",
+                  content: "fill",
+                }}
+              >
                 <AssignmentBlockContainer>
                   <AssignmentName
                     assignment={`${ass.name}`}
                     background={color[1]}
                     submission={false}
                   ></AssignmentName>
-                    
+
                   <Deadline
                     danger={false}
-                    remainingTime={
-                      `${getTimeDiff(new Date(ass.deadline),  new Date())}`
-                    }
+                    remainingTime={`${getTimeDiff(
+                      new Date(ass.deadline),
+                      new Date()
+                    )}`}
                     background={color[2]}
                     submission={false}
                   ></Deadline>
                 </AssignmentBlockContainer>
               </Link>
-            )
-          })
-        }
+            </>
+          );
+        })}
       </AssignmentGrid>
     </LectureGroup>
   );
-}
-
+};
 
 export const getTimeDiff = (time1, now) => {
   let diff = new Date(time1 - now);
@@ -417,4 +283,4 @@ export const getTimeDiff = (time1, now) => {
   const diffMin = diff.getMinutes();
   const diffSec = diff.getSeconds();
   return `${diffDate}d ${diffHour}h ${diffMin}m ${diffSec}s`;
-}
+};

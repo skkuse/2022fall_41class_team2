@@ -6,6 +6,8 @@ const SceneryContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+
+  background: ${(props) => (props.darkMode ? "#000000" : "#FFFFFF")};
 `;
 
 const Title = styled.div`
@@ -16,6 +18,7 @@ const Title = styled.div`
   line-height: 76px;
   /* identical to box height */
 
+  color: ${(props) => (props.darkMode ? "#D8D8D8" : "#000000")};
   text-align: center;
 `;
 
@@ -27,30 +30,31 @@ const SubTitle = styled.div`
   line-height: 22px;
   text-align: center;
 
-  color: #000000;
+  color: ${(props) => (props.darkMode ? "#D8D8D8" : "#000000")};
 `;
 
-export const LandingPageScenery = (props) => {
+export const LandingPageScenery = ({ darkMode, ...restProps }) => {
+  console.log(darkMode);
   return (
     <>
-      <SceneryContainer>
+      <SceneryContainer darkMode={darkMode}>
         <div style={{ marginTop: "41px" }}>
-          <Title>Coding Cat</Title>
+          <Title darkMode={darkMode}>Coding Cat</Title>
         </div>
         <div style={{ marginTop: "15.67px" }}>
-          <SubTitle>
+          <SubTitle darkMode={darkMode}>
             프로그래밍 문제를 풀고 온라인으로 채점받을 수 있는 곳입니다.
           </SubTitle>
         </div>
         <Img
-          src="/images/Line_24.svg"
+          src={darkMode ? "images/line1_black.svg" : "/images/Line_24.svg"}
           className="illustrationOne1"
           alt="scenery1"
           style={{ marginTop: "34.33px" }}
         />
 
         <Img
-          src="/images/Line_23.svg"
+          src={darkMode ? "images/line2_black.svg" : "/images/Line_23.svg"}
           className="illustrationOne2"
           alt="scenery2"
           style={{ marginTop: "17px" }}

@@ -11,11 +11,18 @@ const Wrapper = styled.div`
   flex: 1;
 `;
 
-export const SettingsIcon = ({ inverted , ...restProps}) => {
+export const SettingsIcon = ({ inverted, darkMode, ...restProps }) => {
   return (
     <div>
       <Wrapper>
-        <Img src={inverted ? "/images/settings_inverted.svg" : "/images/img_settings.svg"} alt="settings" />
+        <Img
+          src={
+            inverted || darkMode
+              ? "/images/settings_inverted.svg"
+              : "/images/img_settings.svg"
+          }
+          alt="settings"
+        />
       </Wrapper>
     </div>
   );
