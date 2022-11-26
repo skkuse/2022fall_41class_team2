@@ -1,6 +1,7 @@
 import os
 
 from pathlib import Path
+from django.utils import timezone
 from rest_framework import generics, status, fields
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -8,9 +9,10 @@ from backend.settings.base import BASE_DIR, TESTING
 from drf_spectacular.utils import extend_schema_view, extend_schema, inline_serializer, OpenApiParameter
 from rest_framework.exceptions import NotAuthenticated, PermissionDenied
 from backend.exceptions import BadRequestError, InternalServerError
+from testcase.models import Testcase
 from repo.models import Repo
 from output.models import Result
-from testcase.models import Testcase
+from output.utils import string_compare_considered_type
 from output.serializers import ResultSerializer, TestcaseResultSerializer
 from output import utils_execution, utils_code_explain, utils_functionality, utils_readability, utils_efficiency, utils_plagiarism
 
@@ -53,6 +55,7 @@ def retrieve_exercise_output(request):
         raw_code=raw_code,
         raw_input=raw_input,
     )
+
     return Response(
         data=result,
         status=status.HTTP_200_OK,
@@ -96,24 +99,27 @@ def retrieve_testcase_output(request, testcase_id):
         raw_code=raw_code,
         raw_input=testcase.input,
     )
+
+    is_error = True
+    actual_output = None
+    is_pass = False
+
     if ret.get('exit_status') == 0:
-        actual_output = ret.get('output')
         is_error = False
-        is_pass = (actual_output == testcase.output)
-    else:
-        actual_output = None
-        is_error = True
-        is_pass = False
+        actual_output = ret.get('output')
+        is_pass = string_compare_considered_type(actual_output, testcase.output)
+
+    serializer = TestcaseResultSerializer(instance={
+        'is_hidden': testcase.is_hidden,
+        'input': testcase.input,
+        'is_error': is_error,
+        'expected_output': testcase.output,
+        'actual_output': actual_output,
+        'is_pass': is_pass,
+    })
 
     return Response(
-        data=TestcaseResultSerializer(instance={
-            'is_hidden': testcase.is_hidden,
-            'input': testcase.input,
-            'is_error': is_error,
-            'expected_output': testcase.output,
-            'actual_output': actual_output,
-            'is_pass': is_pass,
-        }).data,
+        data=serializer.data,
         status=status.HTTP_200_OK,
     )
 
@@ -192,6 +198,10 @@ class ResultListOrCreate(generics.ListCreateAPIView):
 
         if repo.author != user:
             raise PermissionDenied
+        repo.update_content(language=language, code=raw_code)
+
+        if assignment.deadline.astimezone() < timezone.now().astimezone():
+            raise BadRequestError(detail='Exceed assignment deadline')
 
         if Result.objects.filter(
             repo__assignment=assignment,
@@ -227,6 +237,7 @@ class ResultListOrCreate(generics.ListCreateAPIView):
         # Run Code Description Module
         code_description = utils_code_explain.run(
             raw_code=raw_code,
+            language=language,
         )
         data = request.data
         data.update({'code_description': code_description})
@@ -249,12 +260,14 @@ class ResultListOrCreate(generics.ListCreateAPIView):
         utils_readability.run(
             result_id=result.id,
             full_filename=full_filename,
+            language=language,
         )
 
         # Run Efficiency Module
         utils_efficiency.run(
             result_id=result.id,
             full_filename=full_filename,
+            language=language,
         )
 
         # Run Plagiarism Module
@@ -263,6 +276,7 @@ class ResultListOrCreate(generics.ListCreateAPIView):
             full_filename=full_filename,
             test_dir=base_dir,
             ref_dir=base_dir,
+            language=language,
         )
 
         return Response(

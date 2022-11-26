@@ -1,4 +1,7 @@
+from datetime import timedelta
+from unittest.mock import patch
 from django.test import TestCase
+from django.utils import timezone
 from rest_framework.test import APIClient
 from authentication.models import User
 from lecture.models import Lecture
@@ -214,6 +217,7 @@ class TestResultListOrCreate(TestCase):
         assignment = Assignment.objects.create(
             name=self.mock_assignment_name,
             lecture=lecture,
+            deadline=timezone.now() + timedelta(days=1),
         )
         testcase_1 = Testcase.objects.create(
             assignment=assignment,
@@ -302,6 +306,44 @@ def solution():
         self.assertIsNotNone(ret.get('plagiarism_result'))
         self.assertIsNotNone(ret.get('readability_result'))
 
+    def test_results_create_not_python(self):
+        student = User.objects.get(oauth_id=self.mock_student_oauth_id)
+        repo = Repo.objects.first()
+        data = {
+            'repo_id': repo.id,
+            'language': 'cpp',
+            'code': '''
+#include <iostream>
+
+using namespace std;
+
+void solution() {
+    int size = 0;
+    cin >> size;
+
+    float ret = 0;
+    while (size--) {
+        float num = 0;
+        cin >> num;
+        ret += num;
+    }
+
+    cout << ret << \'\\n\';
+}
+''',
+        }
+
+        client = APIClient()
+        client.force_authenticate(user=student)
+        response = client.post('/outputs/results/', data=data, format='json')
+        ret = response.data
+
+        self.assertIsNotNone(ret.get('id'))
+        self.assertIsNotNone(ret.get('functionality_result'))
+        self.assertIsNone(ret.get('efficiency_result'))
+        self.assertIsNone(ret.get('plagiarism_result'))
+        self.assertIsNone(ret.get('readability_result'))
+
     def test_results_create_when_code_is_not_executable(self):
         student = User.objects.get(oauth_id=self.mock_student_oauth_id)
         repo = Repo.objects.first()
@@ -375,6 +417,22 @@ def solution():
         response = client.post('/outputs/results/', data=data, format='json')
 
         self.assertEqual(response.status_code, 401)
+
+    @patch('django.utils.timezone.now', return_value=timezone.now() + timedelta(weeks=1))
+    def test_results_create_when_deadline_exceed(self, mock_now):
+        student = User.objects.get(oauth_id=self.mock_student_oauth_id)
+        repo = Repo.objects.first()
+        data = {
+            'repo_id': repo.id,
+            'language': 'python',
+            'code': 'dummy-code',
+        }
+
+        client = APIClient()
+        client.force_authenticate(user=student)
+        response = client.post('/outputs/results/', data=data, format='json')
+
+        self.assertEqual(response.status_code, 400)
 
     def test_results_create_when_exceed_possible_attempts(self):
         student = User.objects.get(oauth_id=self.mock_student_oauth_id)

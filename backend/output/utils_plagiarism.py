@@ -5,6 +5,8 @@ from copydetect import CopyDetector
 from bs4 import BeautifulSoup
 from output.serializers import PlagiarismResultSerializer
 
+PLAGIARISM_SUPPORT_LANGUAGE = ['python']
+
 DISPLAY_THRESHOLD = 0.5
 ANTO_OPEN_FLAG = False
 SILENT_FLAG = True
@@ -12,7 +14,10 @@ NUM_FILES_COMPARED_FIELD = 'num_files_compared'
 SIMILARITY_FIELD = 'similarity_score'
 
 
-def run(result_id: int, full_filename: str, test_dir: str, ref_dir: str):
+def run(result_id: int, full_filename: str, test_dir: str, ref_dir: str, language: str = 'python'):
+    if language.lower() not in PLAGIARISM_SUPPORT_LANGUAGE:
+        return
+
     plagiarism_output = execute_copy_detector(
         full_filename=full_filename,
         test_dirs=[test_dir],

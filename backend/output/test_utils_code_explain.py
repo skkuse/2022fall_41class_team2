@@ -1,5 +1,6 @@
 from django.test import TestCase
 from output.utils_code_explain import run
+from output.utils_execution import SUPPORT_LANGUAGE
 
 
 class Test(TestCase):
@@ -18,6 +19,16 @@ def solution():
     print(ret)
     return ret
 ''',
+            language='PytHon',
         )
 
         self.assertIsNotNone(ret)
+
+    def test_run_not_supported_language(self):
+        languages = list(SUPPORT_LANGUAGE)
+        languages.remove('python')
+        languages.append('dummy-data')
+
+        for language in languages:
+            ret = run(raw_code='dummy-code', language=language)
+            self.assertEqual(ret, str())

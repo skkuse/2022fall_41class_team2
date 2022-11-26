@@ -4,13 +4,18 @@ import subprocess
 from output.serializers import EfficiencyResultSerializer
 from memory_profiler import memory_usage
 
+EFFICIENCY_SUPPORT_LANGUAGE = ['python']
+
 LOC_FIELD = 'loc_score'
 CONTROL_FLOW_COMPLEXITY_FIELD = 'control_flow_complexity_score'
 RESERVATION_WORDS_FIELD = 'reservation_words_score'
 DATA_FLOW_COMPLEXITY_FIELD = 'data_flow_complexity_score'
 
 
-def run(result_id: int, full_filename: str):
+def run(result_id: int, full_filename: str, language: str = 'python'):
+    if language.lower() not in EFFICIENCY_SUPPORT_LANGUAGE:
+        return
+
     multimetric_output = execute_multimetric(full_filename=full_filename)
     mem_output = execute_memory_profiler(full_filename=full_filename)
 

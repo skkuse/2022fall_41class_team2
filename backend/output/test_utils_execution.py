@@ -37,6 +37,21 @@ class Test(TestCase):
             language = 'golang'
             run(SERVER_CODE_DIR, language, '', '')
 
+    def test_run_when_timeout(self):
+        raw_code = '''
+import time
+
+def solution():
+    time.sleep(15)
+'''
+        raw_input = '''
+3
+'''
+
+        response = run(SERVER_CODE_DIR, 'python', raw_code, raw_input)
+
+        self.assertNotEqual(response.get('exit_status'), 0)
+
     def test_run_python(self):
         raw_code = '''
 def solution():
@@ -57,7 +72,7 @@ def solution():
         response = run(SERVER_CODE_DIR, 'python', raw_code, raw_input)
 
         self.assertEqual(response.get('exit_status'), 0)
-        self.assertEqual(response.get('output'), '10.2\n')
+        self.assertEqual(response.get('output'), '10.2')
 
     def test_run_javascript(self):
         raw_code = '''
@@ -88,7 +103,7 @@ let solution = () => {
         response = run(SERVER_CODE_DIR, 'javascript', raw_code, raw_input)
 
         self.assertEqual(response.get('exit_status'), 0)
-        self.assertEqual(response.get('output'), '10.2\n')
+        self.assertEqual(response.get('output'), '10.2')
 
     def test_run_c(self):
         raw_code = '''
@@ -115,7 +130,7 @@ void solution() {
         response = run(SERVER_CODE_DIR, 'c', raw_code, raw_input)
 
         self.assertEqual(response.get('exit_status'), 0)
-        self.assertEqual(response.get('output'), '10.2\n')
+        self.assertEqual(response.get('output'), '10.2')
 
     def test_run_cpp(self):
         raw_code = '''
@@ -144,4 +159,4 @@ void solution() {
         response = run(SERVER_CODE_DIR, 'cpp', raw_code, raw_input)
 
         self.assertEqual(response.get('exit_status'), 0)
-        self.assertEqual(response.get('output'), '10.2\n')
+        self.assertEqual(response.get('output'), '10.2')

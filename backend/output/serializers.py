@@ -60,6 +60,7 @@ class ResultSerializer(serializers.ModelSerializer):
         required=False,
         read_only=True,
     )
+    code_description = serializers.CharField(required=False, allow_blank=True)
     functionality_result = FunctionalityResultSerializer(read_only=True)
     efficiency_result = EfficiencyResultSerializer(read_only=True)
     plagiarism_result = PlagiarismResultSerializer(read_only=True)

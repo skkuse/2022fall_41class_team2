@@ -1,6 +1,7 @@
 from output import utils_execution
 from testcase.models import Testcase
 from output.serializers import TestcaseResultSerializer, FunctionalityResultSerializer
+from output.utils import string_compare_considered_type
 
 
 def run(result_id: int, testcases: [Testcase], base_dir: str, language: str, raw_code: str):
@@ -30,31 +31,33 @@ def generate_testcase_results(base_dir: str, language: str, raw_code: str, testc
             raw_code=raw_code,
             raw_input=testcase.input,
         )
+
+        is_error = True
+        testcase_input = None
+        expected_output = None
+        actual_output = None
+        is_pass = False
+
         if execution_output.get('exit_status') == 0:
-            actual_output = execution_output.get('output')
             is_error = False
-            is_pass = (actual_output == testcase.output)
-        else:
-            actual_output = None
-            is_error = True
-            is_pass = False
+            testcase_input = testcase.input
+            expected_output = testcase.output
+            actual_output = execution_output.get('output')
+            is_pass = string_compare_considered_type(actual_output, expected_output)
 
         if testcase.is_hidden:
             testcase_input = None
             expected_output = None
             actual_output = None
-        else:
-            testcase_input = testcase.input
-            expected_output = testcase.output
 
-        data = TestcaseResultSerializer(instance={
+        serializer = TestcaseResultSerializer(instance={
             'is_hidden': testcase.is_hidden,
             'input': testcase_input,
             'expected_output': expected_output,
             'actual_output': actual_output,
             'is_error': is_error,
             'is_pass': is_pass,
-        }).data
-        ret.append(data)
+        })
+        ret.append(serializer.data)
 
     return ret
