@@ -3,6 +3,7 @@ from output.models import Result, FunctionalityResult, EfficiencyResult, Plagiar
 
 
 class TestcaseResultSerializer(serializers.Serializer):
+    id = serializers.IntegerField()
     is_hidden = serializers.BooleanField()
     input = serializers.CharField(allow_null=True)
     is_error = serializers.BooleanField()
@@ -15,6 +16,18 @@ class TestcaseResultSerializer(serializers.Serializer):
 
     def to_representation(self, instance):
         return super().to_representation(instance=instance)
+
+
+class TestcaseBlindResultSerializer(TestcaseResultSerializer):
+    blind_fields = ['input', 'expected_output', 'actual_output']
+
+    def to_representation(self, instance):
+        ret = super().to_representation(instance)
+        if instance.get('is_hidden'):
+            ret.update(
+                (key, None) for key in ret.keys() if key in self.blind_fields
+            )
+        return ret
 
 
 class FunctionalityResultSerializer(serializers.ModelSerializer):
