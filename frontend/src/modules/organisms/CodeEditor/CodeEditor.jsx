@@ -387,6 +387,9 @@ export const CodeEditor = ({ assignment, darkMode, changeRepo, setChangeRepo }) 
                     </CoreButton>
                   </ActionButtonWrapper>
                 </div>
+
+
+
               </EditorHeaderWrapper>
               <div style={{ marginLeft: "12.42px", marginTop: "24.83px" }}>
                 <EditorWrapper>
@@ -448,6 +451,7 @@ export const CodeEditor = ({ assignment, darkMode, changeRepo, setChangeRepo }) 
                     />
                   </TerminalWrapper>
                 )}
+                
             </EvaluationWindowGrid>
           </>
         )}

@@ -40,13 +40,13 @@ async function getLectureAPI(payload) {
     // result.data.data.results.push(postResult.data.data);
 
     if(result.status == 200 && result.data.data.results.length == 0) {
-        const postResult = await apiClient.post("/api/lectures/", {
-            name: "예시) 소프트웨어공학개론"
-        });
-        result.data.data.results.push(postResult.data.data);
+        // const postResult = await apiClient.post("/api/lectures/", {
+        //     name: "예시) 소프트웨어공학개론"
+        // });
+        // result.data.data.results.push(postResult.data.data);
     }
 
-    console.log(result);
+    // console.log(result);
 
     for (const index in result.data.data.results) {
         let lecture = result.data.data.results[index];
