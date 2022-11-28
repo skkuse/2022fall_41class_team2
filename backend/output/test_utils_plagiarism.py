@@ -8,6 +8,7 @@ from assignment.models import Assignment
 from repo.models import Repo
 from output.models import Result
 from output.utils_plagiarism import run
+from output.utils_execution import SUPPORT_LANGUAGE
 
 
 class Test(TestCase):
@@ -80,3 +81,18 @@ def solution():
             self.assertEqual(type(plswork.get("similarity_score")), float)
         finally:
             os.remove(filename)
+
+    def test_run_not_supported_language(self):
+        languages = list(SUPPORT_LANGUAGE)
+        languages.remove('python')
+        languages.append('dummy-data')
+
+        for language in languages:
+            ret = run(
+                result_id=99,
+                full_filename='dummy-name',
+                test_dir='dummy-dir-1',
+                ref_dir='dummy-dir-2',
+                language=language
+            )
+            self.assertIsNone(ret)

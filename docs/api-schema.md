@@ -29,7 +29,8 @@
 |            | PUT       | /repos/{repo_id}/                 | 풀이 코드 저장                |
 |            | DELETE    | /repos/{repo_id}/                 | 풀이 코드 제거                |
 | Output     | POST      | /outputs/exercises/               | 풀이 코드 실행 및 결과 전달        |
-|            | POST      | /outputs/testcases/{testcase_id}/ | 테스트 케이스 결과 전달           |
+|            | POST      | /outputs/testcases/               | 모든 테스트 케이스 결과 전달        |
+|            | POST      | /outputs/testcases/{testcase_id}/ | 특정 테스트 케이스 결과 전달        |
 |            | GET       | /outputs/results/                 | 모든 과제 제출 결과 조희          |
 |            | POST      | /outputs/results/                 | 과제 제출                   |
 |            | GET       | /outputs/results/{result_id}/     | 특정 과제 제출 결과 조회          |
@@ -280,15 +281,25 @@ Acesss Token 재발급
 
 - Response: `eixt_status`, `output`
 
+### POST /outputs/testcases/
+
+모든 테스트 케이스 결과 전달
+
+공개 테스트인 경우 실행 결과를 노출, 비공개인 경우 세부 정보가 노출되지 않음
+
+- Request: `auth (required)`, `language`, `code`, `assignment_id`
+
+- Response: `id`, `is_hidden`, `input`, `is_error`, `expected_output`, `actual_output`, `is_pass`
+
 ### POST /outputs/testcases/{testcase_id}/
 
-테스트 케이스 결과 전달
+특정 테스트 케이스 결과 전달
 
-공개 테스트 케이스인 경우 실행 결과를 노출, 비공개인 경우 노출하지 않음
+공개 테스트 케이스인 경우 실행 결과를 노출, 비공개인 경우 요청 거부됨
 
 - Request: `auth (required)`, `language`, `code`
 
-- Response: `input`, `is_error`, `expected_output`, `actual_output`, `is_pass`
+- Response: `id`, `is_hidden`, `input`, `is_error`, `expected_output`, `actual_output`, `is_pass`
 
 ### GET /outputs/results/
 

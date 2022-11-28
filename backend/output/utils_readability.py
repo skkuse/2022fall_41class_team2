@@ -3,8 +3,13 @@ import re
 
 from output.serializers import ReadabilityResultSerializer
 
+READABILITY_SUPPORT_LANGUAGE = ['python']
 
-def run(result_id: int, full_filename: str):
+
+def run(result_id: int, full_filename: str, language: str = 'python'):
+    if language.lower() not in READABILITY_SUPPORT_LANGUAGE:
+        return
+
     pylint_score = execute_pylint(full_filename=full_filename)
     pycodestyle_score = execute_pycodestyle(full_filename=full_filename)
     mypy_score = execute_mypy(full_filename=full_filename)
