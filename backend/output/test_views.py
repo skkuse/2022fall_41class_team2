@@ -1,4 +1,7 @@
+from datetime import timedelta
+from unittest.mock import patch
 from django.test import TestCase
+from django.utils import timezone
 from rest_framework.test import APIClient
 from authentication.models import User
 from lecture.models import Lecture
@@ -34,7 +37,7 @@ def solution():
             oauth_id=self.user_oauth_id,
         )
 
-    def test_retrieve_exercise_output(self):
+    def test_execute_exercise_output(self):
         user = User.objects.get(oauth_id=self.user_oauth_id)
         data = {
             'language': self.language,
@@ -49,7 +52,7 @@ def solution():
 
         self.assertEqual(result.get('exit_status'), 0)
 
-    def test_retrieve_exercise_output_without_auth(self):
+    def test_execute_exercise_output_without_auth(self):
         data = {
             'language': self.language,
             'code': self.code,
@@ -60,7 +63,7 @@ def solution():
 
         self.assertEqual(response.status_code, 401)
 
-    def test_retrieve_exercise_output_un_proper_method(self):
+    def test_execute_exercise_output_un_proper_method(self):
         user = User.objects.get(oauth_id=self.user_oauth_id)
 
         client = APIClient()
@@ -108,17 +111,17 @@ def solution():
         testcase_1 = Testcase.objects.create(
             assignment=assignment,
             is_hidden=False,
-            input='3\n1 2 3\n',
-            output='6.0\n'
+            input='3\n1 2 3',
+            output='6.0'
         )
         testcase_2 = Testcase.objects.create(
             assignment=assignment,
             is_hidden=True,
             input='3\n1.1 2.2 3.3',
-            output='6.6\n',
+            output='6.6',
         )
 
-    def test_retrieve_testcase_output(self):
+    def test_execute_testcase_output(self):
         student = User.objects.get(oauth_id=self.mock_student_oauth_id)
         testcase = Testcase.objects.first()
         data = {
@@ -131,12 +134,13 @@ def solution():
         response = client.post(f'/outputs/testcases/{testcase.id}/', data=data, format='json')
         ret = response.data
 
-        self.assertFalse(ret.get('is_error'))
+        self.assertIsNotNone(ret.get('id'))
         self.assertIsNotNone(ret.get('input'))
         self.assertIsNotNone(ret.get('expected_output'))
         self.assertIsNotNone(ret.get('actual_output'))
+        self.assertFalse(ret.get('is_error'))
 
-    def test_retrieve_testcase_output_with_code_grammar_error(self):
+    def test_execute_testcase_output_with_code_grammar_error(self):
         student = User.objects.get(oauth_id=self.mock_student_oauth_id)
         testcase = Testcase.objects.first()
         data = {
@@ -150,9 +154,9 @@ def solution():
         ret = response.data
 
         self.assertTrue(ret.get('is_error'))
-        self.assertIsNone(ret.get('actual_output'))
+        self.assertFalse(ret.get('is_pass'))
 
-    def test_retrieve_testcase_when_non_exist_testcase(self):
+    def test_execute_testcase_when_non_exist_testcase(self):
         student = User.objects.get(oauth_id=self.mock_student_oauth_id)
         dummy_testcase_id = 99
         data = {
@@ -166,7 +170,7 @@ def solution():
 
         self.assertEqual(response.status_code, 400)
 
-    def test_retrieve_testcase_output_when_hidden_one(self):
+    def test_execute_testcase_output_when_hidden_one(self):
         student = User.objects.get(oauth_id=self.mock_student_oauth_id)
         testcase = Testcase.objects.last()
         data = {
@@ -180,7 +184,7 @@ def solution():
 
         self.assertEqual(response.status_code, 400)
 
-    def test_retrieve_testcase_without_auth(self):
+    def test_execute_testcase_without_auth(self):
         testcase = Testcase.objects.first()
         data = {
             'language': self.language,
@@ -189,6 +193,75 @@ def solution():
 
         client = APIClient()
         response = client.post(f'/outputs/testcases/{testcase.id}/', data=data, format='json')
+
+        self.assertEqual(response.status_code, 401)
+
+    def test_execute_testcases(self):
+        student = User.objects.get(oauth_id=self.mock_student_oauth_id)
+        assignment = Assignment.objects.first()
+        data = {
+            'language': self.language,
+            'code': self.code,
+            'assignment_id': assignment.id,
+        }
+
+        client = APIClient()
+        client.force_authenticate(user=student)
+        response = client.post('/outputs/testcases/', data=data, format='json')
+        ret = response.data
+
+        self.assertIsNotNone(ret[1].get('id'))
+        self.assertTrue(ret[1].get('is_hidden'))
+        self.assertIsNone(ret[1].get('input'))
+        self.assertIsNone(ret[1].get('expected_output'))
+        self.assertIsNone(ret[1].get('actual_output'))
+
+    def test_execute_testcases_with_code_grammar_error(self):
+        student = User.objects.get(oauth_id=self.mock_student_oauth_id)
+        assignment = Assignment.objects.first()
+        data = {
+            'language': self.language,
+            'code': 'def solution():\n    retur\n',
+            'assignment_id': assignment.id,
+        }
+
+        client = APIClient()
+        client.force_authenticate(user=student)
+        response = client.post('/outputs/testcases/', data=data, format='json')
+        ret = response.data
+
+        self.assertIsNotNone(ret[0].get('id'))
+        self.assertTrue(ret[0].get('is_error'))
+        self.assertFalse(ret[0].get('is_pass'))
+        self.assertIsNotNone(ret[1].get('id'))
+        self.assertTrue(ret[1].get('is_error'))
+        self.assertFalse(ret[1].get('is_pass'))
+
+    def test_execute_testcases_with_non_exist_assignment(self):
+        student = User.objects.get(oauth_id=self.mock_student_oauth_id)
+        dummy_assignment_id = 99
+        data = {
+            'language': self.language,
+            'code': self.code,
+            'assignment_id': dummy_assignment_id,
+        }
+
+        client = APIClient()
+        client.force_authenticate(user=student)
+        response = client.post('/outputs/testcases/', data=data, format='json')
+
+        self.assertEqual(response.status_code, 400)
+
+    def test_execute_testcases_without_auth(self):
+        assignment = Assignment.objects.first()
+        data = {
+            'language': self.language,
+            'code': self.code,
+            'assignment_id': assignment.id,
+        }
+
+        client = APIClient()
+        response = client.post('/outputs/testcases/', data=data, format='json')
 
         self.assertEqual(response.status_code, 401)
 
@@ -214,6 +287,7 @@ class TestResultListOrCreate(TestCase):
         assignment = Assignment.objects.create(
             name=self.mock_assignment_name,
             lecture=lecture,
+            deadline=timezone.now() + timedelta(days=1),
         )
         testcase_1 = Testcase.objects.create(
             assignment=assignment,
@@ -302,6 +376,44 @@ def solution():
         self.assertIsNotNone(ret.get('plagiarism_result'))
         self.assertIsNotNone(ret.get('readability_result'))
 
+    def test_results_create_not_python(self):
+        student = User.objects.get(oauth_id=self.mock_student_oauth_id)
+        repo = Repo.objects.first()
+        data = {
+            'repo_id': repo.id,
+            'language': 'cpp',
+            'code': '''
+#include <iostream>
+
+using namespace std;
+
+void solution() {
+    int size = 0;
+    cin >> size;
+
+    float ret = 0;
+    while (size--) {
+        float num = 0;
+        cin >> num;
+        ret += num;
+    }
+
+    cout << ret << \'\\n\';
+}
+''',
+        }
+
+        client = APIClient()
+        client.force_authenticate(user=student)
+        response = client.post('/outputs/results/', data=data, format='json')
+        ret = response.data
+
+        self.assertIsNotNone(ret.get('id'))
+        self.assertIsNotNone(ret.get('functionality_result'))
+        self.assertIsNone(ret.get('efficiency_result'))
+        self.assertIsNone(ret.get('plagiarism_result'))
+        self.assertIsNone(ret.get('readability_result'))
+
     def test_results_create_when_code_is_not_executable(self):
         student = User.objects.get(oauth_id=self.mock_student_oauth_id)
         repo = Repo.objects.first()
@@ -375,6 +487,22 @@ def solution():
         response = client.post('/outputs/results/', data=data, format='json')
 
         self.assertEqual(response.status_code, 401)
+
+    @patch('django.utils.timezone.now', return_value=timezone.now() + timedelta(weeks=1))
+    def test_results_create_when_deadline_exceed(self, mock_now):
+        student = User.objects.get(oauth_id=self.mock_student_oauth_id)
+        repo = Repo.objects.first()
+        data = {
+            'repo_id': repo.id,
+            'language': 'python',
+            'code': 'dummy-code',
+        }
+
+        client = APIClient()
+        client.force_authenticate(user=student)
+        response = client.post('/outputs/results/', data=data, format='json')
+
+        self.assertEqual(response.status_code, 400)
 
     def test_results_create_when_exceed_possible_attempts(self):
         student = User.objects.get(oauth_id=self.mock_student_oauth_id)

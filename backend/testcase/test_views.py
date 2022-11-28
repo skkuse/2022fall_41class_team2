@@ -86,8 +86,8 @@ class TestTestcaseListOrCreate(TestCase):
         assignment = Assignment.objects.get(name=self.mock_assignment_name)
         data = {
             'is_hidden': False,
-            'input': '1\n2\n',
-            'output': '3\n',
+            'input': '\n1\n2\n',
+            'output': '\n3\n',
             'assignment_id': assignment.id,
         }
 
@@ -97,6 +97,8 @@ class TestTestcaseListOrCreate(TestCase):
         result = response.data
 
         self.assertIsNotNone(result.get('id'))
+        self.assertEqual(result.get('input'), '1\n2')
+        self.assertEqual(result.get('output'), '3')
 
     def test_testcase_crate_as_non_instructor(self):
         student = User.objects.get(oauth_id=self.mock_student_oauth_id)

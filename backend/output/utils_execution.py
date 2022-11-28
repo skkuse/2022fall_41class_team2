@@ -1,12 +1,14 @@
 import docker
 import os
+import socket
 
+from docker.errors import APIError
 from output.utils import generate_files, delete_files
 from docker.errors import DockerException, ContainerError
 from backend.exceptions import BadRequestError, InternalServerError
 
 CONTAINER_CODE_DIR = os.environ['CONTAINER_CODE_DIR']
-
+CONTAINER_TIMEOUT = 10
 EXECUTED_FUNCTION_NAME = 'solution'
 
 SUPPORT_LANGUAGE = ['python', 'javascript', 'c', 'cpp']
@@ -76,29 +78,28 @@ def run(base_dir: str, language: str, raw_code: str, raw_input: str, temporary: 
         if temporary:
             full_filenames = [base_dir + filename for filename in [code_filename, input_filename]]
             delete_files(full_filenames=full_filenames)
-            return ret
         else:
             ret.update({
                 'code_filename': code_filename,
                 'input_filename': input_filename,
             })
-            return ret
+        return ret
 
 
 def setup_python_code(raw_code: str):
-    return '\n\n\n'.join([raw_code, f'{EXECUTED_FUNCTION_NAME}()'])
+    return '\n\n\n'.join([raw_code.strip(), f'{EXECUTED_FUNCTION_NAME}()'])
 
 
 def setup_javascript_code(raw_code: str):
-    return '\n\n'.join([raw_code, f'{EXECUTED_FUNCTION_NAME}()'])
+    return '\n\n'.join([raw_code.strip(), f'{EXECUTED_FUNCTION_NAME}()'])
 
 
 def setup_c_code(raw_code: str):
-    return '\n\n'.join([raw_code, f'int main() {{ {EXECUTED_FUNCTION_NAME}(); return 0; }}'])
+    return '\n\n'.join([raw_code.strip(), f'int main() {{ {EXECUTED_FUNCTION_NAME}(); return 0; }}'])
 
 
 def setup_cpp_code(raw_code: str):
-    return '\n\n'.join([raw_code, f'int main() {{ {EXECUTED_FUNCTION_NAME}(); return 0; }}'])
+    return '\n\n'.join([raw_code.strip(), f'int main() {{ {EXECUTED_FUNCTION_NAME}(); return 0; }}'])
 
 
 def setup_input(raw_input: str):
@@ -195,18 +196,26 @@ def execute_container(base_dir: str, image: str, command: str):
         detach=True,
     )
 
-    exit_status = container.wait()['StatusCode']
-    if exit_status == 0:
-        out = container.logs(stdout=True, stderr=False, stream=True, follow=True)
-    else:
-        out = container.logs(stdout=False, stderr=True)
-    container.remove()
+    try:
+        exit_status = container.wait(timeout=CONTAINER_TIMEOUT).get('StatusCode')
+        if exit_status == 0:
+            out = container.logs(stdout=True, stderr=False, stream=True, follow=True)
+        else:
+            out = container.logs(stdout=False, stderr=True)
+    except (socket.error, APIError) as e:
+        exit_status = 1
+        out = str(e).encode('utf-8')
+
+    container.remove(force=True)
+
     if exit_status != 0:
         raise ContainerError(container, exit_status, command, image, out)
 
     response = b''.join([line for line in out])
+    output = response.decode('utf-8').strip()
+
     return {
-        'exit_status': 0,
-        'output': response.decode('utf-8'),
+        'exit_status': exit_status,
+        'output': output,
     }
     

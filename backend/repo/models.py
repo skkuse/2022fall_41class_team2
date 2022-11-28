@@ -13,3 +13,10 @@ class Repo(models.Model):
 
     def __str__(self):
         return self.id
+
+    def update_content(self, language: str, code: str):
+        self.content = dict({
+            'language': language,
+            'code': code,
+        })
+        return self.save()
