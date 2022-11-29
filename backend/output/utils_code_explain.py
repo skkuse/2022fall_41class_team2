@@ -1,5 +1,7 @@
 from openai import Completion
 
+DESCRIPTION_SUPPORT_LANGUAGE = ['python']
+
 ENGINE = 'davinci'
 STOP = ["\"\"\""]
 TOP_P = 1.0
@@ -9,6 +11,9 @@ TEMPERATURE = 0
 
 
 def run(raw_code: str, language: str = 'python'):
+    if language.lower() not in DESCRIPTION_SUPPORT_LANGUAGE:
+        return str()
+
     return execute_codex(raw_code)
 
 

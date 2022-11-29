@@ -134,7 +134,12 @@ const CoreButton = styled.div`
   cursor: pointer;
 `;
 
-export const CodeEditor = ({ assignment, darkMode, changeRepo, setChangeRepo }) => {
+export const CodeEditor = ({
+  assignment,
+  darkMode,
+  changeRepo,
+  setChangeRepo,
+}) => {
   console.log(assignment);
 
   const headerContent = "코드 입력";
@@ -178,7 +183,7 @@ export const CodeEditor = ({ assignment, darkMode, changeRepo, setChangeRepo }) 
       setSubmitResult(result.data);
       setSubmitComplete(true);
     } catch (error) {
-      alert("제출은 4회 이상 할 수 없습니다.");
+      alert(error.response.data.data.detail);
       setSubmitComplete(false);
     }
     setSubmitLoading(false);
@@ -261,9 +266,16 @@ export const CodeEditor = ({ assignment, darkMode, changeRepo, setChangeRepo }) 
   //   setChangeRepo(false);
   // },[repoSelector.selectedModel])
 
-  if (!(repoSelector && repoSelector.selectedModel && repoSelector.repoCreateInfo && repoSelector.repoChangeInfo)) {
+  if (
+    !(
+      repoSelector &&
+      repoSelector.selectedModel &&
+      repoSelector.repoCreateInfo &&
+      repoSelector.repoChangeInfo
+    )
+  ) {
     console.log(repoSelector);
-    return <></>
+    return <></>;
   }
 
   console.log(editorRef);
@@ -300,7 +312,7 @@ export const CodeEditor = ({ assignment, darkMode, changeRepo, setChangeRepo }) 
               </div>
             </EditorHeaderWrapper>
             <div style={{ marginLeft: "12.42px", marginTop: "24.83px" }}>
-              <EditorWrapper style={{position:"relative"}}>
+              <EditorWrapper style={{ position: "relative" }}>
                 {/* {
                   repoSelector.repoList.map((repo) => {
                     return (
@@ -326,38 +338,51 @@ export const CodeEditor = ({ assignment, darkMode, changeRepo, setChangeRepo }) 
                     }
                   </div> */}
 
-                {repoSelector.selectedModel && <Editor
-                  // width="1180px"
-                  // height="820px"
-                  language={repoSelector.selectedModel.content.language}
-                  theme={darkMode ? "vs-dark" : "light"}
-                  value={repoSelector.selectedModel.content.code}
-                  onChange={(e) => {
-                    if(repoSelector.repoChangeInfo.isChanging || repoSelector.repoCreateInfo.isCreating ) {
-                      return;
-                    }
-                    let repoTemp = {
-                      ...repoSelector.selectedModel
-                    };
-                    repoTemp.content.code = e;
-                    dispatch(saveRepoAction(repoTemp));
-                    const result = apiClient.put(
-                      `/api/repos/${repoSelector.selectedModel.id}/`,
-                      {
-                        language: repoSelector.selectedModel.content.language,
-                        code: repoSelector.selectedModel.content.code,
-                        assignment_id: assignment.id,
+                {repoSelector.selectedModel && (
+                  <Editor
+                    // width="1180px"
+                    // height="820px"
+                    language={repoSelector.selectedModel.content.language}
+                    theme={darkMode ? "vs-dark" : "light"}
+                    value={repoSelector.selectedModel.content.code}
+                    onChange={(e) => {
+                      if (
+                        repoSelector.repoChangeInfo.isChanging ||
+                        repoSelector.repoCreateInfo.isCreating
+                      ) {
+                        return;
                       }
-                    );
-                  }}
-                />}
+                      let repoTemp = {
+                        ...repoSelector.selectedModel,
+                      };
+                      repoTemp.content.code = e;
+                      dispatch(saveRepoAction(repoTemp));
+                      const result = apiClient.put(
+                        `/api/repos/${repoSelector.selectedModel.id}/`,
+                        {
+                          language: repoSelector.selectedModel.content.language,
+                          code: repoSelector.selectedModel.content.code,
+                          assignment_id: assignment.id,
+                        }
+                      );
+                    }}
+                  />
+                )}
 
-                {
-                  (repoSelector.repoChangeInfo.isChanging || repoSelector.repoCreateInfo.isCreating) && 
-                  <div style={{width:"100%", height: "100%", backgroundColor: "rgba(255,255,255, 0.1)", position:"absolute", top: 0, left:0, zIndex: 1000}}>
-                      
-                  </div>
-                }
+                {(repoSelector.repoChangeInfo.isChanging ||
+                  repoSelector.repoCreateInfo.isCreating) && (
+                  <div
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      backgroundColor: "rgba(255,255,255, 0.1)",
+                      position: "absolute",
+                      top: 0,
+                      left: 0,
+                      zIndex: 1000,
+                    }}
+                  ></div>
+                )}
               </EditorWrapper>
             </div>
           </>
@@ -457,20 +482,26 @@ export const CodeEditor = ({ assignment, darkMode, changeRepo, setChangeRepo }) 
         )}
       </EditorWindowWrapper>
 
-      {
-        submitLoading
-        ?
-        <div style={{
-          display: "flex", alignItems:"center", justifyContent:"center",
-          position:"absolute", zIndex:10000, top: 0, left: 0,
-          width: "100vw", height: "140vh", backgroundColor: "rgba(255,255,255,0.5)"}}>
-            
-            Loading...
-
+      {submitLoading ? (
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            position: "absolute",
+            zIndex: 10000,
+            top: 0,
+            left: 0,
+            width: "100vw",
+            height: "140vh",
+            backgroundColor: "rgba(255,255,255,0.5)",
+          }}
+        >
+          Loading...
         </div>
-        :
+      ) : (
         <></>
-      }
+      )}
     </>
   );
 };

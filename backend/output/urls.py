@@ -1,13 +1,14 @@
 from django.urls import path
-from output.views import retrieve_exercise_output, retrieve_testcase_output, ResultListOrCreate, ResultRetrieve
+from output.views import execute_exercise_output, execute_testcase_output, execute_testcases_output, ResultListOrCreate, ResultRetrieve
 
 
 urlpatterns = [
-    path('exercises/', retrieve_exercise_output, name='retrieve_exercise'),
+    path('exercises/', execute_exercise_output, name='execute_exercise'),
 ]
 
 urlpatterns += [
-    path('testcases/<int:testcase_id>/', retrieve_testcase_output, name='retrieve_testcase'),
+    path('testcases/<int:testcase_id>/', execute_testcase_output, name='execute_testcase'),
+    path('testcases/', execute_testcases_output, name='execute_testcases')
 ]
 
 urlpatterns += [

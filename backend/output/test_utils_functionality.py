@@ -28,6 +28,7 @@ def solution():
         ret += num
 
     print(ret)
+    print(1.0)
     return ret
 '''
 
@@ -52,13 +53,13 @@ def solution():
             assignment=assignment,
             is_hidden=False,
             input='3\n1 2 3',
-            output='6.0'
+            output='6.00000\n1.000000'
         )
         testcase_2 = Testcase.objects.create(
             assignment=assignment,
             is_hidden=True,
             input='3\n1.1 2.2 3.3',
-            output='6.6',
+            output='6.60000',
         )
         repo = Repo.objects.create(
             assignment=assignment,

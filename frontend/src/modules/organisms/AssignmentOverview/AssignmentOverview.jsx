@@ -12,6 +12,7 @@ import { LectureName, AssignmentName, Deadline } from "../../atoms";
 
 import { useDispatch, useSelector } from "react-redux";
 import { useParams, useLocation, useNavigate } from "react-router-dom";
+import { apiClient } from './../../../api/axios';
 
 /* Styled components */
 const GeneralContainer = styled.div`
@@ -145,6 +146,29 @@ export const AssignmentOverview = ({ className, darkMode, ...restProps }) => {
   const [currentLang, setCurrentLang] = useState(settingSelector.language);
   const dispatch = useDispatch();
 
+  const addNewLecture = async() => {
+    apiClient.post("/api/lectures/", {
+      name: "dummy data "+ new Date().getTime()
+    }).then((val) => {
+      console.log(val);
+      if(val.status == 201) {
+        alert("강의 생성 완료");
+        window.location.reload();
+        let lectureId = val.data.id;
+      }
+    })
+  }
+
+  const deleteLastLecture = async() =>{
+    apiClient.delete(`/api/lectures/${lectureSelector.results[lectureSelector.results.length - 1].id}/`)
+          .then((val) => {
+            console.log(val);
+            // if(val.status == 201) {
+            //   let lectureId = val.data.id;
+            // }
+          })
+  }
+
   const colorList = [
     ["#B1D3C5", "#C6D7D0", "#D1D9D6"],
     ["#6ECEDA", "#A5D5DB", "#C0D8DB"],
@@ -179,9 +203,11 @@ export const AssignmentOverview = ({ className, darkMode, ...restProps }) => {
                 <ListIndicatorBox>
                   <Text>강의 목록</Text>
                 </ListIndicatorBox>
-                {/* <ListIndicatorBox>
-                  <Text>정렬 기준</Text>
-                </ListIndicatorBox> */}
+                <ListIndicatorBox onClick={addNewLecture}>
+                  <Text>강의 추가</Text>
+                </ListIndicatorBox>
+
+               
               </ButtonContainer>
               <ListDivLine></ListDivLine>
             </MiddleContainer>

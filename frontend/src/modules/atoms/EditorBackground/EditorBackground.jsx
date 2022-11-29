@@ -6,6 +6,10 @@ const READABILITY = 0;
 const EFFICIENCY = 1;
 const FUNCTIONALITY = 2;
 
+const GRADING = 0;
+const DESCRPITION = 1;
+const RECOMMENDATION = 2;
+
 const Bg = styled.div`
   width: 100%;
   height: 100%;
@@ -48,7 +52,7 @@ const Selector = styled.div`
   align-items: center;
   justify-content: space-around;
   width: 90%;
-  background: #bfbfbf;
+  background: ${(props) => (props.darkMode ? "#666681" : "#bfbfbf")};
   height: 25px;
 `;
 const Separator = styled.div`
@@ -57,7 +61,7 @@ const Separator = styled.div`
   align-items: center;
   justify-content: space-around;
   width: 100%;
-  background: #bfbfbf;
+  background: ${(props) => (props.darkMode ? "#666681" : "#bfbfbf")};
   height: 39px;
   border-radius: 11px;
   box-sizing: border-box;
@@ -70,6 +74,10 @@ const ScoreDescriptor = styled.div`
   justify-content: flex-start;
   width: 100%;
   min-height: 412px;
+  background: ${(props) => (props.darkMode ? "#666681" : "#bfbfbf")};
+  border: 2px solid #ffffff;
+  border-radius: 11px;
+  padding: 18.55px 18.55px 18.55px 18.55px;
 `;
 
 const Button = styled.div`
@@ -131,6 +139,15 @@ const EfficiencyHighlighter = styled.div`
 const FunctionalityHighlighter = styled.div`
   color: ${(props) => (props.active ? "#52C0E7" : "#1f1f32")};
 `;
+const GradingHighlighter = styled.div`
+  color: ${(props) => (props.active ? "#d8d8d8" : "#1f1f32")};
+`;
+const DescriptionHighlighter = styled.div`
+  color: ${(props) => (props.active ? "#d8d8d8" : "#1f1f32")};
+`;
+const RecommendationHighlighter = styled.div`
+  color: ${(props) => (props.active ? "#d8d8d8" : "#1f1f32")};
+`;
 export const EditorBackground = ({
   mode,
   content,
@@ -150,7 +167,7 @@ export const EditorBackground = ({
   );
   useEffect(() => {}, [activeIndexChart]);
 
-  const [activeIndexDesc, setActiveIndexDesc] = useState(READABILITY);
+  const [activeIndexDesc, setActiveIndexDesc] = useState(GRADING);
   const onButtonClickDesc = useCallback(
     (flag) => {
       setActiveIndexDesc(flag);
@@ -180,78 +197,100 @@ export const EditorBackground = ({
     // SPECIAL CASE: ASSIGNMENT SUBMITTED
 
     return (
-      <Bg>
+      <Bg darkMode={darkMode}>
         <ResultVisContainer>
+          {/* Separator */}
+          <Separator darkMode={darkMode}>
+            {/* TODO */}
+            <GradingHighlighter active={activeIndexDesc === GRADING}>
+              <Button onClick={() => onButtonClickDesc(GRADING)}>
+                제출 성적
+              </Button>
+            </GradingHighlighter>
+            <DescriptionHighlighter active={activeIndexDesc === DESCRPITION}>
+              <Button onClick={() => onButtonClickDesc(DESCRPITION)}>
+                코드 설명
+              </Button>
+            </DescriptionHighlighter>
+            <RecommendationHighlighter
+              active={activeIndexDesc === RECOMMENDATION}
+            >
+              <Button onClick={() => onButtonClickDesc(RECOMMENDATION)}>
+                관련 자료
+              </Button>
+            </RecommendationHighlighter>
+          </Separator>
+          {/* 제출 결과 */}
           {/* pie chart visualzation */}
-          <ChartContainer>
-            {activeIndexChart === READABILITY && (
-              <ResultVis
-                data={content.readability_result}
-                chartColor="#FF9A3C"
-              />
-            )}
-            {activeIndexChart === EFFICIENCY && (
-              <ResultVis
-                data={content.efficiency_result}
-                chartColor="#98D964"
-              />
-            )}
-            {activeIndexChart === FUNCTIONALITY && (
-              <ResultVis
-                data={content.functionality_result}
-                chartColor="#52C0E7"
-              />
-            )}
-          </ChartContainer>
-          {/* pie chart selector */}
-          <>
-            {/* Three colors
+          {activeIndexDesc === GRADING && (
+            <>
+              <ChartContainer>
+                {activeIndexChart === READABILITY && (
+                  <ResultVis
+                    data={content.readability_result}
+                    chartColor="#FF9A3C"
+                  />
+                )}
+                {activeIndexChart === EFFICIENCY && (
+                  <ResultVis
+                    data={content.efficiency_result}
+                    chartColor="#98D964"
+                  />
+                )}
+                {activeIndexChart === FUNCTIONALITY && (
+                  <ResultVis
+                    data={content.functionality_result}
+                    chartColor="#52C0E7"
+                  />
+                )}
+              </ChartContainer>
+              {/* pie chart selector */}
+              <>
+                {/* Three colors
         가독성 : #FF9A3C
         효율 : #98D964
         기능 : #52C0E7 */}
-            <Selector>
-              <ReadabilityHighlighter active={activeIndexChart === READABILITY}>
-                <Button onClick={() => onButtonClickChart(READABILITY)}>
-                  가독성
-                </Button>
-              </ReadabilityHighlighter>
-              <EfficiencyHighlighter active={activeIndexChart === EFFICIENCY}>
-                <Button onClick={() => onButtonClickChart(EFFICIENCY)}>
-                  효율
-                </Button>
-              </EfficiencyHighlighter>
-              <FunctionalityHighlighter
-                active={activeIndexChart === FUNCTIONALITY}
-              >
-                <Button onClick={() => onButtonClickChart(FUNCTIONALITY)}>
-                  기능
-                </Button>
-              </FunctionalityHighlighter>
-            </Selector>
-          </>
-          {/* Separator */}
-          <Separator>
-            {/* TODO */}
-            <ReadabilityHighlighter active={activeIndexDesc === READABILITY}>
-              <Button onClick={() => onButtonClickDesc(READABILITY)}>
-                제출 결과
-              </Button>
-            </ReadabilityHighlighter>
-            <EfficiencyHighlighter active={activeIndexDesc === EFFICIENCY}>
-              <Button onClick={() => onButtonClickDesc(EFFICIENCY)}>
-                코드 설명
-              </Button>
-            </EfficiencyHighlighter>
-            <FunctionalityHighlighter
-              active={activeIndexDesc === FUNCTIONALITY}
-            >
-              <Button onClick={() => onButtonClickDesc(FUNCTIONALITY)}>
-                관련 자료
-              </Button>
-            </FunctionalityHighlighter>
-          </Separator>
-          {/* score description */}
-          <ScoreDescriptor>activeIndexDesc state 받아서 표시</ScoreDescriptor>
+                <Selector darkMode={darkMode}>
+                  <ReadabilityHighlighter
+                    active={activeIndexChart === READABILITY}
+                  >
+                    <Button onClick={() => onButtonClickChart(READABILITY)}>
+                      가독성
+                    </Button>
+                  </ReadabilityHighlighter>
+                  <EfficiencyHighlighter
+                    active={activeIndexChart === EFFICIENCY}
+                  >
+                    <Button onClick={() => onButtonClickChart(EFFICIENCY)}>
+                      효율
+                    </Button>
+                  </EfficiencyHighlighter>
+                  <FunctionalityHighlighter
+                    active={activeIndexChart === FUNCTIONALITY}
+                  >
+                    <Button onClick={() => onButtonClickChart(FUNCTIONALITY)}>
+                      기능
+                    </Button>
+                  </FunctionalityHighlighter>
+                </Selector>
+              </>
+              {/* score description */}
+              <ScoreDescriptor darkMode={darkMode}>
+                activeIndexDesc state 받아서 표시 <br></br>
+                가독성 상세, 효율 상세, 기능 상세, ...
+              </ScoreDescriptor>
+            </>
+          )}
+          {activeIndexDesc === DESCRPITION && (
+            <>
+              <Bg darkMode={darkMode}>코드 설명</Bg>;
+            </>
+          )}
+          {activeIndexDesc === RECOMMENDATION && (
+            <>
+              <Bg darkMode={darkMode}>추천 자료</Bg>;
+            </>
+          )}
         </ResultVisContainer>
       </Bg>
     );

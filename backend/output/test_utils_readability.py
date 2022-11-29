@@ -8,6 +8,7 @@ from assignment.models import Assignment
 from repo.models import Repo
 from output.models import Result
 from output.utils_readability import run
+from output.utils_execution import SUPPORT_LANGUAGE
 
 
 class Test(TestCase):
@@ -77,3 +78,12 @@ def solution():
             self.assertEqual(type(ret.get('mypy_score')), int)
         finally:
             os.remove(filename)
+
+    def test_not_supported_language(self):
+        languages = list(SUPPORT_LANGUAGE)
+        languages.remove('python')
+        languages.append('dummy-data')
+
+        for language in languages:
+            ret = run(result_id=99, full_filename='dummy-name', language=language)
+            self.assertIsNone(ret)
