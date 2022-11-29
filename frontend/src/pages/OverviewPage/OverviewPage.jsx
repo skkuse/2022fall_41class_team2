@@ -14,20 +14,7 @@ import { getLectureAction } from "./../MainPage/MainAction";
 import { apiClient } from "./../../api/axios";
 
 const GeneralContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-
-  margin-right: 0px;
-  width: 61%;
-`;
-
-const ListContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 100vh;
+  overflow: scroll;
 `;
 
 export const OverviewPage = (...restProps) => {
@@ -59,14 +46,14 @@ export const OverviewPage = (...restProps) => {
 
   if (lectureSelector) {
     return (
-      <>
+      <GeneralContainer>
         {/* Banner */}
         <div style={{ position: "sticky" }}>
           <LandingPageBanner restProps={restProps} darkMode={darkMode} />
         </div>
         {/* List design */}
         <AssignmentOverview darkMode={darkMode} />
-      </>
+      </GeneralContainer>
     );
   }
 
