@@ -148,7 +148,7 @@ export const AssignmentOverview = ({ className, darkMode, ...restProps }) => {
 
   const addNewLecture = async() => {
     apiClient.post("/api/lectures/", {
-      name: "dummy data"
+      name: "dummy data "+ new Date().getTime()
     }).then((val) => {
       console.log(val);
       if(val.status == 201) {

@@ -59,7 +59,7 @@ async function getLectureAPI(payload) {
             try {
                 let postAssResult = await apiClient.post("/api/assignments/", {
                     "name": "Assignment1",
-                    "deadline": "2022-11-18T12:45:25.465Z",
+                    "deadline": "2050-11-18T12:45:25.465Z",
                     "question": "피보나치 수열을 만드시오.",
                     "constraints": "",
                     "contents": [{
