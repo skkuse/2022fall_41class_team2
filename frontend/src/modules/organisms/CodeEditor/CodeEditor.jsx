@@ -183,7 +183,7 @@ export const CodeEditor = ({
       setSubmitResult(result.data);
       setSubmitComplete(true);
     } catch (error) {
-      alert("제출은 4회 이상 할 수 없습니다.");
+      alert(error.response.data.data.detail);
       setSubmitComplete(false);
     }
     setSubmitLoading(false);
