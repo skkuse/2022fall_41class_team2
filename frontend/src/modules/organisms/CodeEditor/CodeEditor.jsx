@@ -281,6 +281,8 @@ export const CodeEditor = ({
   console.log(editorRef);
   console.log(`SubmitResult ${submitResult}`);
 
+
+
   return (
     <>
       <EditorWindowWrapper>
@@ -420,14 +422,20 @@ export const CodeEditor = ({
                 <EditorWrapper>
                   {submitComplete ? (
                     <DiffEditor
-                      // TODO : inline diff로 변경?
-                      // width="560px"
-                      // height="820px"
-                      language={repoSelector.selectedModel.content.language}
-                      original={repoSelector.selectedModel.content.code}
-                      modified={assignment.contents[0].answer_code}
-                      theme={darkMode ? "vs-dark" : "light"}
-                    />
+                    // TODO : inline diff로 변경?
+                    // width="560px"
+                    // height="820px"
+                    language={repoSelector.selectedModel.content.language}
+                    original={repoSelector.selectedModel.content.code}
+                    modified={assignment.contents[0].answer_code}
+                    theme={darkMode ? "vs-dark" : "light"}
+                    options={
+                      {
+                        renderSideBySide: false,
+                        readOnly: true
+                      }
+                    }
+                  />
                   ) : (
                     <Editor
                       // width="560px"
