@@ -107,9 +107,9 @@ export const ResultVis = ({ data, chartColor, ...restProps }) => {
         activeShape={renderActiveShape}
         data={parsed_data}
         cx={250}
-        cy={120}
-        innerRadius={50}
-        outerRadius={80}
+        cy={140}
+        innerRadius={60}
+        outerRadius={90}
         fill={chartColor}
         dataKey="value"
         onMouseEnter={onPieEnter}

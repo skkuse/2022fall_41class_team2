@@ -64,27 +64,31 @@ export const EditorPage = () => {
     apiClient.get(`/api/assignments/${params.assignment_id}/`).then((value) => {
       setAss(value.data.data);
       // * 테케 없으면 새로 추가
-      if(!value.data.data.testcases.length) {
-        apiClient.post("/api/testcases/", {
-          input: "string",
-          output: "string",
-          assignment_id: params.assignment_id
-        }).then((value) => {
-          apiClient.get(`/api/assignments/${params.assignment_id}/`).then((value) => {
-            setAss(value.data.data);
+      if (!value.data.data.testcases.length) {
+        apiClient
+          .post("/api/testcases/", {
+            input: "string",
+            output: "string",
+            assignment_id: params.assignment_id,
           })
-        })
-      }else{
+          .then((value) => {
+            apiClient
+              .get(`/api/assignments/${params.assignment_id}/`)
+              .then((value) => {
+                setAss(value.data.data);
+              });
+          });
+      } else {
         setAss(value.data.data);
       }
-    })
-  },[])
+    });
+  }, []);
 
   if (!ass) {
     return <></>;
   }
   // TODO: settingSelector에 따라서 LandingPageScenery의 배경을 바꿔야 함
-  const darkMode = true;
+  const darkMode = false;
   return (
     <>
       <Helmet
@@ -128,9 +132,9 @@ export const EditorPage = () => {
             marginRight: "43px",
           }}
         >
-          <CodeEditor 
-            assignment={ass} 
-            darkMode={darkMode} 
+          <CodeEditor
+            assignment={ass}
+            darkMode={darkMode}
             changeRepo={changeRepo}
             setChangeRepo={setChangeRepo}
           />

@@ -42,7 +42,7 @@ export const OverviewPage = (...restProps) => {
   }, []);
 
   // TODO: settingSelector에 따라서 LandingPageScenery의 배경을 바꿔야 함
-  const darkMode = true;
+  const darkMode = false;
 
   if (lectureSelector) {
     return (
