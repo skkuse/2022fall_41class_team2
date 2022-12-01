@@ -28,7 +28,7 @@ import {
 import { apiClient } from "./../../../api/axios";
 import { useNavigate } from "react-router-dom";
 import { getTimeDiff } from "../AssignmentOverview/AssignmentOverview";
-import { SpectrumVisualizer, SpectrumVisualizerTheme } from 'react-audio-visualizers';
+// import { SpectrumVisualizer, SpectrumVisualizerTheme } from 'react-audio-visualizers';
 
 
 import lifeAudio from '../../../assets/audio/lifelike-126735.mp3';
@@ -141,9 +141,9 @@ export const Banner = ({
     [playing]
   );
 
-  useEffect(() => {
-    setPlaying(true);
-  }, [audioIndex])
+  // useEffect(() => {
+  //   setPlaying(true);
+  // }, [audioIndex])
 
   const repoSelector = useSelector((state) => state.editorReducer);
   const navigate = useNavigate();
@@ -255,6 +255,9 @@ export const Banner = ({
               newIndex = (SampleAudioList.length - 1);
             }
             setAudioIndex(newIndex);
+            setTimeout(()=>{
+              setPlaying(true);
+            },100);
           }}/>
           <img src={pauseIcon} style={{width: "13px", height: "14px", margin: "0 10px"}}  onClick={toggle}/>
           <img src={nextIcon} style={{width: "13px", height: "14px"}} onClick={()=>{
@@ -267,6 +270,9 @@ export const Banner = ({
               newIndex = audioIndex+1;
             }
             setAudioIndex(newIndex);
+            setTimeout(()=>{
+              setPlaying(true);
+            },100);
           }}/>
         </div>
       </div>
