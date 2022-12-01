@@ -16,15 +16,17 @@
     "monaco-editor-core": "^0.34.1",
     "monaco-languageclient": "^4.0.1",
     "re-resizable": "^6.9.9",
-    "react": "^18.2.0",
+    "react": "^17.0.2",
+    "react-audio-visualizers": "^0.1.1",
     "react-awesome-button": "^7.0.4",
-    "react-dom": "^18.2.0",
+    "react-dom": "^17.0.2",
     "react-dropdown-select": "^4.9.0",
     "react-helmet": "^6.1.0",
     "react-monaco-editor": "^0.50.1",
     "react-popper": "^2.3.0",
     "react-redux": "^8.0.4",
     "react-router-dom": "^6.4.2",
+    "react-scripts": "^5.0.1",
     "react-select": "^5.5.7",
     "recharts": "^2.1.16",
     "redux-saga": "^1.2.1",
@@ -37,9 +39,7 @@
     "start": "set PORT=3000 && react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject",
-    "storybook": "start-storybook -p 6006 -s public",
-    "build-storybook": "build-storybook -s public"
+    "eject": "react-scripts eject"
   },
   "eslintConfig": {
     "extends": [
@@ -70,16 +70,6 @@
     ]
   },
   "devDependencies": {
-    "@storybook/addon-actions": "^6.5.12",
-    "@storybook/addon-essentials": "^6.4.22",
-    "@storybook/addon-interactions": "^6.5.12",
-    "@storybook/addon-links": "^6.5.12",
-    "@storybook/builder-webpack5": "^6.5.12",
-    "@storybook/manager-webpack5": "^6.5.12",
-    "@storybook/node-logger": "^6.5.12",
-    "@storybook/preset-create-react-app": "^1.2.0",
-    "@storybook/react": "^6.1.21",
-    "@storybook/testing-library": "^0.0.13",
     "@types/node": "^18.8.3",
     "@types/react": "^18.0.21",
     "@types/react-dom": "^18.0.6",
@@ -90,7 +80,6 @@
     "postcss": "^8.4.18",
     "prop-types": "^15.8.1",
     "react-test-renderer": "^18.2.0",
-    "storybook-zeplin": "^1.7.3",
     "tailwindcss": "^3.2.1",
     "webpack": "^5.74.0"
   }
