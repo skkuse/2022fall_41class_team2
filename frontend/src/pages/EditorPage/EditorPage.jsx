@@ -81,12 +81,16 @@ export const EditorPage = () => {
     apiClient.get(`/api/assignments/${params.assignment_id}/`).then((value) => {
       setAss(value.data.data);
       // * 테케 없으면 새로 추가
-      if (!value.data.data.testcases.length) {
-        apiClient
-          .post("/api/testcases/", {
-            input: "string",
-            output: "string",
-            assignment_id: params.assignment_id,
+      if(!value.data.data.testcases.length) {
+        apiClient.post("/api/testcases/", {
+          input: "[0,1,10]",
+          output: "100",
+          assignment_id: params.assignment_id,
+          is_hidden: false
+        }).then((value) => {
+          console.log(value);
+          apiClient.get(`/api/assignments/${params.assignment_id}/`).then((value) => {
+            setAss(value.data.data);
           })
           .then((value) => {
             apiClient
