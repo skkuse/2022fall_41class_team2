@@ -6,7 +6,6 @@ const DescWrapper = styled.div`
   flex-direction: column;
 
   height: 100%;
-  max-width: 605px;
 `;
 
 const PlagiarismIndicator = styled.div`
@@ -26,10 +25,10 @@ const PlagiarismIndicator = styled.div`
 `;
 
 export const SubmissionMaster = ({ resultObj, darkMode, ...restProps }) => {
-  console.log(`SubmissionMaster ${JSON.stringify(resultObj)}`);
+  console.log(`SubmissionMaster ${resultObj}`);
   const data = resultObj.data;
 
-  console.log(`${data}`);
+  console.log(data);
   const id = data.id;
   const plagiarism = data.plagiarism_result;
 

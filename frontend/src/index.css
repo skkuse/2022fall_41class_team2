@@ -1,85 +1,84 @@
 @font-face {
-  font-family: "RecipekoreaM";
-  font-style: normal;
-  font-weight: medium;
-  src: url("./assets/fonts/RecipekoreaM.ttf");
-}
+    font-family: 'RecipekoreaM';
+    font-style: normal;
+    font-weight: medium;
+    src: url("./assets/fonts/RecipekoreaM.ttf")
+  }
 
 @font-face {
-  font-family: "SCDream";
+  font-family: 'SCDream';
   font-style: normal;
   font-weight: thin;
-  src: url("./assets/fonts/SCDream1.otf");
+  src: url("./assets/fonts/SCDream1.otf")
 }
 
 @font-face {
-  font-family: "SCDream";
+  font-family: 'SCDream';
   font-style: normal;
   font-weight: bold;
-  src: url("./assets/fonts/SCDream7.otf");
+  src: url("./assets/fonts/SCDream7.otf")
 }
 
+
+
 @font-face {
-  font-family: "AppleSDGothicNeo";
+  font-family: 'AppleSDGothicNeo';
   font-style: normal;
   font-weight: 100;
-  src: url("./assets/fonts/AppleSDGothicNeoT.ttf");
+  src: url("./assets/fonts/AppleSDGothicNeoT.ttf")
 }
 
 @font-face {
-  font-family: "AppleSDGothicNeo";
+  font-family: 'AppleSDGothicNeo';
   font-style: normal;
   font-weight: light;
-  src: url("./assets/fonts/AppleSDGothicNeoL.ttf");
+  src: url("./assets/fonts/AppleSDGothicNeoL.ttf")
 }
 
+
 @font-face {
-  font-family: "AppleSDGothicNeo";
+  font-family: 'AppleSDGothicNeo';
   font-style: normal;
   font-weight: 400;
-  src: url("./assets/fonts/AppleSDGothicNeoR.ttf");
+  src: url("./assets/fonts/AppleSDGothicNeoR.ttf")
 }
 
 @font-face {
-  font-family: "AppleSDGothicNeo";
+  font-family: 'AppleSDGothicNeo';
   font-style: normal;
   font-weight: 500;
-  src: url("./assets/fonts/AppleSDGothicNeoM.ttf");
+  src: url("./assets/fonts/AppleSDGothicNeoM.ttf")
 }
 
+
+
 @font-face {
-  font-family: "AppleSDGothicNeo";
+  font-family: 'AppleSDGothicNeo';
   font-style: normal;
   font-weight: 600;
-  src: url("./assets/fonts/AppleSDGothicNeoB.ttf");
+  src: url("./assets/fonts/AppleSDGothicNeoB.ttf")
 }
 
 @font-face {
-  font-family: "AppleSDGothicNeo";
+  font-family: 'AppleSDGothicNeo';
   font-style: normal;
   font-weight: 800;
-  src: url("./assets/fonts/AppleSDGothicNeoEB.ttf");
+  src: url("./assets/fonts/AppleSDGothicNeoEB.ttf")
 }
 
-html,
-body {
-  max-width: 100%;
-  height: 100%;
-  /* ! max width 삭제 */
-  /* max-width: 767px; */
-  margin: 0px;
-  padding: 0px;
-  overflow-x: hidden;
-  overflow-y: auto;
+
+
+html,body {
+    width: 100%;
+    height: 100%;
+    /* ! max width 삭제 */
+    /* max-width: 767px; */
+    margin: 0px;
+    padding: 0px;
 }
+
 
 /* 스크롤바 삭제 */
-/* ::-webkit-scrollbar {
-  display: none;
-} */
-
-
-
-::-webkit-scrollbar:horizontal {
+::-webkit-scrollbar {
   display: none;
 }

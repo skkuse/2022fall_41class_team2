@@ -14,11 +14,7 @@ import { getLectureAction } from "./../MainPage/MainAction";
 import { apiClient } from "./../../api/axios";
 
 const GeneralContainer = styled.div`
-  height: 100vh;
-  ::-webkit-scrollbar {
-    display: none;
-  }
-  overflow-y: auto;
+  overflow: scroll;
 `;
 
 export const OverviewPage = (...restProps) => {
@@ -46,7 +42,7 @@ export const OverviewPage = (...restProps) => {
   }, []);
 
   // TODO: settingSelector에 따라서 LandingPageScenery의 배경을 바꿔야 함
-  const darkMode = false;
+  const darkMode = true;
 
   if (lectureSelector) {
     return (
