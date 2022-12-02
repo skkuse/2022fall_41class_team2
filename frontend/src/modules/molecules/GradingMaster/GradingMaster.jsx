@@ -8,7 +8,7 @@ const DescWrapper = styled.div`
   height: 100%;
 `;
 
-export const GradingMaster = ({ bodyContent, darkMode,...restProps }) => {
+export const GradingMaster = ({ bodyContent, darkMode, ...restProps }) => {
   const headerContent = "채점결과";
   return (
     <DescWrapper>
@@ -21,6 +21,7 @@ export const GradingMaster = ({ bodyContent, darkMode,...restProps }) => {
         content={bodyContent}
         assignmentId={restProps.assignmentId}
         darkMode={darkMode}
+        mode={"gradingAndExecution"}
       />
     </DescWrapper>
   );

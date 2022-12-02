@@ -11,6 +11,39 @@ const GRADING = 0;
 const DESCRIPTION = 1;
 const RECOMMENDATION = 2;
 
+const WindowWrapper = styled.div`
+  width: 100%;
+  height: 100vh;
+  background: ${(props) => (props.darkMode ? "#1F1F32" : "#eaeaea")};
+
+  padding: 18.55px 18.55px 18.55px 18.55px;
+
+  font-family: "Gmarket Sans TTF";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 15.6237px;
+  line-height: 18px;
+  /* identical to box height */
+
+  color: ${(props) => (props.darkMode ? "#D8D8D8" : "#1e1e1e")};
+
+  overflow-x: hidden;
+  overflow-y: auto;
+
+  ::-webkit-scrollbar {
+    -webkit-appearance: none;
+    width: 9.76px;
+    background-color: ${(props) => (props.darkMode ? "#131323" : "#d3d3da")};
+  }
+
+  ::-webkit-scrollbar-thumb {
+    border-radius: 975.505px;
+    background-color: #d3d3da;
+    /* box-shadow: 0 0 1px
+      ${(props) => (props.darkMode ? "#d3d3da" : "rgba(0, 0, 0, 0.5)")}; */
+  }
+`;
+
 const Bg = styled.div`
   width: 100%;
   height: 42vh;
@@ -388,12 +421,12 @@ export const EditorBackground = ({
     setFunctionalityResult(temp_obj);
   };
   useEffect(() => {}, [functionalityResult]);
-  
+
   const [activeIndexChart, setActiveIndexChart] = useState(READABILITY);
   const onButtonClickChart = useCallback(
     (flag) => {
       setActiveIndexChart(flag);
-      
+
       if (flag === FUNCTIONALITY) {
         // Special handling
         console.log(`functionality: ${JSON.stringify(flag)}`);
@@ -446,6 +479,13 @@ export const EditorBackground = ({
       </Bg>
     );
     // return <Bg darkMode={darkMode}>{content}</Bg>;
+  } else if (mode === "gradingAndExecution") {
+    // console.log(content.input);
+    return (
+      <SubmitResultBg darkMode={darkMode}>
+        <WindowWrapper>{content}</WindowWrapper>
+      </SubmitResultBg>
+    );
   } else if (mode === "submit") {
     // SPECIAL CASE: ASSIGNMENT SUBMITTED
 

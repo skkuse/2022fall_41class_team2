@@ -21,6 +21,7 @@ export const TerminalMaster = ({ bodyContent, darkMode, ...restProps }) => {
         content={bodyContent}
         assignmentId={restProps.assignmentId}
         darkMode={darkMode}
+        mode={"gradingAndExecution"}
       />
     </DescWrapper>
   );
