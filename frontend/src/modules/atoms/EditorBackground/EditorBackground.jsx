@@ -8,12 +8,12 @@ const EFFICIENCY = 1;
 const FUNCTIONALITY = 2;
 
 const GRADING = 0;
-const DESCRPITION = 1;
+const DESCRIPTION = 1;
 const RECOMMENDATION = 2;
 
 const Bg = styled.div`
   width: 100%;
-  height: 100%;
+  height: 42vh;
   background: ${(props) => (props.darkMode ? "#1F1F32" : "#eaeaea")};
 
   padding: 18.55px 18.55px 18.55px 18.55px;
@@ -27,12 +27,60 @@ const Bg = styled.div`
 
   color: ${(props) => (props.darkMode ? "#D8D8D8" : "#1e1e1e")};
 
-  overflow: scroll;
+  overflow-x: hidden;
+  overflow-y: auto;
+
+  ::-webkit-scrollbar {
+    -webkit-appearance: none;
+    width: 9.76px;
+    background-color: ${(props) => (props.darkMode ? "#131323" : "#d3d3da")};
+  }
+
+  ::-webkit-scrollbar-thumb {
+    border-radius: 975.505px;
+    background-color: #d3d3da;
+    /* box-shadow: 0 0 1px
+      ${(props) => (props.darkMode ? "#d3d3da" : "rgba(0, 0, 0, 0.5)")}; */
+  }
+`;
+const SubmitResultBg = styled.div`
+  width: 100%;
+  height: 100vh;
+  background: ${(props) => (props.darkMode ? "#1F1F32" : "#eaeaea")};
+
+  padding: 6px 0px 20px 0px;
+
+  font-family: "Gmarket Sans TTF";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 15.6237px;
+  line-height: 18px;
+  /* identical to box height */
+
+  color: ${(props) => (props.darkMode ? "#D8D8D8" : "#1e1e1e")};
+
+  overflow-x: hidden;
+  overflow-y: auto;
+
+  ::-webkit-scrollbar {
+    -webkit-appearance: none;
+    width: 9.76px;
+    background-color: ${(props) => (props.darkMode ? "#131323" : "#d3d3da")};
+  }
+
+  ::-webkit-scrollbar-thumb {
+    border-radius: 975.505px;
+    background-color: #d3d3da;
+    /* box-shadow: 0 0 1px
+      ${(props) => (props.darkMode ? "#d3d3da" : "rgba(0, 0, 0, 0.5)")}; */
+  }
 `;
 
 const ResultVisContainer = styled.div`
   display: flex;
   flex-direction: column;
+  align-items: center;
+
   flex-wrap: wrap;
   /* height: 100vh; */
   width: 100%;
@@ -58,39 +106,76 @@ const Separator = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
-  justify-content: space-around;
+  justify-content: center;
 
   box-sizing: border-box;
 `;
 const ScoreDescriptor = styled.div`
-  box-sizing: border-box;
   display: flex;
-  flex-direction: row;
-  align-items: flex-start;
-  justify-content: flex-start;
-  width: 100%;
-  height: 52vh;
+
+  box-sizing: border-box;
+
+  width: 575px;
+  max-width: 575px;
+  height: 487px;
   min-height: 412px;
   background: ${(props) => (props.darkMode ? "#525263" : "#f6f6f6")};
   border: ${(props) =>
     props.darkMode ? "2px solid #52c0e7" : "2px solid #52c0e7"};
   border-radius: 11px;
   padding: 18.55px 18.55px 18.55px 18.55px;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  hyphens: auto;
+
+  overflow-x: hidden;
+  overflow-y: auto;
+
+  ::-webkit-scrollbar {
+    -webkit-appearance: none;
+    width: 9.76px;
+    background-color: ${(props) => (props.darkMode ? "#131323" : "#d3d3da")};
+  }
+
+  ::-webkit-scrollbar-thumb {
+    border-radius: 975.505px;
+    background-color: #d3d3da;
+    /* box-shadow: 0 0 1px
+      ${(props) => (props.darkMode ? "#d3d3da" : "rgba(0, 0, 0, 0.5)")}; */
+  }
 `;
 const CodeDescriptor = styled.div`
   box-sizing: border-box;
-  display: flex;
-  flex-direction: row;
-  align-items: flex-start;
-  justify-content: flex-start;
-  width: 100%;
-  height: 90vh;
+
+  width: 575px;
+  min-width: 575px;
+  max-width: 575px;
+  height: 83.1vh;
   min-height: 412px;
   background: ${(props) => (props.darkMode ? "#525263" : "#f6f6f6")};
   border: ${(props) =>
     props.darkMode ? "2px solid #52c0e7" : "2px solid #52c0e7"};
   border-radius: 11px;
   padding: 18.55px 18.55px 18.55px 18.55px;
+
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  hyphens: auto;
+  overflow-x: hidden;
+  overflow-y: auto;
+
+  ::-webkit-scrollbar {
+    -webkit-appearance: none;
+    width: 9.76px;
+    background-color: ${(props) => (props.darkMode ? "#131323" : "#d3d3da")};
+  }
+
+  ::-webkit-scrollbar-thumb {
+    border-radius: 975.505px;
+    background-color: #d3d3da;
+    /* box-shadow: 0 0 1px
+      ${(props) => (props.darkMode ? "#d3d3da" : "rgba(0, 0, 0, 0.5)")}; */
+  }
 `;
 
 const Button = styled.div`
@@ -267,6 +352,10 @@ align-items:center;
       : "0"};
 `;
 
+const DescriptionContainer = styled.div`
+  overflow-wrap: break-word;
+`;
+
 // const TextShadower = styled.div`
 //   box-shadow: 0px 4px 4px 0px #00000040 inset;
 // `;
@@ -282,10 +371,50 @@ export const EditorBackground = ({
 
   ...restProps
 }) => {
+  // redability result
+  let readabilityResult = [];
+
+  // visualizing functionality result
+
+  const [functionalityResult, setFunctionalityResult] = useState({});
+  const onFunctionalityResultClick = () => {
+    let temp_obj = {};
+    // for (const testcase in content.functionality_result.testcase_results) {
+
+    //  }
+    content.functionality_result.testcase_results.forEach((testcase, index) => {
+      temp_obj[`${testcase}${index}`] = testcase.is_pass ? 1 : 0;
+    });
+    setFunctionalityResult(temp_obj);
+  };
+  useEffect(() => {}, [functionalityResult]);
+  
   const [activeIndexChart, setActiveIndexChart] = useState(READABILITY);
   const onButtonClickChart = useCallback(
     (flag) => {
       setActiveIndexChart(flag);
+      
+      if (flag === FUNCTIONALITY) {
+        // Special handling
+        console.log(`functionality: ${JSON.stringify(flag)}`);
+        onFunctionalityResultClick();
+      }
+
+      // redability result
+      readabilityResult = [];
+      for (const [key, value] of Object.entries(content.readability_result)) {
+        // console.log(`iter : ${key} , ${value}`);
+        if (
+          key !== "id" &&
+          key !== "assignment_id" &&
+          key !== "created_at" &&
+          key !== "updated_at"
+        ) {
+          readabilityResult.push({ key: value });
+        }
+      }
+
+      // console.log(`onclick : ${JSON.stringify(readabilityResult)}`);
     },
     [setActiveIndexChart]
   );
@@ -321,7 +450,7 @@ export const EditorBackground = ({
     // SPECIAL CASE: ASSIGNMENT SUBMITTED
 
     return (
-      <Bg darkMode={darkMode}>
+      <SubmitResultBg darkMode={darkMode}>
         <ResultVisContainer>
           {/* Separator */}
           <Separator darkMode={darkMode}>
@@ -331,15 +460,14 @@ export const EditorBackground = ({
               darkMode={darkMode}
             >
               <Button onClick={() => onButtonClickDesc(GRADING)}>
-                <Text></Text>
                 제출 성적
               </Button>
             </GradingHighlighter>
             <DescriptionHighlighter
-              active={activeIndexDesc === DESCRPITION}
+              active={activeIndexDesc === DESCRIPTION}
               darkMode={darkMode}
             >
-              <Button onClick={() => onButtonClickDesc(DESCRPITION)}>
+              <Button onClick={() => onButtonClickDesc(DESCRIPTION)}>
                 코드 설명
               </Button>
             </DescriptionHighlighter>
@@ -370,10 +498,7 @@ export const EditorBackground = ({
                   />
                 )}
                 {activeIndexChart === FUNCTIONALITY && (
-                  <ResultVis
-                    data={content.functionality_result}
-                    chartColor="#52C0E7"
-                  />
+                  <ResultVis data={functionalityResult} chartColor="#52C0E7" />
                 )}
 
                 {/* pie chart selector */}
@@ -408,27 +533,101 @@ export const EditorBackground = ({
                 </>
               </ChartContainer>
               {/* score description */}
-              <div style={{ marginTop: "9px" }}>
+              <div
+                style={{
+                  marginTop: "9px",
+                  display: "flex",
+                  justifyContent: "center",
+                }}
+              >
                 {/* TODO: activeIndexDesc state 받아서 표시  */}
                 <ScoreDescriptor darkMode={darkMode}>
-                  가독성 상세, 효율 상세, 기능 상세, ...
+                  {activeIndexChart === READABILITY && (
+                    <DescriptionContainer>
+                      {/* {JSON.stringify(content.readability_result, null, 2)} */}
+                      {Object.keys(content.readability_result)
+                        .filter((k) => k !== "id")
+                        .map(function (key) {
+                          return (
+                            <div style={{ marginBottom: "11px" }}>
+                              {key} : {content.readability_result[key]}
+                            </div>
+                          );
+                        })}
+                    </DescriptionContainer>
+                  )}
+                  {activeIndexChart === EFFICIENCY && (
+                    <DescriptionContainer>
+                      {Object.keys(content.efficiency_result)
+                        .filter((k) => k !== "id")
+                        .map(function (key) {
+                          return (
+                            <div style={{ marginBottom: "11px" }}>
+                              {key} : {content.efficiency_result[key]}
+                            </div>
+                          );
+                        })}
+                    </DescriptionContainer>
+                  )}
+                  {activeIndexChart === FUNCTIONALITY && (
+                    <DescriptionContainer>
+                      {/*여러 테스트케이스가 어레이 형태로 있음, 다른 형태로 처리 필요 */}
+                      {content.functionality_result.testcase_results.map(
+                        (testcase, index) => (
+                          <>
+                            <div style={{ marginBottm: "11px" }}>
+                              {testcase.is_hidden ? "히든" : "공개"}{" "}
+                              테스트케이스 {index} :{" "}
+                              {testcase.is_pass ? "PASS" : "FAIL"}
+                            </div>
+                            <div style={{ marginBottm: "0px" }}>
+                              <ul>Input: {testcase.input}</ul>
+                              <ul>
+                                Expected Output: {testcase.expected_output}
+                              </ul>
+                              <ul>Actual Output: {testcase.actual_output}</ul>
+                            </div>
+                          </>
+                        )
+                      )}
+                    </DescriptionContainer>
+                  )}
                 </ScoreDescriptor>
               </div>
             </div>
           )}
 
-          {activeIndexDesc === DESCRPITION && (
+          {activeIndexDesc === DESCRIPTION && (
             <div style={{ marginTop: "9px" }}>
-              <CodeDescriptor darkMode={darkMode}>코드 설명</CodeDescriptor>;
+              <CodeDescriptor darkMode={darkMode}>
+                {content.code_description.split("\n").map((line) => (
+                  <div style={{ marginBottom: "11px" }}>{line}</div>
+                ))}
+              </CodeDescriptor>
+              ;
             </div>
           )}
           {activeIndexDesc === RECOMMENDATION && (
             <div style={{ marginTop: "9px" }}>
-              <CodeDescriptor darkMode={darkMode}>추천 자료</CodeDescriptor>;
+              <CodeDescriptor darkMode={darkMode}>
+                {Object.keys(content.references)
+                  .filter((k) => k !== "id")
+                  .map(function (key) {
+                    return (
+                      <>
+                        <div style={{ marginBottom: "11px" }}>{key}</div>
+                        <div style={{ marginBottom: "11px" }}>
+                          {content.efficiency_result[key]}
+                        </div>
+                      </>
+                    );
+                  })}
+              </CodeDescriptor>
+              ;
             </div>
           )}
         </ResultVisContainer>
-      </Bg>
+      </SubmitResultBg>
     );
   } else {
     // general display

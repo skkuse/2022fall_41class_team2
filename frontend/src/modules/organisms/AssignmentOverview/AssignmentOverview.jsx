@@ -12,18 +12,33 @@ import { LectureName, AssignmentName, Deadline } from "../../atoms";
 
 import { useDispatch, useSelector } from "react-redux";
 import { useParams, useLocation, useNavigate } from "react-router-dom";
-import { apiClient } from './../../../api/axios';
+import { apiClient } from "./../../../api/axios";
 
 /* Styled components */
 const GeneralContainer = styled.div`
   display: flex;
   flex-wrap: wrap;
-  flex-direction: column;
+
   align-items: center;
   justify-content: center;
 
   width: 1210px;
-  height: 100%;
+  max-height: 48em;
+  min-height: min-content; /* needs vendor prefixes */
+
+  /* TODO: 스크롤바 다크모드 css */
+  ::-webkit-scrollbar {
+    -webkit-appearance: none;
+    width: 9.76px;
+    background-color: #d3d3da;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    border-radius: 975.505px;
+    background-color: #bfbfbf;
+    box-shadow: 0 0 1px rgba(0, 0, 0, 0.5);
+  }
+  overflow-y: auto;
 `;
 
 const GridContainer = styled.div`
@@ -34,6 +49,9 @@ const GridContainer = styled.div`
   grid-template-columns: 1fr 3.5fr 1fr;
   grid-template-areas: "a b c";
   align-items: center;
+
+  overflow: auto;
+  flex: 1;
 `;
 
 const ButtonContainer = styled.div`
@@ -85,7 +103,6 @@ const NameContainer = styled.div`
   align-items: stretch;
 
   grid-row: 1 / last-line;
-  
 `;
 
 const AssignmentGrid = styled.div`
@@ -95,7 +112,6 @@ const AssignmentGrid = styled.div`
   row-gap: 4px;
   grid-column-gap: 1px;
   width: 100%;
-  
 `;
 const AssignmentBlockContainer = styled.div`
   display: flex;
@@ -109,7 +125,7 @@ const LectureGroup = styled.div`
 
   display: grid;
   grid-template-columns: 1fr 7.6fr;
-  grid-template-rows: repeat(${(props) => props.numAssignment}, 68px)[last-line];
+  grid-template-rows: repeat(${(props) => props.numAssignment}, 68px) [last-line];
 `;
 
 const MiddleContainer = styled.div`
@@ -146,28 +162,35 @@ export const AssignmentOverview = ({ className, darkMode, ...restProps }) => {
   const [currentLang, setCurrentLang] = useState(settingSelector.language);
   const dispatch = useDispatch();
 
-  const addNewLecture = async() => {
-    apiClient.post("/api/lectures/", {
-      name: "dummy data "+ new Date().getTime()
-    }).then((val) => {
-      console.log(val);
-      if(val.status == 201) {
-        alert("강의 생성 완료");
-        window.location.reload();
-        let lectureId = val.data.id;
-      }
-    })
-  }
+  const addNewLecture = async () => {
+    apiClient
+      .post("/api/lectures/", {
+        name: "dummy data " + new Date().getTime(),
+      })
+      .then((val) => {
+        console.log(val);
+        if (val.status == 201) {
+          alert("강의 생성 완료");
+          window.location.reload();
+          let lectureId = val.data.id;
+        }
+      });
+  };
 
-  const deleteLastLecture = async() =>{
-    apiClient.delete(`/api/lectures/${lectureSelector.results[lectureSelector.results.length - 1].id}/`)
-          .then((val) => {
-            console.log(val);
-            // if(val.status == 201) {
-            //   let lectureId = val.data.id;
-            // }
-          })
-  }
+  const deleteLastLecture = async () => {
+    apiClient
+      .delete(
+        `/api/lectures/${
+          lectureSelector.results[lectureSelector.results.length - 1].id
+        }/`
+      )
+      .then((val) => {
+        console.log(val);
+        // if(val.status == 201) {
+        //   let lectureId = val.data.id;
+        // }
+      });
+  };
 
   const colorList = [
     ["#B1D3C5", "#C6D7D0", "#D1D9D6"],
@@ -206,8 +229,6 @@ export const AssignmentOverview = ({ className, darkMode, ...restProps }) => {
                 <ListIndicatorBox onClick={addNewLecture}>
                   <Text>강의 추가</Text>
                 </ListIndicatorBox>
-
-               
               </ButtonContainer>
               <ListDivLine></ListDivLine>
             </MiddleContainer>

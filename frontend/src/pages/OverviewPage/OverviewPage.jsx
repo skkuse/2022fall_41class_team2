@@ -14,7 +14,11 @@ import { getLectureAction } from "./../MainPage/MainAction";
 import { apiClient } from "./../../api/axios";
 
 const GeneralContainer = styled.div`
-  overflow: scroll;
+  height: 100vh;
+  ::-webkit-scrollbar {
+    display: none;
+  }
+  overflow-y: auto;
 `;
 
 export const OverviewPage = (...restProps) => {

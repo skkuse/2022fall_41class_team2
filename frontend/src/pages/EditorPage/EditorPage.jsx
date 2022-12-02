@@ -42,6 +42,23 @@ const CodeEditorWrapper = styled.div`
   grid-row: 1 / 3;
 `;
 
+const GeneralContainer = styled.div`
+  height: 100vh;
+  /* TODO: 스크롤바 다크모드 css */
+  ::-webkit-scrollbar {
+    -webkit-appearance: none;
+    width: 9.76px;
+    background-color: #d3d3da;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    border-radius: 975.505px;
+    background-color: #bfbfbf;
+    box-shadow: 0 0 1px rgba(0, 0, 0, 0.5);
+  }
+  overflow-y: hidden;
+`;
+
 export const EditorPage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -90,12 +107,13 @@ export const EditorPage = () => {
   // TODO: settingSelector에 따라서 LandingPageScenery의 배경을 바꿔야 함
   const darkMode = false;
   return (
-    <>
+    <GeneralContainer>
       <Helmet
         bodyAttributes={{
           style: darkMode ? "background : #000000" : "background : #FFFFFF",
         }}
       />
+
       {/* Banner */}
       <Banner
         lectureName={lecture.name}
@@ -140,6 +158,6 @@ export const EditorPage = () => {
           />
         </CodeEditorWrapper>
       </EditorPageGrid>
-    </>
+    </GeneralContainer>
   );
 };
