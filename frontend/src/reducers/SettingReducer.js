@@ -36,12 +36,12 @@ export function SettingReducer(state=settingInitState, action) {
                 language: action.payload
             };
 
-        case SETTING_CHANGE_TH:
-            setItemWithExpireTime("theme", action.payload, 1000*60*60);
-            return {
-                ...state,
-                theme: action.payload
-            };
+        // case SETTING_CHANGE_TH:
+        //     setItemWithExpireTime("theme", action.payload, 1000*60*60);
+        //     return {
+        //         ...state,
+        //         theme: action.payload
+        //     };
 
         default:
             return state;
