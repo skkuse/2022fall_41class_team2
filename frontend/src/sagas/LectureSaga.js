@@ -62,11 +62,19 @@ async function getLectureAPI(payload) {
                     "deadline": "2050-11-18T12:45:25.465Z",
                     "question": "피보나치 수열을 만드시오.",
                     "constraints": "",
-                    "contents": [{
-                        "skeleton_code": "print(\"Hello, World!\")",
-                        "answer_code": "print(\"Hello, World!\")",
+                    "contents": [
+                      
+                      {
+                        "skeleton_code": "def solution(): \n\tprint(\"Hello, World!\")",
+                        "answer_code": "def solution(): \n\tprint(\"Hey, World!\")",
                         "language": "python"
-                    }],
+                      },
+                      {
+                        "skeleton_code": "int solution() {\n\tprintf(\"Hello, World!\");\n}",
+                        "answer_code": "int solution() {\n\tprintf(\"Hi, World!\");\n}",
+                        "language": "c"
+                      }
+                  ],
                     "lecture_id": lecture.id,
                 });
                 assResult = await apiClient.get("/api/assignments/?lecture_id="+ lecture.id);
