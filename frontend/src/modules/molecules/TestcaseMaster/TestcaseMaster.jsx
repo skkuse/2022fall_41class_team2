@@ -22,9 +22,11 @@ const TestCaseHeaderContainer = styled.div`
 `;
 const TestCaseContainer = styled.div`
   display: flex;
-  flex-direction: row;
-
-  height: 100%;
+  flex-direction: column;
+  overflow-y: scroll;
+  height: 42vh;
+  background: ${(props) => (props.darkMode ? "#1F1F32" : "#eaeaea")};
+  /* height: 100%; */
 `;
 
 const ValidationButtonContainer = styled.div`
@@ -96,12 +98,15 @@ function TestcaseMaster({ bodyContent, testCases, darkMode, ...restProps }) {
               onClick={async () => {
                 let tempPfList = [];
                 for (const tc of testCases) {
-                  const result = await executeTestCase(tc.id);
-                  if (result) {
-                    tempPfList.push({
-                      ...result.data.data,
-                      id: tc.id,
-                    });
+                  if(tc.id && !tc.is_hidden) {
+                    const result = await executeTestCase(tc.id);
+                    console.log(result);
+                    if (result) {
+                      tempPfList.push({
+                        ...result.data.data,
+                        id: tc.id,
+                      });
+                    }
                   }
                 }
                 setPfList(tempPfList);
@@ -114,31 +119,32 @@ function TestcaseMaster({ bodyContent, testCases, darkMode, ...restProps }) {
       </TestCaseHeaderContainer>
       {/* // TODO: testcase 개수만큼 pooling */}
 
-      {testCases.map((testcase, index) => {
-        // console.log(testcase);
-        // console.log(`testcase: ${JSON.stringify(testcase)}`);
-        // testcase = JSON.stringify(testcase);
-        return (
-          <TestCaseContainer>
-            <EditorBackground
-              mode="testcase"
-              content={{
-                테스트케이스: index,
-                input: testcase.input,
-                output: testcase.output,
-              }}
-              assignmentId={restProps.assignmentId}
-              darkMode={darkMode}
-              id={testcase.id}
-              pfList={pfList}
-            />
-          </TestCaseContainer>
-        );
-      })}
-      {/* <EditorBackground
-        content={bodyContent}
-        assignmentId={restProps.assignmentId}
-      /> */}
+      {/* {
+        JSON.stringify(testCases)
+      }  */}
+
+        <TestCaseContainer darkMode={darkMode}>
+          {testCases.map((testcase, index) => {
+            if(!testcase.id || testcase.is_hidden) {
+              return (<></>);
+            }
+            return (
+                <EditorBackground
+                  mode="testcase"
+                  content={{
+                    테스트케이스: index,
+                    input: testcase.input,
+                    output: testcase.output,
+                  }}
+                  assignmentId={restProps.assignmentId}
+                  darkMode={darkMode}
+                  id={testcase.id}
+                  pfList={pfList? pfList.find((pf) => pf.id === testcase.id): {}}
+                />
+            );
+          })}
+      </TestCaseContainer>
+
     </DescWrapper>
   );
 }
