@@ -98,12 +98,15 @@ function TestcaseMaster({ bodyContent, testCases, darkMode, ...restProps }) {
               onClick={async () => {
                 let tempPfList = [];
                 for (const tc of testCases) {
-                  const result = await executeTestCase(tc.id);
-                  if (result) {
-                    tempPfList.push({
-                      ...result.data.data,
-                      id: tc.id,
-                    });
+                  if(tc.id && !tc.is_hidden) {
+                    const result = await executeTestCase(tc.id);
+                    console.log(result);
+                    if (result) {
+                      tempPfList.push({
+                        ...result.data.data,
+                        id: tc.id,
+                      });
+                    }
                   }
                 }
                 setPfList(tempPfList);
@@ -136,7 +139,7 @@ function TestcaseMaster({ bodyContent, testCases, darkMode, ...restProps }) {
                   assignmentId={restProps.assignmentId}
                   darkMode={darkMode}
                   id={testcase.id}
-                  pfList={pfList}
+                  pfList={pfList? pfList.find((pf) => pf.id === testcase.id): {}}
                 />
             );
           })}

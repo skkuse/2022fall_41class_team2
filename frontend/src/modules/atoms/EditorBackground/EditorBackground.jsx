@@ -509,16 +509,33 @@ export const EditorBackground = ({
             <TestCaseInput>Input: {content.input}</TestCaseInput>
             <TestCaseOutput>Output: {content.output}</TestCaseOutput>
           </TestCaseIOContainer>
-          <TestCaseResult>RESULT HERE</TestCaseResult>
+
+          <TestCaseResult>{pfList.is_pass != null ? JSON.stringify(pfList.is_pass) : "RESULT HERE"}</TestCaseResult>
         </TestCaseMasterContainer>
       </BgTestCase>
     );
     // return <Bg darkMode={darkMode}>{content}</Bg>;
   } else if (mode === "gradingAndExecution") {
     // console.log(content.input);
+    const score = (pfList.filter((pf) => pf.is_pass).length / pfList.length)*100;
+  
     return (
       <SubmitResultBg darkMode={darkMode}>
-        <WindowWrapper>{content}</WindowWrapper>
+        <WindowWrapper>
+          <div>{`총점: ${score}점`}</div>
+          {
+             pfList.map((pf, index) => {
+              let content = "";
+              if(pf.is_hidden) {
+                content = `히든 테스트케이스${index+1}: ${pf.is_pass}`;
+              }
+              else{
+                content = `공개 테스트케이스${index+1}: ${pf.is_pass}`;
+              }
+              return <div style={{marginTop: "16px"}}>{content} </div>;
+            })
+          }
+        </WindowWrapper>
       </SubmitResultBg>
     );
   } else if (mode === "submit") {
@@ -648,7 +665,11 @@ export const EditorBackground = ({
                     <DescriptionContainer>
                       {/*여러 테스트케이스가 어레이 형태로 있음, 다른 형태로 처리 필요 */}
                       {content.functionality_result.testcase_results.map(
-                        (testcase, index) => (
+                        (testcase, index) => {
+                          if(!testcase.input) {
+                            return(<></>);
+                          }
+                          return (
                           <>
                             <div style={{ marginBottm: "11px" }}>
                               {testcase.is_hidden ? "히든" : "공개"}{" "}
@@ -663,7 +684,7 @@ export const EditorBackground = ({
                               <ul>Actual Output: {testcase.actual_output}</ul>
                             </div>
                           </>
-                        )
+                        )}
                       )}
                     </DescriptionContainer>
                   )}
