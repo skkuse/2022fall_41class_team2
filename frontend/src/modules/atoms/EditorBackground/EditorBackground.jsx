@@ -76,6 +76,41 @@ const Bg = styled.div`
       ${(props) => (props.darkMode ? "#d3d3da" : "rgba(0, 0, 0, 0.5)")}; */
   }
 `;
+
+
+const BgTestCase = styled.div`
+  width: 100%;
+  /* height: 42vh; */
+  background: ${(props) => (props.darkMode ? "#1F1F32" : "#eaeaea")};
+
+  padding: 18.55px 18.55px 18.55px 18.55px;
+
+  font-family: "Gmarket Sans TTF";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 15.6237px;
+  line-height: 18px;
+  /* identical to box height */
+
+  color: ${(props) => (props.darkMode ? "#D8D8D8" : "#1e1e1e")};
+
+  overflow-x: hidden;
+  overflow-y: auto;
+
+  ::-webkit-scrollbar {
+    -webkit-appearance: none;
+    width: 9.76px;
+    background-color: ${(props) => (props.darkMode ? "#131323" : "#d3d3da")};
+  }
+
+  ::-webkit-scrollbar-thumb {
+    border-radius: 975.505px;
+    background-color: #d3d3da;
+    /* box-shadow: 0 0 1px
+      ${(props) => (props.darkMode ? "#d3d3da" : "rgba(0, 0, 0, 0.5)")}; */
+  }
+`;
+
 const SubmitResultBg = styled.div`
   width: 100%;
   height: 100vh;
@@ -333,7 +368,7 @@ const GradingHighlighter = styled.div`
   border-radius: 5px;
   display: flex;
   flex-direction: column;
-  align-itmes: stretch;
+  align-items: stretch;
   background: ${(props) => (props.darkMode ? "#666681" : "#d9d9d9")};
   color: ${(props) => (props.darkMode ? "#d8d8d8" : "#3c3c3c")};
   box-sizing: border-box;
@@ -353,7 +388,7 @@ align-items:center;
   border-radius: 5px;
   display:flex
   flex-direction:column;
-  align-itmes:stretch;
+  align-items:stretch;
   background: ${(props) => (props.darkMode ? "#666681" : "#d9d9d9")};
   color: ${(props) => (props.darkMode ? "#d8d8d8" : "#3c3c3c")};
   box-sizing:border-box;
@@ -465,22 +500,39 @@ export const EditorBackground = ({
   if (mode === "testcase") {
     // console.log(content.input);
     return (
-      <Bg darkMode={darkMode}>
+      <BgTestCase darkMode={darkMode}>
         <TestCaseMasterContainer>
           <TestCaseIOContainer>
             <TestCaseInput>Input: {content.input}</TestCaseInput>
             <TestCaseOutput>Output: {content.output}</TestCaseOutput>
           </TestCaseIOContainer>
-          <TestCaseResult>RESULT HERE</TestCaseResult>
+
+          <TestCaseResult>{pfList.is_pass != null ? JSON.stringify(pfList.is_pass) : "RESULT HERE"}</TestCaseResult>
         </TestCaseMasterContainer>
-      </Bg>
+      </BgTestCase>
     );
     // return <Bg darkMode={darkMode}>{content}</Bg>;
   } else if (mode === "gradingAndExecution") {
     // console.log(content.input);
+    const score = (pfList.filter((pf) => pf.is_pass).length / pfList.length)*100;
+  
     return (
       <SubmitResultBg darkMode={darkMode}>
-        <WindowWrapper>{content}</WindowWrapper>
+        <WindowWrapper>
+          <div>{`총점: ${score}점`}</div>
+          {
+             pfList.map((pf, index) => {
+              let content = "";
+              if(pf.is_hidden) {
+                content = `히든 테스트케이스${index+1}: ${pf.is_pass}`;
+              }
+              else{
+                content = `공개 테스트케이스${index+1}: ${pf.is_pass}`;
+              }
+              return <div style={{marginTop: "16px"}}>{content} </div>;
+            })
+          }
+        </WindowWrapper>
       </SubmitResultBg>
     );
   } else if (mode === "submit") {
@@ -614,7 +666,11 @@ export const EditorBackground = ({
                     <DescriptionContainer>
                       {/*여러 테스트케이스가 어레이 형태로 있음, 다른 형태로 처리 필요 */}
                       {content.functionality_result.testcase_results.map(
-                        (testcase, index) => (
+                        (testcase, index) => {
+                          if(!testcase.input) {
+                            return(<></>);
+                          }
+                          return (
                           <>
                             <div style={{ marginBottm: "11px" }}>
                               {testcase.is_hidden ? "히든" : "공개"}{" "}
@@ -629,7 +685,7 @@ export const EditorBackground = ({
                               <ul>Actual Output: {testcase.actual_output}</ul>
                             </div>
                           </>
-                        )
+                        )}
                       )}
                     </DescriptionContainer>
                   )}

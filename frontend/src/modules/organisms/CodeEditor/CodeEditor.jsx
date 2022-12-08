@@ -189,6 +189,40 @@ export const CodeEditor = ({
     setSubmitLoading(false);
   };
 
+  const [pfList, setPfList] = useState(null);
+
+
+  const executeTestCase = async (testcase_id) => {
+    try {
+      const result = await apiClient.post(
+        `/api/outputs/testcases/${testcase_id}/`,
+        {
+          language: repoSelector.selectedModel.content.language,
+          code: repoSelector.selectedModel.content.code,
+        }
+      );
+      return result;
+    } catch (error) {}
+  };
+
+  const scoringHandler = async() => {
+    let tempPfList = [];
+    for (const tc of assignment.testcases) {
+      if(tc.id) {
+        const result = await executeTestCase(tc.id);
+        console.log(result);
+        if (result) {
+          tempPfList.push({
+            ...result.data.data,
+            id: tc.id,
+          });
+        }
+      }
+    }
+    setPfList(tempPfList);
+  }
+
+
   useEffect(() => {
     switch (editMode.altMode) {
       case "실행":
@@ -298,8 +332,15 @@ export const CodeEditor = ({
                   <CoreButton onClick={() => changeMode({ src: "실행" })}>
                     실행
                   </CoreButton>
-                  <CoreButton onClick={() => changeMode({ src: "채점" })}>
+                  <CoreButton onClick={async() => {
+                    // * 테스트케이스 채점
+                    await scoringHandler();
+                    changeMode({ src: "채점" });
+                  }}>
                     채점
+                    {/* {
+                      JSON.stringify(pfList)
+                    } */}
                   </CoreButton>
                   <CoreButton
                     style={{ color: "#0535DC" }}
@@ -465,7 +506,8 @@ export const CodeEditor = ({
                   edit={editMode.edit}
                   altMode={editMode.altMode}
                 >
-                  <Grading darkMode={darkMode} />
+   
+                  <Grading darkMode={darkMode} pfList={pfList}/>
                 </GradingWrapper>
               )}
               {/* 제출 결과*/}
