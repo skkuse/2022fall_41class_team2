@@ -1,6 +1,6 @@
 // 4. 코드 에디터 섹션
 
-import { EditorHeader, EditorBackground } from "../../atoms";
+import { EditorHeader, EditorBackground, Img } from "../../atoms";
 import { Text } from "../../atoms";
 import { Terminal } from "./Terminal";
 import { Grading } from "./Grading";
@@ -84,7 +84,7 @@ const EditorHeaderWrapper = styled.div`
   align-items: center;
   flex-direction: row;
   justify-content: space-between;
-
+  height: 41px;
   /* width: ${(props) => (props.editMode.edit ? "100%" : "572px")}; */
 
   background: ${(props) => (props.darkMode ? "#525263" : "#bfbfbf")};
@@ -143,7 +143,6 @@ export const CodeEditor = ({
   console.log(assignment);
 
   const headerContent = "코드 입력";
-  // let editorWidth = "1180px";
 
   const [editMode, setEditMode] = useState({ edit: true, altMode: "none" });
   const editorRef = createRef();
@@ -191,7 +190,6 @@ export const CodeEditor = ({
 
   const [pfList, setPfList] = useState(null);
 
-
   const executeTestCase = async (testcase_id) => {
     try {
       const result = await apiClient.post(
@@ -205,10 +203,10 @@ export const CodeEditor = ({
     } catch (error) {}
   };
 
-  const scoringHandler = async() => {
+  const scoringHandler = async () => {
     let tempPfList = [];
     for (const tc of assignment.testcases) {
-      if(tc.id) {
+      if (tc.id) {
         const result = await executeTestCase(tc.id);
         console.log(result);
         if (result) {
@@ -220,8 +218,7 @@ export const CodeEditor = ({
       }
     }
     setPfList(tempPfList);
-  }
-
+  };
 
   useEffect(() => {
     switch (editMode.altMode) {
@@ -315,7 +312,8 @@ export const CodeEditor = ({
   console.log(editorRef);
   console.log(`SubmitResult ${submitResult}`);
 
-
+  // TODO: 에러 표시
+  const error = true;
 
   return (
     <>
@@ -324,19 +322,24 @@ export const CodeEditor = ({
         {editMode.edit && (
           <>
             <EditorHeaderWrapper editMode={editMode} darkMode={darkMode}>
-              <div onClick={() => changeMode({ src: headerContent })}>
-                <EditorHeader content={headerContent} darkMode={darkMode} />
+              <div style={{display:"flex"}}>
+                <div onClick={() => changeMode({ src: headerContent })}>
+                  <EditorHeader content={headerContent} darkMode={darkMode} />
+                </div>
+                <Img src="/images/error.svg" alt="error indicator" />
               </div>
               <div style={{ marginRight: "27.78px" }}>
                 <ActionButtonWrapper darkMode={darkMode}>
                   <CoreButton onClick={() => changeMode({ src: "실행" })}>
                     실행
                   </CoreButton>
-                  <CoreButton onClick={async() => {
-                    // * 테스트케이스 채점
-                    await scoringHandler();
-                    changeMode({ src: "채점" });
-                  }}>
+                  <CoreButton
+                    onClick={async () => {
+                      // * 테스트케이스 채점
+                      await scoringHandler();
+                      changeMode({ src: "채점" });
+                    }}
+                  >
                     채점
                     {/* {
                       JSON.stringify(pfList)
@@ -455,28 +458,23 @@ export const CodeEditor = ({
                     </CoreButton>
                   </ActionButtonWrapper>
                 </div>
-
-
-
               </EditorHeaderWrapper>
               <div style={{ marginLeft: "12.42px", marginTop: "24.83px" }}>
                 <EditorWrapper>
                   {submitComplete ? (
                     <DiffEditor
-                    // TODO : inline diff로 변경?
-                    // width="560px"
-                    // height="820px"
-                    language={repoSelector.selectedModel.content.language}
-                    original={repoSelector.selectedModel.content.code}
-                    modified={assignment.contents[0].answer_code}
-                    theme={darkMode ? "vs-dark" : "light"}
-                    options={
-                      {
+                      // TODO : inline diff로 변경?
+                      // width="560px"
+                      // height="820px"
+                      language={repoSelector.selectedModel.content.language}
+                      original={repoSelector.selectedModel.content.code}
+                      modified={assignment.contents[0].answer_code}
+                      theme={darkMode ? "vs-dark" : "light"}
+                      options={{
                         renderSideBySide: false,
-                        readOnly: true
-                      }
-                    }
-                  />
+                        readOnly: true,
+                      }}
+                    />
                   ) : (
                     <Editor
                       // width="560px"
@@ -506,8 +504,7 @@ export const CodeEditor = ({
                   edit={editMode.edit}
                   altMode={editMode.altMode}
                 >
-   
-                  <Grading darkMode={darkMode} pfList={pfList}/>
+                  <Grading darkMode={darkMode} pfList={pfList} />
                 </GradingWrapper>
               )}
               {/* 제출 결과*/}
@@ -526,7 +523,6 @@ export const CodeEditor = ({
                     />
                   </TerminalWrapper>
                 )}
-                
             </EvaluationWindowGrid>
           </>
         )}
