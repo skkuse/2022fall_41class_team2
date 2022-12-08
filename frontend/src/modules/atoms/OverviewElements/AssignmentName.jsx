@@ -18,11 +18,17 @@ const AssignmentNameStyle = styled.div`
   width: 550px;
   height: 68px;
   color: #000000;
-  background: ${(props) => props.background};
+  background: ${(props) => (props.danger ? "#F9565680" : props.background)};
 `;
 
-export const AssignmentName = ({ assignment, background, submission }) => {
+export const AssignmentName = ({
+  assignment,
+  background,
+  submission,
+  remainingTime,
+}) => {
   // console.log(`SUBMISSION PROP: ${submission}`);
+  const danger = remainingTime.split(" ")[0].slice(-1) === "d" ? false : true;
 
   if (submission) {
     background = `linear-gradient(0deg, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), ${background}`;
@@ -33,7 +39,7 @@ export const AssignmentName = ({ assignment, background, submission }) => {
     );
   } else {
     return (
-      <AssignmentNameStyle background={background}>
+      <AssignmentNameStyle danger={danger} background={background}>
         <div style={{ marginRight: "12px" }}>{assignment}</div>
       </AssignmentNameStyle>
     );

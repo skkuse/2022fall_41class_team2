@@ -1,6 +1,22 @@
 import styled from "styled-components";
 import React, { useCallback, useState } from "react";
-import { PieChart, Pie, Sector } from "recharts";
+import {
+  PieChart,
+  Pie,
+  Sector,
+  Radar,
+  RadarChart,
+  PolarGrid,
+  PolarAngleAxis,
+  PolarRadiusAxis,
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+} from "recharts";
 
 // 예시 데이터
 // const data = [
@@ -8,6 +24,45 @@ import { PieChart, Pie, Sector } from "recharts";
 //   { name: "Group B", value: 300 },
 //   { name: "Group C", value: 300 },
 //   { name: "Group D", value: 200 },
+// ];
+
+// const exdata = [
+//   {
+//     subject: "Math",
+//     A: 120,
+//     B: 110,
+//     fullMark: 150,
+//   },
+//   {
+//     subject: "Chinese",
+//     A: 98,
+//     B: 130,
+//     fullMark: 150,
+//   },
+//   {
+//     subject: "English",
+//     A: 86,
+//     B: 130,
+//     fullMark: 150,
+//   },
+//   {
+//     subject: "Geography",
+//     A: 99,
+//     B: 100,
+//     fullMark: 150,
+//   },
+//   {
+//     subject: "Physics",
+//     A: 85,
+//     B: 90,
+//     fullMark: 150,
+//   },
+//   {
+//     subject: "History",
+//     A: 65,
+//     B: 85,
+//     fullMark: 150,
+//   },
 // ];
 
 const renderActiveShape = (props) => {
@@ -92,9 +147,10 @@ const renderActiveShape = (props) => {
   );
 };
 
-export const ResultVis = ({ data, chartColor, ...restProps }) => {
+export const ResultVis = ({ data, chartColor, radial, ...restProps }) => {
+  // radial := functionality result visulaization 위한 boolean
   console.log(JSON.stringify(data));
-  
+
   const parsed_data = Object.entries(data)
     .map(([k, v]) => ({
       name: k.split("_").slice(0, -1).join("_"),
@@ -110,21 +166,50 @@ export const ResultVis = ({ data, chartColor, ...restProps }) => {
     [setActiveIndex]
   );
 
-  // TODO: name 값을 렌더링하는 위치를 변경하기
-  return (
-    <PieChart width={600} height={300}>
-      <Pie
-        activeIndex={activeIndex}
-        activeShape={renderActiveShape}
-        data={parsed_data}
-        cx={300}
-        cy={140}
-        innerRadius={40}
-        outerRadius={80}
-        fill={chartColor}
-        dataKey="value"
-        onMouseEnter={onPieEnter}
-      />
-    </PieChart>
-  );
+  if (radial) {
+    // data preprocessing
+    const visdata = data.map((testcase) => {
+      testcase.PF = testcase.is_pass ? 1 : 0;
+      return testcase;
+    });
+    console.log(`radial ${JSON.stringify(visdata)}`);
+
+    return (
+      <BarChart
+        width={600}
+        height={300}
+        data={visdata}
+        margin={{
+          top: 30,
+          right: 50,
+          left: 0,
+          bottom: 20,
+        }}
+      >
+        <CartesianGrid strokeDasharray="3 3" />
+        <XAxis dataKey="name" />
+        <YAxis type="number" domain={[0, 1]} tickCount={1} />
+        <Tooltip />
+        <Legend />
+        <Bar dataKey="PF" fill={chartColor} />
+      </BarChart>
+    );
+  } else {
+    return (
+      <PieChart width={600} height={300}>
+        <Pie
+          activeIndex={activeIndex}
+          activeShape={renderActiveShape}
+          data={parsed_data}
+          cx={300}
+          cy={140}
+          innerRadius={40}
+          outerRadius={80}
+          fill={chartColor}
+          dataKey="value"
+          onMouseEnter={onPieEnter}
+        />
+      </PieChart>
+    );
+  }
 };

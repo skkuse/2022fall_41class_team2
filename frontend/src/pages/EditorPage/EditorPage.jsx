@@ -33,6 +33,7 @@ const EditorPageGrid = styled.div`
 const ProblemWrapper = styled.div`
   grid-area: a;
   min-width: 360px;
+  
 `;
 const TestcaseWrapper = styled.div`
   grid-area: b;
@@ -140,7 +141,7 @@ export const EditorPage = () => {
           <Problem bodyContent={ass.question} darkMode={darkMode} />
         </ProblemWrapper>
         {/* TestCase */}
-        <TestcaseWrapper style={{ marginLeft: "43px", marginTop: "9.77px" }}>
+        <TestcaseWrapper style={{ marginLeft: "43px", marginTop: "10px" }}>
           <Testcase
             // // TODO: 오브젝트 형태로 변경해서 표시
             bodyContent={`테스트케이스 1>

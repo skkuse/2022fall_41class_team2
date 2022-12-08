@@ -122,10 +122,11 @@ const AssignmentBlockContainer = styled.div`
 
 const LectureGroup = styled.div`
   width: 100%;
-
+  height: fit-content;
   display: grid;
   grid-template-columns: 1fr 7.6fr;
-  grid-template-rows: repeat(${(props) => props.numAssignment}, 68px) [last-line];
+  /* grid-template-rows: auto; */
+  grid-template-rows: repeat(${(props) => props.numAssignment}, 70px) [last-line];
 `;
 
 const MiddleContainer = styled.div`
@@ -298,11 +299,14 @@ const LectureGroupComp = ({ lecture, color }) => {
                   <AssignmentName
                     assignment={`${ass.name}`}
                     background={color[1]}
+                    remainingTime={`${getTimeDiff(
+                      new Date(ass.deadline),
+                      new Date()
+                    )}`}
                     submission={false}
                   ></AssignmentName>
 
                   <Deadline
-                    danger={false}
                     remainingTime={`${getTimeDiff(
                       new Date(ass.deadline),
                       new Date()

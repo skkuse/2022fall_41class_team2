@@ -113,7 +113,7 @@ const SettingsSelectorContainer = styled.div`
 
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: space-around;
 
   align-self: flex-start;
 `;
@@ -269,7 +269,7 @@ export const SettingsBox = ({ className, ...restProps }) => {
                       ))}
                     </StyledHtmlSelect>
                   </CodeEditorSelectorContainer>
-                  <CodeEditorSelectorContainer>
+                  {/* <CodeEditorSelectorContainer>
                     <Text>Theme</Text>
                     <StyledHtmlSelect
                       onChange={onChangeTheme}
@@ -281,7 +281,7 @@ export const SettingsBox = ({ className, ...restProps }) => {
                         </option>
                       ))}
                     </StyledHtmlSelect>
-                  </CodeEditorSelectorContainer>
+                  </CodeEditorSelectorContainer> */}
                 </SettingsSelectorContainer>
               </div>
             </SettingsContainer>
@@ -291,7 +291,7 @@ export const SettingsBox = ({ className, ...restProps }) => {
               onClick={() => {
                 dispatch(settingChangeBg(currentBack));
                 dispatch(settingChangeLg(currentLang));
-                dispatch(settingChangeTh(currentTheme));
+                // dispatch(settingChangeTh(currentTheme));
                 navigate(-1);
               }}
               className={`${className} common-login-and-register-button`}

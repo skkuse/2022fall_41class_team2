@@ -33,12 +33,12 @@ const WindowWrapper = styled.div`
   ::-webkit-scrollbar {
     -webkit-appearance: none;
     width: 9.76px;
-    background-color: ${(props) => (props.darkMode ? "#131323" : "#d3d3da")};
+    background-color: ${(props) => (props.darkMode ? "#131323" : "#ffffff")};
   }
 
   ::-webkit-scrollbar-thumb {
     border-radius: 975.505px;
-    background-color: #d3d3da;
+
     /* box-shadow: 0 0 1px
       ${(props) => (props.darkMode ? "#d3d3da" : "rgba(0, 0, 0, 0.5)")}; */
   }
@@ -66,7 +66,7 @@ const Bg = styled.div`
   ::-webkit-scrollbar {
     -webkit-appearance: none;
     width: 9.76px;
-    background-color: ${(props) => (props.darkMode ? "#131323" : "#d3d3da")};
+    background-color: ${(props) => (props.darkMode ? "#131323" : "#ffffff")};
   }
 
   ::-webkit-scrollbar-thumb {
@@ -497,9 +497,6 @@ export const EditorBackground = ({
   );
   useEffect(() => {}, [activeIndexDesc]);
 
-  // TODO
-  // data preprocessing for functionality results
-
   if (mode === "testcase") {
     // console.log(content.input);
     return (
@@ -590,7 +587,11 @@ export const EditorBackground = ({
                   />
                 )}
                 {activeIndexChart === FUNCTIONALITY && (
-                  <ResultVis data={functionalityResult} chartColor="#52C0E7" />
+                  <ResultVis
+                    data={content.functionality_result.testcase_results}
+                    chartColor="#52C0E7"
+                    radial={true}
+                  />
                 )}
 
                 {/* pie chart selector */}
@@ -694,7 +695,13 @@ export const EditorBackground = ({
           )}
 
           {activeIndexDesc === DESCRIPTION && (
-            <div style={{ marginTop: "9px" }}>
+            <div
+              style={{
+                marginTop: "9px",
+                marginLeft: "7.5px",
+                marginRight: "7.5px",
+              }}
+            >
               <CodeDescriptor darkMode={darkMode}>
                 {content.code_description.split("\n").map((line) => (
                   <div style={{ marginBottom: "11px" }}>{line}</div>
@@ -704,7 +711,13 @@ export const EditorBackground = ({
             </div>
           )}
           {activeIndexDesc === RECOMMENDATION && (
-            <div style={{ marginTop: "9px" }}>
+            <div
+              style={{
+                marginTop: "9px",
+                marginLeft: "7.5px",
+                marginRight: "7.5px",
+              }}
+            >
               <CodeDescriptor darkMode={darkMode}>
                 {Object.keys(content.references)
                   .filter((k) => k !== "id")

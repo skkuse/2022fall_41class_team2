@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 
-
-
 import { MonitorIcon, Img } from "../../atoms";
 import { useSelector } from "react-redux";
 import {
@@ -30,47 +28,44 @@ import { useNavigate } from "react-router-dom";
 import { getTimeDiff } from "../AssignmentOverview/AssignmentOverview";
 // import { SpectrumVisualizer, SpectrumVisualizerTheme } from 'react-audio-visualizers';
 
+import lifeAudio from "../../../assets/audio/lifelike-126735.mp3";
+import dropItAudio from "../../../assets/audio/drop-it-124014.mp3";
+import mountainAudio from "../../../assets/audio/mountain-path-125573.mp3";
+import calmAudio from "../../../assets/audio/please-calm-my-mind-125566.mp3";
+import natureAudio from "../../../assets/audio/the-beat-of-nature-122841.mp3";
 
-import lifeAudio from '../../../assets/audio/lifelike-126735.mp3';
-import dropItAudio from '../../../assets/audio/drop-it-124014.mp3';
-import mountainAudio from '../../../assets/audio/mountain-path-125573.mp3';
-import calmAudio from '../../../assets/audio/please-calm-my-mind-125566.mp3';
-import natureAudio from '../../../assets/audio/the-beat-of-nature-122841.mp3';
-
-
-import audioIcon from '../../../assets/images/image 32.png';
-import prevIcon from '../../../assets/images/image 31.png';
-import nextIcon from '../../../assets/images/image 30.png';
-import pauseIcon from '../../../assets/images/image 29.png';
+import audioIcon from "../../../assets/images/image 32.png";
+import prevIcon from "../../../assets/images/image 31.png";
+import nextIcon from "../../../assets/images/image 30.png";
+import pauseIcon from "../../../assets/images/image 29.png";
 
 const SampleAudioList = [
   {
     title: "Lifelike",
     author: "AlexiAction",
-    audio: new Audio(lifeAudio)
+    audio: new Audio(lifeAudio),
   },
   {
     title: "Drop It",
     author: "Coma-Media",
-    audio: new Audio(dropItAudio)
+    audio: new Audio(dropItAudio),
   },
   {
     title: "Mountain Path",
     author: "Magnetic Trailer",
-    audio: new Audio(mountainAudio)
+    audio: new Audio(mountainAudio),
   },
   {
     title: "The Beat of Nature",
     author: "Olexy",
-    audio: new Audio(calmAudio)
+    audio: new Audio(calmAudio),
   },
   {
     title: "Please Calm My Mind",
     author: "Lesfm",
-    audio: new Audio(natureAudio)
-  }
-]
-
+    audio: new Audio(natureAudio),
+  },
+];
 
 const Wrapper = styled.div`
   height: auto;
@@ -91,6 +86,7 @@ const Bg = styled.div`
 `;
 
 const StringWrapper = styled.div`
+  width: 180px;
   font-family: "Gmarket Sans TTF";
   font-style: normal;
   font-weight: 700;
@@ -110,36 +106,33 @@ export const Banner = ({
   assignment,
   saveState,
   danger,
-  darkMode, changeRepo, setChangeRepo
+  darkMode,
+  changeRepo,
+  setChangeRepo,
 }) => {
   const [audio] = useState(SampleAudioList);
   const [audioIndex, setAudioIndex] = useState(0);
 
   const [playing, setPlaying] = useState(false);
 
-
   const toggle = () => setPlaying(!playing);
 
   useEffect(() => {
-      if(playing) {
-        for (const key in audio) {
-          if (key != audioIndex) {
-            audio[key].audio.pause();
-          }
-          else{
-            audio[key].audio.play();
-          }
-        }
-      } 
-      else{
-        for (const key in audio) {
+    if (playing) {
+      for (const key in audio) {
+        if (key != audioIndex) {
           audio[key].audio.pause();
+        } else {
+          audio[key].audio.play();
         }
       }
-      // playing ? audio[audioIndex].audio.play() : audio[audioIndex].audio.pause();
-    },
-    [playing]
-  );
+    } else {
+      for (const key in audio) {
+        audio[key].audio.pause();
+      }
+    }
+    // playing ? audio[audioIndex].audio.play() : audio[audioIndex].audio.pause();
+  }, [playing]);
 
   // useEffect(() => {
   //   setPlaying(true);
@@ -149,7 +142,6 @@ export const Banner = ({
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  
   const [remainTime, setRemainTime] = useState(
     getTimeDiff(new Date(assignment.deadline), new Date())
   );
@@ -161,7 +153,8 @@ export const Banner = ({
   }, []);
 
   const findByLanguage = (contents) => {
-    const userLanguage = repoSelector.selectedModel.content.language.toLowerCase();
+    const userLanguage =
+      repoSelector.selectedModel.content.language.toLowerCase();
     return contents.find((content) => content.language == userLanguage);
   };
 
@@ -207,78 +200,96 @@ export const Banner = ({
       <div style={{ margin: "auto" }}>
         <StringWrapper>{assignmentName}</StringWrapper>
       </div>
-          
-      
-      <div style={{
-        width: "200px",
-        height: "40px",
-        background: "linear-gradient(90deg, #3A3989 0%, rgba(58, 57, 137, 0) 100%)",
-        border: "1px solid #FFFFFF",
-        borderRadius: "1000px",
-        display: "flex",
-        alignItems:"center",
-        marginRight:"17px"
-      }}>
-        
-        <div style={{ marginLeft: "10px", marginTop: "3px"}}>
-            <img src={audioIcon} style={{width: "25px", height: "25px", objectFit:"cover"}}/>
+
+      <div
+        style={{
+          width: "200px",
+          height: "40px",
+          background:
+            "linear-gradient(90deg, #3A3989 0%, rgba(58, 57, 137, 0) 100%)",
+          border: "1px solid #FFFFFF",
+          borderRadius: "1000px",
+          display: "flex",
+          alignItems: "center",
+          marginRight: "17px",
+        }}
+      >
+        <div style={{ marginLeft: "10px", marginTop: "3px" }}>
+          <img
+            src={audioIcon}
+            style={{ width: "25px", height: "25px", objectFit: "cover" }}
+          />
         </div>
 
-        <div style={{
-          display:"flex", flexDirection: "column", justifyContent:"space-between",
-          alignItems:"center", marginLeft: "12px"
-        }}>
-          <div style={{
-            fontFamily: 'Gmarket Sans TTF',
-            fontStyle: "normal",
-            fontWeight: "500",
-            fontSize: "9px",
-            color: "#000000",
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-            whiteSpace:"nowrap",
-            width: "70px"
-          }}>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "space-between",
+            alignItems: "center",
+            marginLeft: "12px",
+          }}
+        >
+          <div
+            style={{
+              fontFamily: "Gmarket Sans TTF",
+              fontStyle: "normal",
+              fontWeight: "500",
+              fontSize: "9px",
+              color: "#000000",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              whiteSpace: "nowrap",
+              width: "70px",
+            }}
+          >
             {SampleAudioList[audioIndex].title}
           </div>
-       
         </div>
 
-        <div style ={{display:"flex", margin: "0 13px"}}>
-          <img src={prevIcon} style={{width: "13px", height: "14px"}} onClick={()=>{
-            setPlaying(false);
-            let newIndex = 0;
-            if(audioIndex > 1){
-              newIndex = (audioIndex - 1);
-            }
-            else{
-              newIndex = (SampleAudioList.length - 1);
-            }
-            setAudioIndex(newIndex);
-            setTimeout(()=>{
-              setPlaying(true);
-            },100);
-          }}/>
-          <img src={pauseIcon} style={{width: "13px", height: "14px", margin: "0 10px"}}  onClick={toggle}/>
-          <img src={nextIcon} style={{width: "13px", height: "14px"}} onClick={()=>{
-            setPlaying(false);
-            let newIndex = 0;
-            if(audioIndex >= SampleAudioList.length - 1){
-              newIndex = 0;
-            }
-            else{
-              newIndex = audioIndex+1;
-            }
-            setAudioIndex(newIndex);
-            setTimeout(()=>{
-              setPlaying(true);
-            },100);
-          }}/>
+        <div style={{ display: "flex", margin: "0 13px" }}>
+          <img
+            src={prevIcon}
+            style={{ width: "13px", height: "14px" }}
+            onClick={() => {
+              setPlaying(false);
+              let newIndex = 0;
+              if (audioIndex > 1) {
+                newIndex = audioIndex - 1;
+              } else {
+                newIndex = SampleAudioList.length - 1;
+              }
+              setAudioIndex(newIndex);
+              setTimeout(() => {
+                setPlaying(true);
+              }, 100);
+            }}
+          />
+          <img
+            src={pauseIcon}
+            style={{ width: "13px", height: "14px", margin: "0 10px" }}
+            onClick={toggle}
+          />
+          <img
+            src={nextIcon}
+            style={{ width: "13px", height: "14px" }}
+            onClick={() => {
+              setPlaying(false);
+              let newIndex = 0;
+              if (audioIndex >= SampleAudioList.length - 1) {
+                newIndex = 0;
+              } else {
+                newIndex = audioIndex + 1;
+              }
+              setAudioIndex(newIndex);
+              setTimeout(() => {
+                setPlaying(true);
+              }, 100);
+            }}
+          />
         </div>
       </div>
-      
-      
-      
+
       {/* Functools */}
       {/* duplicate */}
       <div
@@ -295,7 +306,9 @@ export const Banner = ({
       <div
         style={{ marginLeft: "14.86px" }}
         onClick={() => {
-          const skeletonCode = findByLanguage(assignment.contents).skeleton_code;
+          const skeletonCode = findByLanguage(
+            assignment.contents
+          ).skeleton_code;
           console.log(skeletonCode);
           dispatch(updateRepoAction(skeletonCode));
         }}
@@ -357,48 +370,57 @@ export const Banner = ({
   );
 };
 
-const SaveButtonComp = ({ repoSelector, index, assignment, changeRepo, setChangeRepo }) => {
+const SaveButtonComp = ({
+  repoSelector,
+  index,
+  assignment,
+  changeRepo,
+  setChangeRepo,
+}) => {
   const dispatch = useDispatch();
   const isSaved = repoSelector.repoList.length - 1 >= index;
 
   const findByLanguage = (contents) => {
-    const userLanguage = repoSelector.selectedModel.content.language.toLowerCase();
+    const userLanguage =
+      repoSelector.selectedModel.content.language.toLowerCase();
     return contents.find((content) => content.language == userLanguage);
   };
 
   // * change repo
-  useEffect(()=>{
-    if(
+  useEffect(() => {
+    if (
       repoSelector &&
       repoSelector.repoChangeInfo &&
-      repoSelector.repoChangeInfo.isChanging && 
-      isSaved && 
+      repoSelector.repoChangeInfo.isChanging &&
+      isSaved &&
       repoSelector.selectedModel.id != repoSelector.repoList[index].id &&
       repoSelector.repoChangeInfo.prevId == index
-      ) {
+    ) {
       dispatch(changeRepoAction(repoSelector.repoList[index]));
     }
-  }, )
+  });
 
   // * create repo
-  useEffect(()=>{
-    if(
+  useEffect(() => {
+    if (
       repoSelector &&
       repoSelector.repoCreateInfo &&
-      repoSelector.repoCreateInfo.isCreating && 
+      repoSelector.repoCreateInfo.isCreating &&
       !isSaved &&
       repoSelector.repoCreateInfo.prevId == index
-      ) {
-        const skeletonCode = findByLanguage(assignment.contents).skeleton_code;
-        apiClient.post(`/api/repos/`, {
+    ) {
+      const skeletonCode = findByLanguage(assignment.contents).skeleton_code;
+      apiClient
+        .post(`/api/repos/`, {
           language: "python",
           code: skeletonCode,
           assignment_id: assignment.id,
-        }).then((result)=>{
-          dispatch(createRepoAction(result.data.data));
         })
+        .then((result) => {
+          dispatch(createRepoAction(result.data.data));
+        });
     }
-  }, )
+  });
 
   return (
     <div
@@ -428,13 +450,11 @@ const SaveButtonComp = ({ repoSelector, index, assignment, changeRepo, setChange
           //   dispatch(changeRepoAction(repoSelector.repoList[index]));
           //   // setChangeRepo(false);
           // }, 100);
-
         }
         // * 저장소 새로 추가
         else {
           // alert("코드 추가");
           dispatch(readyCreateSelectedRepoAction(index));
-          
         }
       }}
     >
