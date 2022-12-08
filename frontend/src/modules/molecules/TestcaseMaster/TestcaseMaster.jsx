@@ -25,7 +25,7 @@ const TestCaseHeaderContainer = styled.div`
 const TestCaseContainer = styled.div`
   display: flex;
   flex-direction: column;
-  overflow-y: scroll;
+  
   height: 42vh;
   background: ${(props) => (props.darkMode ? "#1F1F32" : "#eaeaea")};
   /* height: 100%; */
