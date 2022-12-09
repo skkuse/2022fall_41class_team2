@@ -175,6 +175,7 @@ export const CodeEditor = ({
   };
 
   const submitCode = async () => {
+    alert("submit!");
     setSubmitLoading(true);
     try {
       const result = await apiClient.post("/api/outputs/results/", {
@@ -182,12 +183,13 @@ export const CodeEditor = ({
         language: repoSelector.selectedModel.content.language,
         code: repoSelector.selectedModel.content.code,
       });
-      if(submitResultValidate(result.data)) {
+      if(submitResultValidate(result.data.data)) {
         setSubmitResult(result.data);
         setSubmitComplete(true);  
         changeMode({ src: "제출" });
       }
       else{
+        console.log(result.data.data);
         alert("solution 함수 아래에서 작성해주세요.");
         setSubmitComplete(false);
       }
@@ -283,7 +285,7 @@ export const CodeEditor = ({
         break;
 
       case "제출":
-        submitCode();
+        // submitCode();
         break;
 
       default:
