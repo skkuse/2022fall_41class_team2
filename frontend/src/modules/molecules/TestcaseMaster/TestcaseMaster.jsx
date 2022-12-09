@@ -1,8 +1,10 @@
 import styled from "styled-components";
 import { EditorBackground, EditorHeader } from "../../atoms/";
 import { apiClient } from "./../../../api/axios";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useState } from "react";
+import { COLOR_SET } from './../../../service/GetColor';
+import { setTestcaseOff } from './../../../pages/EditorPage/EditorAction';
 
 const DescWrapper = styled.div`
   display: flex;
@@ -68,7 +70,8 @@ const ValidationButton = styled.div`
 function TestcaseMaster({ bodyContent, testCases, darkMode, ...restProps }) {
   const headerContent = "테스트 케이스";
   const repoSelector = useSelector((state) => state.editorReducer);
-
+  const settingSelector = useSelector((state) => state.SettingReducer);
+  const dispatch = useDispatch();
   const [pfList, setPfList] = useState(null);
 
   const executeTestCase = async (testcase_id) => {
@@ -87,7 +90,10 @@ function TestcaseMaster({ bodyContent, testCases, darkMode, ...restProps }) {
   console.log(`testcases: ${JSON.stringify(testCases)}`);
   return (
     <DescWrapper>
-      <TestCaseHeaderContainer darkMode={darkMode}>
+      <TestCaseHeaderContainer style={{
+        backgroundColor:COLOR_SET['EDITOR_EXPLAIN'][settingSelector.backgroundColor],
+        color: COLOR_SET['EDITOR_EXPLAIN_FONT'][settingSelector.backgroundColor]
+      }}>
         <EditorHeader
           content={headerContent}
           assignmentId={restProps.assignmentId}
@@ -95,9 +101,14 @@ function TestcaseMaster({ bodyContent, testCases, darkMode, ...restProps }) {
         />
 
         <div style={{ marginRight: "16.13px" }}>
-          <ValidationButtonContainer darkMode={darkMode}>
+          <ValidationButtonContainer >
             <ValidationButton
+             style={{
+              backgroundColor:COLOR_SET['EDITOR_TEST_BUTTON'][settingSelector.backgroundColor],
+              color: COLOR_SET['EDITOR_TEST_BUTTON_FONT'][settingSelector.backgroundColor]
+            }}
               onClick={async () => {
+                dispatch(setTestcaseOff());
                 let tempPfList = [];
                 for (const tc of testCases) {
                   if(tc.id && !tc.is_hidden) {
@@ -124,8 +135,10 @@ function TestcaseMaster({ bodyContent, testCases, darkMode, ...restProps }) {
       {/* {
         JSON.stringify(testCases)
       }  */}
-
-        <TestCaseContainer darkMode={darkMode}>
+        <TestCaseContainer  style={{
+        backgroundColor:COLOR_SET['EDITOR_EXPLAIN_CONTENT'][settingSelector.backgroundColor],
+        color: COLOR_SET['EDITOR_EXPLAIN_CONTENT_FONT'][settingSelector.backgroundColor]
+      }}>
           {testCases.map((testcase, index) => {
             if(!testcase.id || testcase.is_hidden) {
               return (<></>);
@@ -141,7 +154,8 @@ function TestcaseMaster({ bodyContent, testCases, darkMode, ...restProps }) {
                   assignmentId={restProps.assignmentId}
                   darkMode={darkMode}
                   id={testcase.id}
-                  pfList={pfList? pfList.find((pf) => pf.id === testcase.id): {}}
+                  // testCaseValue={testcase}
+                  testCaseValue={pfList? pfList.find((pf) => pf.id == testcase.id): testcase}
                 />
             );
           })}

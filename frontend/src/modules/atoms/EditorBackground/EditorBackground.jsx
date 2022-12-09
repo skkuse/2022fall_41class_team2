@@ -2,6 +2,10 @@ import styled from "styled-components";
 import { ResultVis } from "../../atoms";
 import React, { useEffect, useCallback, useState } from "react";
 import { Text } from "../../atoms";
+import { useSelector, useDispatch } from 'react-redux';
+import { COLOR_SET } from './../../../service/GetColor';
+import { setTestcaseError, setTestcaseOn } from './../../../pages/EditorPage/EditorAction';
+import { apiClient } from './../../../api/axios';
 
 const READABILITY = 0;
 const EFFICIENCY = 1;
@@ -436,12 +440,26 @@ export const EditorBackground = ({
   assignmentId,
   id,
   pfList,
+  testCaseValue,
 
   ...restProps
 }) => {
+  const dispatch = useDispatch();
+  const settingSelector = useSelector((state) => state.SettingReducer);
   // redability result
   let readabilityResult = [];
 
+  const [pfListLocal, setPfListLocal] = useState(pfList);
+  const [testCaseData, setTestCaseData] = useState(testCaseValue);
+
+  useEffect(()=>{
+    console.log("!!!!");
+    console.log(testCaseValue);
+    setTestCaseData(testCaseValue)
+    console.log(testCaseData);
+  },[testCaseValue])
+
+  const repoSelector = useSelector((state) => state.editorReducer);
   // visualizing functionality result
 
   const [functionalityResult, setFunctionalityResult] = useState({});
@@ -497,31 +515,80 @@ export const EditorBackground = ({
   );
   useEffect(() => {}, [activeIndexDesc]);
 
+  const executeTestCase = async (testcase_id) => {
+    try {
+      const result = await apiClient.post(
+        `/api/outputs/testcases/${testcase_id}/`,
+        {
+          language: repoSelector.selectedModel.content.language,
+          code: repoSelector.selectedModel.content.code,
+        }
+      );
+      return result;
+    } catch (error) {}
+  };
+
   if (mode === "testcase") {
     // console.log(content.input);
     return (
-      <BgTestCase darkMode={darkMode}>
+      <BgTestCase style={{
+        backgroundColor:COLOR_SET['EDITOR_EXPLAIN_CONTENT'][settingSelector.backgroundColor],
+        color: COLOR_SET['EDITOR_EXPLAIN_CONTENT_FONT'][settingSelector.backgroundColor]
+      }}>
         <TestCaseMasterContainer>
           <TestCaseIOContainer>
             <TestCaseInput>Input: {content.input}</TestCaseInput>
             <TestCaseOutput>Output: {content.output}</TestCaseOutput>
           </TestCaseIOContainer>
 
-          <TestCaseResult>{pfList.is_pass != null ? JSON.stringify(pfList.is_pass) : "RESULT HERE"}</TestCaseResult>
+          <TestCaseResult onClick={async()=>{
+              console.log("??");
+              console.log(id);
+              console.log(pfListLocal);
+              console.log(testCaseData);
+
+              if(testCaseData.is_pass == null && testCaseData.id) {
+                dispatch(setTestcaseOn());
+                const result = await executeTestCase(testCaseData.id);
+                dispatch(setTestcaseError(result.data.data.is_error));
+                setTestCaseData({
+                  ...result.data.data,
+                  id: testCaseData.id
+                });
+                console.log(result.data.data);
+                // console.log(result);
+                // let tempPfList = [...testCaseData];
+                // for (const key in tempPfList) {
+                //   if(tempPfList[key].id == content.id) {
+                //     tempPfList[key] = {
+                //       ...result.data.data,
+                //       id: content.id
+                //     }
+                //   }
+                // }
+                // testCaseData(tempPfList);
+              }
+          }}>{testCaseData.is_pass != null ? JSON.stringify(testCaseData.is_pass) : "RESULT HERE"}</TestCaseResult>
         </TestCaseMasterContainer>
       </BgTestCase>
     );
     // return <Bg darkMode={darkMode}>{content}</Bg>;
   } else if (mode === "gradingAndExecution") {
     // console.log(content.input);
-    const score = (pfList.filter((pf) => pf.is_pass).length / pfList.length)*100;
+    const score = (pfListLocal.filter((pf) => pf.is_pass).length / pfListLocal.length)*100;
   
     return (
-      <SubmitResultBg darkMode={darkMode}>
-        <WindowWrapper>
+      <SubmitResultBg style={{
+        backgroundColor:COLOR_SET['EDITOR_EXPLAIN_CONTENT'][settingSelector.backgroundColor],
+        color: COLOR_SET['EDITOR_EXPLAIN_CONTENT_FONT'][settingSelector.backgroundColor]
+      }}>
+        <WindowWrapper style={{
+            backgroundColor:COLOR_SET['EDITOR_EXPLAIN_CONTENT'][settingSelector.backgroundColor],
+            color: COLOR_SET['EDITOR_EXPLAIN_CONTENT_FONT'][settingSelector.backgroundColor]
+          }}>
           <div>{`총점: ${score}점`}</div>
           {
-             pfList.map((pf, index) => {
+             pfListLocal.map((pf, index) => {
               let content = "";
               if(pf.is_hidden) {
                 content = `히든 테스트케이스${index+1}: ${pf.is_pass}`;
@@ -539,14 +606,23 @@ export const EditorBackground = ({
     // SPECIAL CASE: ASSIGNMENT SUBMITTED
 
     return (
-      <SubmitResultBg darkMode={darkMode}>
+      <SubmitResultBg  style={{
+        backgroundColor:COLOR_SET['EDITOR_EXPLAIN_CONTENT'][settingSelector.backgroundColor],
+        color: COLOR_SET['EDITOR_EXPLAIN_CONTENT_FONT'][settingSelector.backgroundColor]
+      }}>
         <ResultVisContainer>
           {/* Separator */}
-          <Separator darkMode={darkMode}>
+          <Separator  style={{
+        backgroundColor:COLOR_SET['EDITOR_EXPLAIN_CONTENT'][settingSelector.backgroundColor],
+        color: COLOR_SET['EDITOR_EXPLAIN_CONTENT_FONT'][settingSelector.backgroundColor]
+      }}>
             {/* TODO */}
             <GradingHighlighter
               active={activeIndexDesc === GRADING}
-              darkMode={darkMode}
+              style={{
+                backgroundColor:COLOR_SET['EDITOR_EXPLAIN'][settingSelector.backgroundColor],
+                color: COLOR_SET['EDITOR_EXPLAIN_FONT'][settingSelector.backgroundColor]
+              }}
             >
               <Button onClick={() => onButtonClickDesc(GRADING)}>
                 제출 성적
@@ -554,7 +630,10 @@ export const EditorBackground = ({
             </GradingHighlighter>
             <DescriptionHighlighter
               active={activeIndexDesc === DESCRIPTION}
-              darkMode={darkMode}
+              style={{
+                backgroundColor:COLOR_SET['EDITOR_EXPLAIN'][settingSelector.backgroundColor],
+                color: COLOR_SET['EDITOR_EXPLAIN_FONT'][settingSelector.backgroundColor]
+              }}
             >
               <Button onClick={() => onButtonClickDesc(DESCRIPTION)}>
                 코드 설명
@@ -562,7 +641,10 @@ export const EditorBackground = ({
             </DescriptionHighlighter>
             <RecommendationHighlighter
               active={activeIndexDesc === RECOMMENDATION}
-              darkMode={darkMode}
+              style={{
+                backgroundColor:COLOR_SET['EDITOR_EXPLAIN'][settingSelector.backgroundColor],
+                color: COLOR_SET['EDITOR_EXPLAIN_FONT'][settingSelector.backgroundColor]
+              }}
             >
               <Button onClick={() => onButtonClickDesc(RECOMMENDATION)}>
                 관련 자료
@@ -600,9 +682,12 @@ export const EditorBackground = ({
         가독성 : #FF9A3C
         효율 : #98D964
         기능 : #52C0E7 */}
-                  <Selector darkMode={darkMode}>
+                  <Selector >
                     <ReadabilityHighlighter
                       active={activeIndexChart === READABILITY}
+                      style={{
+                        backgroundColor:COLOR_SET['EDITOR_EXPLAIN'][settingSelector.backgroundColor],
+                      }}
                     >
                       <Button onClick={() => onButtonClickChart(READABILITY)}>
                         가독성
@@ -610,6 +695,9 @@ export const EditorBackground = ({
                     </ReadabilityHighlighter>
                     <EfficiencyHighlighter
                       active={activeIndexChart === EFFICIENCY}
+                      style={{
+                        backgroundColor:COLOR_SET['EDITOR_EXPLAIN'][settingSelector.backgroundColor],
+                      }}
                     >
                       <Button onClick={() => onButtonClickChart(EFFICIENCY)}>
                         효율
@@ -617,6 +705,9 @@ export const EditorBackground = ({
                     </EfficiencyHighlighter>
                     <FunctionalityHighlighter
                       active={activeIndexChart === FUNCTIONALITY}
+                      style={{
+                        backgroundColor:COLOR_SET['EDITOR_EXPLAIN'][settingSelector.backgroundColor],
+                      }}
                     >
                       <Button onClick={() => onButtonClickChart(FUNCTIONALITY)}>
                         기능
@@ -634,11 +725,15 @@ export const EditorBackground = ({
                 }}
               >
                 {/* TODO: activeIndexDesc state 받아서 표시  */}
-                <ScoreDescriptor darkMode={darkMode}>
-                  {activeIndexChart === READABILITY && (
-                    <DescriptionContainer>
+                <ScoreDescriptor style={{
+                backgroundColor:COLOR_SET['EDITOR_RESULT'][settingSelector.backgroundColor],
+                color: COLOR_SET['EDITOR_EXPLAIN_FONT'][settingSelector.backgroundColor]
+              }}>
+                  {activeIndexChart === READABILITY && content.readability_result && (
+                      <DescriptionContainer>
                       {/* {JSON.stringify(content.readability_result, null, 2)} */}
-                      {Object.keys(content.readability_result)
+                      {
+                      Object.keys(content.readability_result)
                         .filter((k) => k !== "id")
                         .map(function (key) {
                           return (
@@ -646,7 +741,9 @@ export const EditorBackground = ({
                               {key} : {content.readability_result[key]}
                             </div>
                           );
-                        })}
+                        })
+                        
+                      }
                     </DescriptionContainer>
                   )}
                   {activeIndexChart === EFFICIENCY && (
@@ -702,7 +799,10 @@ export const EditorBackground = ({
                 marginRight: "7.5px",
               }}
             >
-              <CodeDescriptor darkMode={darkMode}>
+              <CodeDescriptor  style={{
+        backgroundColor:COLOR_SET['EDITOR_EXPLAIN_CONTENT'][settingSelector.backgroundColor],
+        color: COLOR_SET['EDITOR_EXPLAIN_CONTENT_FONT'][settingSelector.backgroundColor]
+      }}>
                 {content.code_description.split("\n").map((line) => (
                   <div style={{ marginBottom: "11px" }}>{line}</div>
                 ))}
@@ -718,7 +818,10 @@ export const EditorBackground = ({
                 marginRight: "7.5px",
               }}
             >
-              <CodeDescriptor darkMode={darkMode}>
+              <CodeDescriptor  style={{
+        backgroundColor:COLOR_SET['EDITOR_EXPLAIN_CONTENT'][settingSelector.backgroundColor],
+        color: COLOR_SET['EDITOR_EXPLAIN_CONTENT_FONT'][settingSelector.backgroundColor]
+      }}>
                 {Object.keys(content.references)
                   .filter((k) => k !== "id")
                   .map(function (key) {
@@ -740,6 +843,9 @@ export const EditorBackground = ({
     );
   } else {
     // general display
-    return <Bg darkMode={darkMode}>{content}</Bg>;
+    return <Bg  style={{
+      backgroundColor:COLOR_SET['EDITOR_EXPLAIN_CONTENT'][settingSelector.backgroundColor],
+      color: COLOR_SET['EDITOR_EXPLAIN_CONTENT_FONT'][settingSelector.backgroundColor]
+    }}>{content}</Bg>;
   }
 };

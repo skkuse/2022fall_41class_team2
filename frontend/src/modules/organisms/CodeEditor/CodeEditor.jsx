@@ -14,7 +14,7 @@ import Editor, { DiffEditor, useMonaco } from "@monaco-editor/react";
 import { Resizable } from "re-resizable";
 import { useState, useEffect } from "react";
 import { render } from "react-dom";
-import MonacoEditor from "react-monaco-editor";
+// import MonacoEditor from "react-monaco-editor";
 import { apiClient } from "./../../../api/axios";
 import {
   clearRepoAction,
@@ -24,6 +24,9 @@ import { monaco } from "react-monaco-editor";
 import { saveRepoAction } from "./../../../pages/EditorPage/EditorAction";
 import { createRef } from "react";
 import { changeRepoAction } from "./../../../pages/EditorPage/EditorAction";
+import { COLOR_SET } from './../../../service/GetColor';
+import { SETTING_BACKGROUND_WHITE } from './../../../reducers/SettingReducer';
+import { setTestcaseOff } from './../../../pages/EditorPage/EditorAction';
 
 const EvaluationWindowGrid = styled.div`
   display: inline-grid;
@@ -87,7 +90,7 @@ const EditorHeaderWrapper = styled.div`
   height: 41px;
   /* width: ${(props) => (props.editMode.edit ? "100%" : "572px")}; */
 
-  background: ${(props) => (props.darkMode ? "#525263" : "#bfbfbf")};
+  /* background: ${(props) => (props.darkMode ? "#525263" : "#bfbfbf")}; */
 `;
 
 const ActionButtonWrapper = styled.div`
@@ -141,8 +144,10 @@ export const CodeEditor = ({
   setChangeRepo,
 }) => {
   console.log(assignment);
+  
 
   const headerContent = "코드 입력";
+  const testcaseSelector = useSelector((state) => state.testcaseReducer);
 
   const [editMode, setEditMode] = useState({ edit: true, altMode: "none" });
   const editorRef = createRef();
@@ -172,6 +177,8 @@ export const CodeEditor = ({
   };
 
   const submitCode = async () => {
+    // alert("submit!");
+    dispatch(setTestcaseOff());
     setSubmitLoading(true);
     try {
       const result = await apiClient.post("/api/outputs/results/", {
@@ -179,8 +186,17 @@ export const CodeEditor = ({
         language: repoSelector.selectedModel.content.language,
         code: repoSelector.selectedModel.content.code,
       });
-      setSubmitResult(result.data);
-      setSubmitComplete(true);
+      if(submitResultValidate(result.data.data)) {
+        setSubmitResult(result.data);
+        setSubmitComplete(true);  
+        changeMode({ src: "제출" });
+      }
+      else{
+        console.log(result.data.data);
+        alert("solution 함수 아래에서 작성해주세요.");
+        setSubmitComplete(false);
+      }
+      
     } catch (error) {
       alert(error.response.data.data.detail);
       setSubmitComplete(false);
@@ -188,7 +204,12 @@ export const CodeEditor = ({
     setSubmitLoading(false);
   };
 
-  const [pfList, setPfList] = useState(null);
+  const submitResultValidate = (data) => {
+    console.log(data);
+    return data.code_description && data.functionality_result && data.efficiency_result && data.plagiarism_result && data.readability_result;
+  }
+
+  const [pfList, setPfList] = useState(null); 
 
   const executeTestCase = async (testcase_id) => {
     try {
@@ -200,10 +221,13 @@ export const CodeEditor = ({
         }
       );
       return result;
-    } catch (error) {}
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const scoringHandler = async () => {
+    dispatch(setTestcaseOff());
     let tempPfList = [];
     for (const tc of assignment.testcases) {
       if (tc.id) {
@@ -218,7 +242,42 @@ export const CodeEditor = ({
       }
     }
     setPfList(tempPfList);
+    changeMode({ src: "채점" });
+    console.log(tempPfList);
   };
+
+  // useEffect(() => {
+  //   monaco.editor.defineTheme('myTheme', {
+  //     base: 'vs',
+  //     inherit: true,
+  //     rules: [{ background: 'EDF9FA' }],
+  //     colors: {
+  //       'editor.foreground': '#000000',
+  //       'editor.background': '#EDF9FA',
+  //       'editorCursor.foreground': '#8B0000',
+  //       'editor.lineHighlightBackground': '#0000FF20',
+  //       'editorLineNumber.foreground': '#008800',
+  //       'editor.selectionBackground': '#88000030',
+  //       'editor.inactiveSelectionBackground': '#88000015'
+  //     }
+  //   });
+  //   monaco.editor.setTheme('myTheme');
+
+
+  //   monaco.editor.defineTheme('dark', {
+  //     base: 'vs', 
+  //     inherit: true,
+  //     rules: [
+  //       { token: 'custom-info', foreground: 'a3a7a9', background: 'ffffff' },
+  //       { token: 'custom-error', foreground: 'ee4444' },
+  //       { token: 'custom-notice', foreground: '1055af' },
+  //       { token: 'custom-date', foreground: '20aa20' },
+  //     ],
+  //     colors: {
+  //       "editor.background": '#1F1F32'
+  //     }
+  //   })
+  // }, [])
 
   useEffect(() => {
     switch (editMode.altMode) {
@@ -230,7 +289,7 @@ export const CodeEditor = ({
         break;
 
       case "제출":
-        submitCode();
+        // submitCode();
         break;
 
       default:
@@ -250,7 +309,6 @@ export const CodeEditor = ({
     );
     console.log(result.data.data.results);
     if (!result.data.data.results.length) {
-      console.log("삽입" + JSON.stringify(assignment.contents));
       const userSkeleton = findByLanguage(assignment.contents);
       const postResult = await addRepo(userSkeleton.skeleton_code);
       result = await apiClient.get(
@@ -292,11 +350,6 @@ export const CodeEditor = ({
     if (!monaco) return;
   }, [monaco]);
 
-  // useEffect(() => {
-  //   alert("false");
-  //   setChangeRepo(false);
-  // },[repoSelector.selectedModel])
-
   if (
     !(
       repoSelector &&
@@ -321,12 +374,18 @@ export const CodeEditor = ({
         {/* 코드 수정 상황 */}
         {editMode.edit && (
           <>
-            <EditorHeaderWrapper editMode={editMode} darkMode={darkMode}>
+            <EditorHeaderWrapper editMode={editMode} style={{
+              backgroundColor:COLOR_SET['EDITOR_EXPLAIN'][settingSelector.backgroundColor],
+              color: COLOR_SET['EDITOR_EXPLAIN_FONT'][settingSelector.backgroundColor]
+            }}>
               <div style={{display:"flex"}}>
                 <div onClick={() => changeMode({ src: headerContent })}>
                   <EditorHeader content={headerContent} darkMode={darkMode} />
                 </div>
-                <Img src="/images/error.svg" alt="error indicator" />
+                {
+                  testcaseSelector.isOnTestcase && testcaseSelector.isError && <Img src="/images/error.svg" alt="error indicator" />
+                }
+                
               </div>
               <div style={{ marginRight: "27.78px" }}>
                 <ActionButtonWrapper darkMode={darkMode}>
@@ -334,10 +393,9 @@ export const CodeEditor = ({
                     실행
                   </CoreButton>
                   <CoreButton
-                    onClick={async () => {
+                    onClick={() => {
                       // * 테스트케이스 채점
-                      await scoringHandler();
-                      changeMode({ src: "채점" });
+                      scoringHandler();
                     }}
                   >
                     채점
@@ -347,7 +405,7 @@ export const CodeEditor = ({
                   </CoreButton>
                   <CoreButton
                     style={{ color: "#0535DC" }}
-                    onClick={() => changeMode({ src: "제출" })}
+                    onClick={() => submitCode()}
                   >
                     제출
                     {/* {
@@ -388,8 +446,9 @@ export const CodeEditor = ({
                   <Editor
                     // width="1180px"
                     // height="820px"
+                    
                     language={repoSelector.selectedModel.content.language}
-                    theme={darkMode ? "vs-dark" : "light"}
+                    theme={settingSelector.backgroundColor === SETTING_BACKGROUND_WHITE ? 'light': 'vs-dark'}
                     value={repoSelector.selectedModel.content.code}
                     onChange={(e) => {
                       if (
@@ -438,11 +497,15 @@ export const CodeEditor = ({
         {!editMode.edit && (
           <>
             <EvaluationWindowGrid>
-              <EditorHeaderWrapper editMode={editMode} darkMode={darkMode}>
+              <EditorHeaderWrapper editMode={editMode} style={{
+                backgroundColor:COLOR_SET['EDITOR_EXPLAIN'][settingSelector.backgroundColor],
+                color: COLOR_SET['EDITOR_EXPLAIN_FONT'][settingSelector.backgroundColor]
+              }}>
+                
                 <div onClick={() => changeMode({ src: headerContent })}>
                   <EditorHeader content={headerContent} darkMode={darkMode} />
                 </div>
-                <div style={{ marginRight: "27.78px" }}>
+                {/* <div style={{ marginRight: "27.78px" }}>
                   <ActionButtonWrapper>
                     <CoreButton onClick={() => changeMode({ src: "실행" })}>
                       실행
@@ -457,7 +520,7 @@ export const CodeEditor = ({
                       제출
                     </CoreButton>
                   </ActionButtonWrapper>
-                </div>
+                </div> */}
               </EditorHeaderWrapper>
               <div style={{ marginLeft: "12.42px", marginTop: "24.83px" }}>
                 <EditorWrapper>
@@ -469,7 +532,7 @@ export const CodeEditor = ({
                       language={repoSelector.selectedModel.content.language}
                       original={repoSelector.selectedModel.content.code}
                       modified={assignment.contents[0].answer_code}
-                      theme={darkMode ? "vs-dark" : "light"}
+                      theme={settingSelector.backgroundColor === SETTING_BACKGROUND_WHITE ? 'light': 'vs-dark'}
                       options={{
                         renderSideBySide: false,
                         readOnly: true,
@@ -479,8 +542,8 @@ export const CodeEditor = ({
                     <Editor
                       // width="560px"
                       // height="820px"
-                      theme={darkMode ? "vs-dark" : "light"}
-                      value={assignment.contents[0].answer_code}
+                      theme={settingSelector.backgroundColor === SETTING_BACKGROUND_WHITE ? 'light': 'vs-dark'}
+                      value={repoSelector.selectedModel.content.code}
                       language={repoSelector.selectedModel.content.language}
                     />
                   )}
@@ -504,7 +567,7 @@ export const CodeEditor = ({
                   edit={editMode.edit}
                   altMode={editMode.altMode}
                 >
-                  <Grading darkMode={darkMode} pfList={pfList} />
+                  <Grading darkMode={darkMode} pfList={pfList}  />
                 </GradingWrapper>
               )}
               {/* 제출 결과*/}

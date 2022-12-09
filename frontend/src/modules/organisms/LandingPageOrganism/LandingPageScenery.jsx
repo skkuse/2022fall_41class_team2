@@ -1,6 +1,8 @@
 import styled from "styled-components";
 
 import { Img } from "../../atoms";
+import { useSelector } from 'react-redux';
+import { COLOR_SET, ICON_SET } from './../../../service/GetColor';
 
 const SceneryContainer = styled.div`
   display: flex;
@@ -18,7 +20,7 @@ const Title = styled.div`
   line-height: 76px;
   /* identical to box height */
 
-  color: ${(props) => (props.darkMode ? "#D8D8D8" : "#000000")};
+  /* color: ${(props) => (props.darkMode ? "#D8D8D8" : "#000000")}; */
   text-align: center;
 `;
 
@@ -30,31 +32,31 @@ const SubTitle = styled.div`
   line-height: 22px;
   text-align: center;
 
-  color: ${(props) => (props.darkMode ? "#D8D8D8" : "#000000")};
+  /* color: ${(props) => (props.darkMode ? "#D8D8D8" : "#000000")}; */
 `;
 
 export const LandingPageScenery = ({ darkMode, ...restProps }) => {
-  console.log(darkMode);
+  const settingSelector = useSelector((state) => state.SettingReducer);
   return (
     <>
-      <SceneryContainer darkMode={darkMode}>
+      <SceneryContainer style={{backgroundColor: COLOR_SET['MAIN_BACKGROUND'][settingSelector.backgroundColor]}} >
         <div style={{ marginTop: "41px" }}>
-          <Title darkMode={darkMode}>Coding Cat</Title>
+          <Title style={{color: COLOR_SET['MAIN_BANNER_FONT'][settingSelector.backgroundColor] }}>Coding Cat</Title>
         </div>
         <div style={{ marginTop: "15.67px" }}>
-          <SubTitle darkMode={darkMode}>
+          <SubTitle style={{color: COLOR_SET['MAIN_BANNER_FONT'][settingSelector.backgroundColor] }}>
             프로그래밍 문제를 풀고 온라인으로 채점받을 수 있는 곳입니다.
           </SubTitle>
         </div>
         <Img
-          src={darkMode ? "images/line1_black.svg" : "/images/Line_24.svg"}
+          src={ICON_SET['MAIN_BOTTOM'][settingSelector.backgroundColor]}
           className="illustrationOne1"
           alt="scenery1"
           style={{ marginTop: "34.33px" }}
         />
 
         <Img
-          src={darkMode ? "images/line2_black.svg" : "/images/Line_23.svg"}
+          src={ICON_SET['MAIN_LINE'][settingSelector.backgroundColor]}
           className="illustrationOne2"
           alt="scenery2"
           style={{ marginTop: "17px" }}

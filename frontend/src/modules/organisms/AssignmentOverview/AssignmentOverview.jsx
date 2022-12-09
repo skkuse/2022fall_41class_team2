@@ -13,6 +13,7 @@ import { LectureName, AssignmentName, Deadline } from "../../atoms";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams, useLocation, useNavigate } from "react-router-dom";
 import { apiClient } from "./../../../api/axios";
+import { COLOR_SET } from './../../../service/GetColor';
 
 /* Styled components */
 const GeneralContainer = styled.div`
@@ -210,7 +211,7 @@ export const AssignmentOverview = ({ className, darkMode, ...restProps }) => {
     <>
       <Helmet
         bodyAttributes={{
-          style: darkMode ? "background : #000000" : "background : #FFFFFF",
+          style:  `background : ${COLOR_SET['MAIN_BACKGROUND'][settingSelector.backgroundColor]}`
         }}
       />
       <GridAligner>

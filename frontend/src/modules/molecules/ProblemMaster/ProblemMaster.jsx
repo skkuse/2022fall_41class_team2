@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { EditorBackground, EditorHeader } from "../../atoms/";
+import { useSelector } from 'react-redux';
 
 const DescWrapper = styled.div`
   

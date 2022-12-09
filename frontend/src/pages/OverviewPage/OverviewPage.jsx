@@ -12,6 +12,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import { getLectureAction } from "./../MainPage/MainAction";
 import { apiClient } from "./../../api/axios";
+import { COLOR_SET } from './../../service/GetColor';
 
 const GeneralContainer = styled.div`
   height: 100vh;
@@ -48,12 +49,17 @@ export const OverviewPage = (...restProps) => {
   // TODO: settingSelector에 따라서 LandingPageScenery의 배경을 바꿔야 함
   const darkMode = false;
 
+  useEffect(() => {
+    console.log(settingSelector.backgroundColor);
+    console.log(COLOR_SET['MAIN_TOP'][settingSelector.backgroundColor]);
+  }, [settingSelector.backgroundColor])
+
   if (lectureSelector) {
     return (
       <GeneralContainer>
         {/* Banner */}
         <div style={{ position: "sticky" }}>
-          <LandingPageBanner restProps={restProps} darkMode={darkMode} />
+          <LandingPageBanner restProps={restProps} />
         </div>
         {/* List design */}
         <AssignmentOverview darkMode={darkMode} />
