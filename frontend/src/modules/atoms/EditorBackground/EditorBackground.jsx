@@ -4,6 +4,8 @@ import React, { useEffect, useCallback, useState } from "react";
 import { Text } from "../../atoms";
 import { useSelector } from 'react-redux';
 import { COLOR_SET } from './../../../service/GetColor';
+import { setTestcaseError, setTestcaseOn } from './../../../pages/EditorPage/EditorAction';
+import { apiClient } from './../../../api/axios';
 
 const READABILITY = 0;
 const EFFICIENCY = 1;
@@ -438,6 +440,7 @@ export const EditorBackground = ({
   assignmentId,
   id,
   pfList,
+  testCaseValue,
 
   ...restProps
 }) => {
@@ -445,6 +448,17 @@ export const EditorBackground = ({
   // redability result
   let readabilityResult = [];
 
+  const [pfListLocal, setPfListLocal] = useState(pfList);
+  const [testCaseData, setTestCaseData] = useState(testCaseValue);
+
+  useEffect(()=>{
+    console.log("!!!!");
+    console.log(testCaseValue);
+    setTestCaseData(testCaseValue);
+    console.log(testCaseData);
+  },[testCaseValue])
+
+  const repoSelector = useSelector((state) => state.editorReducer);
   // visualizing functionality result
 
   const [functionalityResult, setFunctionalityResult] = useState({});
@@ -500,6 +514,19 @@ export const EditorBackground = ({
   );
   useEffect(() => {}, [activeIndexDesc]);
 
+  const executeTestCase = async (testcase_id) => {
+    try {
+      const result = await apiClient.post(
+        `/api/outputs/testcases/${testcase_id}/`,
+        {
+          language: repoSelector.selectedModel.content.language,
+          code: repoSelector.selectedModel.content.code,
+        }
+      );
+      return result;
+    } catch (error) {}
+  };
+
   if (mode === "testcase") {
     // console.log(content.input);
     return (
@@ -513,14 +540,40 @@ export const EditorBackground = ({
             <TestCaseOutput>Output: {content.output}</TestCaseOutput>
           </TestCaseIOContainer>
 
-          <TestCaseResult>{pfList.is_pass != null ? JSON.stringify(pfList.is_pass) : "RESULT HERE"}</TestCaseResult>
+          <TestCaseResult onClick={async()=>{
+              console.log("??");
+              console.log(id);
+              console.log(pfListLocal);
+              console.log(testCaseData);
+
+              if(pfListLocal.is_pass == null && testCaseData.id) {
+                setTestcaseOn();
+                const result = await executeTestCase(testCaseData.id);
+                setTestCaseData({
+                  ...result.data.data,
+                  id: testCaseData.id
+                })
+                // console.log(result);
+                // let tempPfList = [...pfListLocal];
+                // for (const key in tempPfList) {
+                //   if(tempPfList[key].id == content.id) {
+                //     tempPfList[key] = {
+                //       ...result.data.data,
+                //       id: content.id
+                //     }
+                //   }
+                // }
+                // setPfListLocal(tempPfList);
+                setTestcaseError(pfListLocal.is_error);
+              }
+          }}>{testCaseData.is_pass != null ? JSON.stringify(testCaseData.is_pass) : "RESULT HERE"}</TestCaseResult>
         </TestCaseMasterContainer>
       </BgTestCase>
     );
     // return <Bg darkMode={darkMode}>{content}</Bg>;
   } else if (mode === "gradingAndExecution") {
     // console.log(content.input);
-    const score = (pfList.filter((pf) => pf.is_pass).length / pfList.length)*100;
+    const score = (pfListLocal.filter((pf) => pf.is_pass).length / pfListLocal.length)*100;
   
     return (
       <SubmitResultBg style={{
@@ -533,7 +586,7 @@ export const EditorBackground = ({
           }}>
           <div>{`총점: ${score}점`}</div>
           {
-             pfList.map((pf, index) => {
+             pfListLocal.map((pf, index) => {
               let content = "";
               if(pf.is_hidden) {
                 content = `히든 테스트케이스${index+1}: ${pf.is_pass}`;

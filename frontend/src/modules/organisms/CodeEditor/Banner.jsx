@@ -38,6 +38,8 @@ import audioIcon from "../../../assets/images/image 32.png";
 import prevIcon from "../../../assets/images/image 31.png";
 import nextIcon from "../../../assets/images/image 30.png";
 import pauseIcon from "../../../assets/images/image 29.png";
+import musicIcon from "../../../assets/images/music.svg";
+import playIcon from "../../../assets/images/play.svg";
 import { COLOR_SET } from './../../../service/GetColor';
 import { SettingsButtonBlack } from "../../molecules/SettingsButton";
 
@@ -115,15 +117,55 @@ export const Banner = ({
   const [audio] = useState(SampleAudioList);
   const [audioIndex, setAudioIndex] = useState(0);
   const settingSelector = useSelector((state) => state.SettingReducer);
+  const [musicOptionOn, setMusicOptionOn] = useState(false);
 
   const [playing, setPlaying] = useState(false);
 
   const toggle = () => setPlaying(!playing);
 
+  // useEffect(()=>{
+  //   for (const key in audio) {
+  //     console.log("add");
+  //     audio[key].audio.addEventListener('onended',()=>{
+  //       console.log("ended!");
+  //       nextSong();
+  //     });
+  //   }
+  // }, []);
+
+  useEffect(()=>{
+    for (const key in audio) {
+      console.log("added");
+      audio[key].audio.addEventListener('onended',()=>{
+        console.log("ended!");
+        nextSong();
+      });
+      audio[key].audio.onended = () => {
+        console.log("ended!");
+        nextSong();
+      }
+      console.log(audio[key].audio.onended);
+    }
+
+    return ()=>{
+      for (const key in audio) {
+        audio[key].audio.currentTime = 0;
+        audio[key].audio.pause();
+      }
+    } 
+  }, [])
+
+  useEffect(()=>{
+    if(musicOptionOn) {
+      setPlaying(true);
+    }
+  },[musicOptionOn])
+
   useEffect(() => {
     if (playing) {
       for (const key in audio) {
         if (key != audioIndex) {
+          audio[key].audio.currentTime = 0;
           audio[key].audio.pause();
         } else {
           audio[key].audio.play();
@@ -131,9 +173,11 @@ export const Banner = ({
       }
     } else {
       for (const key in audio) {
+        audio[key].audio.currentTime = 0;
         audio[key].audio.pause();
       }
     }
+    
     // playing ? audio[audioIndex].audio.play() : audio[audioIndex].audio.pause();
   }, [playing]);
 
@@ -160,6 +204,36 @@ export const Banner = ({
       repoSelector.selectedModel.content.language.toLowerCase();
     return contents.find((content) => content.language == userLanguage);
   };
+
+  
+  const prevSong = ()=>{
+    setPlaying(false);
+    let newIndex = 0;
+    if (audioIndex > 1) {
+      newIndex = audioIndex - 1;
+    } else {
+      newIndex = SampleAudioList.length - 1;
+    }
+    setAudioIndex(newIndex);
+    setTimeout(() => {
+      setPlaying(true);
+    }, 100);
+  }
+
+  const nextSong = ()=>{
+    console.log("next song!");
+    setPlaying(false);
+    let newIndex = 0;
+    if (audioIndex >= SampleAudioList.length - 1) {
+      newIndex = 0;
+    } else {
+      newIndex = audioIndex + 1;
+    }
+    setAudioIndex(newIndex);
+    setTimeout(() => {
+      setPlaying(true);
+    }, 100);
+  }
 
   /* saveState는 임시 저장 세 번까지를 구현하려고 넣어보았습니다 @bw-99 어떻게 구현하는지에 따라서 달라질 것 같습니다. */
   if (!repoSelector) {
@@ -203,95 +277,120 @@ export const Banner = ({
       <div style={{ margin: "auto" }}>
         <StringWrapper>{assignmentName}</StringWrapper>
       </div>
-
-      <div
-        style={{
-          width: "200px",
-          height: "40px",
-          background:
-            "linear-gradient(90deg, #3A3989 0%, rgba(58, 57, 137, 0) 100%)",
-          border: "1px solid #FFFFFF",
-          borderRadius: "1000px",
-          display: "flex",
-          alignItems: "center",
-          marginRight: "17px",
-        }}
-      >
-        <div style={{ marginLeft: "10px", marginTop: "3px" }}>
-          <img
-            src={audioIcon}
-            style={{ width: "25px", height: "25px", objectFit: "cover" }}
-          />
-        </div>
-
+      {
+        musicOptionOn?
         <div
           style={{
+            width: "200px",
+            height: "40px",
+            background:
+              "linear-gradient(90deg, #3A3989 0%, rgba(58, 57, 137, 0) 100%)",
+            border: "1px solid #FFFFFF",
+            borderRadius: "1000px",
             display: "flex",
-            flexDirection: "column",
-            justifyContent: "space-between",
             alignItems: "center",
-            marginLeft: "12px",
+            marginRight: "17px",
           }}
         >
+          <div style={{ marginLeft: "10px", marginTop: "3px" }}>
+            <img
+              src={audioIcon}
+              style={{ width: "25px", height: "25px", objectFit: "cover" }}
+              onClick={()=>{
+                setMusicOptionOn(false);
+              }}
+            />
+          </div>
+
           <div
             style={{
-              fontFamily: "Gmarket Sans TTF",
-              fontStyle: "normal",
-              fontWeight: "500",
-              fontSize: "9px",
-              color: "#000000",
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-              whiteSpace: "nowrap",
-              width: "70px",
+              display: "flex",
+              flexDirection: "column",
+              justifyContent:"flex-start",
+              alignItems: "center",
+              marginLeft: "12px",
             }}
           >
-            {SampleAudioList[audioIndex].title}
+            <div
+              style={{
+                fontFamily: "Gmarket Sans TTF",
+                fontStyle: "normal",
+                fontWeight: "500",
+                fontSize: "12px",
+                color: "#FFFFFF",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                whiteSpace: "nowrap",
+                width: "70px",
+                textAlign: "center"
+              }}
+            >
+              {SampleAudioList[audioIndex].title}
+            </div>
+
+            <div
+              style={{
+                marginTop:"2px",
+                fontFamily: "Gmarket Sans TTF",
+                fontStyle: "normal",
+                fontWeight: "500",
+                fontSize: "10px",
+                color: "#FFFFFF",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                whiteSpace: "nowrap",
+                width: "70px",
+                textAlign: "center"
+              }}
+            >
+              {SampleAudioList[audioIndex].author}
+            </div>
+          </div>
+
+          
+
+          <div style={{ display: "flex", margin: "0 13px" }}>
+            <img
+              src={prevIcon}
+              style={{ width: "13px", height: "14px" }}
+              onClick={() => {
+                prevSong();
+              }}
+            />
+            <img
+              src={playing? pauseIcon: playIcon}
+              style={{ width: "13px", height: "14px", margin: "0 10px" }}
+              onClick={toggle}
+            />
+            <img
+              src={nextIcon}
+              style={{ width: "13px", height: "14px" }}
+              onClick={() => {
+                nextSong();
+              }}
+            />
           </div>
         </div>
-
-        <div style={{ display: "flex", margin: "0 13px" }}>
-          <img
-            src={prevIcon}
-            style={{ width: "13px", height: "14px" }}
-            onClick={() => {
-              setPlaying(false);
-              let newIndex = 0;
-              if (audioIndex > 1) {
-                newIndex = audioIndex - 1;
-              } else {
-                newIndex = SampleAudioList.length - 1;
-              }
-              setAudioIndex(newIndex);
-              setTimeout(() => {
-                setPlaying(true);
-              }, 100);
-            }}
-          />
-          <img
-            src={pauseIcon}
-            style={{ width: "13px", height: "14px", margin: "0 10px" }}
-            onClick={toggle}
-          />
-          <img
-            src={nextIcon}
-            style={{ width: "13px", height: "14px" }}
-            onClick={() => {
-              setPlaying(false);
-              let newIndex = 0;
-              if (audioIndex >= SampleAudioList.length - 1) {
-                newIndex = 0;
-              } else {
-                newIndex = audioIndex + 1;
-              }
-              setAudioIndex(newIndex);
-              setTimeout(() => {
-                setPlaying(true);
-              }, 100);
-            }}
-          />
+      :
+        <div 
+        onClick={()=>{
+          setMusicOptionOn(true);
+        }}
+        style={{
+          width: "200px",
+          marginRight: "17px",
+          // marginRight: "80px",
+        }}>
+          <img src={musicIcon} style={{
+              width: '34px',
+              height: '34px'
+            }} />
         </div>
-      </div>
+      }
+
+      
+
+      
 
       {/* Functools */}
       {/* duplicate */}

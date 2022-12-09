@@ -133,7 +133,6 @@ function TestcaseMaster({ bodyContent, testCases, darkMode, ...restProps }) {
       {/* {
         JSON.stringify(testCases)
       }  */}
-
         <TestCaseContainer  style={{
         backgroundColor:COLOR_SET['EDITOR_EXPLAIN_CONTENT'][settingSelector.backgroundColor],
         color: COLOR_SET['EDITOR_EXPLAIN_CONTENT_FONT'][settingSelector.backgroundColor]
@@ -153,7 +152,8 @@ function TestcaseMaster({ bodyContent, testCases, darkMode, ...restProps }) {
                   assignmentId={restProps.assignmentId}
                   darkMode={darkMode}
                   id={testcase.id}
-                  pfList={pfList? pfList.find((pf) => pf.id === testcase.id): {}}
+                  // testCaseValue={testcase}
+                  testCaseValue={pfList? pfList.find((pf) => pf.id == testcase.id): testcase}
                 />
             );
           })}

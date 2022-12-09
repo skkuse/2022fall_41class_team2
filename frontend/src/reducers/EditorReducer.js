@@ -1,5 +1,5 @@
-import { CHANGE_REPO, CLEAR_SELECTED_REPO, READY_CHANGE_SELECTED_REPO, SAVE_REPO, SAVE_REPO_LIST, UPDATE_REPO } from "../pages/EditorPage/EditorAction";
-import { GET_REPO, CREATE_REPO, CLEAR_REPO, READY_CREATE_SELECTED_REPO } from './../pages/EditorPage/EditorAction';
+import { CHANGE_REPO, CLEAR_SELECTED_REPO, READY_CHANGE_SELECTED_REPO, SAVE_REPO, SAVE_REPO_LIST, TESTCASE_OFF, UPDATE_REPO } from "../pages/EditorPage/EditorAction";
+import { GET_REPO, CREATE_REPO, CLEAR_REPO, READY_CREATE_SELECTED_REPO, TESTCASE_ON, TESTCASE_ERROR } from './../pages/EditorPage/EditorAction';
 
 let editorInitState = {
     repoList: [],
@@ -133,5 +133,38 @@ export function editorReducer(state = editorInitState, action) {
         return {
             ...state,
         };
+    }
+}
+
+let testcaseInitState = {
+    isOnTestcase: false,
+    errorContent: "",
+    isError: false
+};
+
+export function testcaseReducer(state = testcaseInitState, action) {
+    switch (action.type) {
+        case TESTCASE_ON:
+            return {
+                ...state,
+                isOnTestcase: true
+            };
+
+        case TESTCASE_OFF:
+            return {
+                ...state,
+                isOnTestcase: false
+            };
+
+        case TESTCASE_ERROR:
+            return {
+                ...state,
+                isError: action.is_error
+            };
+
+        default:
+            return {
+                ...state,
+            };
     }
 }

@@ -3,13 +3,14 @@ import { BottomNavigationBarReducer } from "./BottomNavigationBarReducer";
 import {LoginReducer} from "./LoginReducer";
 import {SettingReducer} from "./SettingReducer";
 import {LectureReducer} from "./LectureReducer";
-import { editorReducer } from './EditorReducer';
+import { editorReducer, testcaseReducer } from './EditorReducer';
 
 const rootReducer = combineReducers({
   LoginReducer,
   SettingReducer,
   LectureReducer,
-  editorReducer
+  editorReducer,
+  testcaseReducer
 });
 
 export default rootReducer;

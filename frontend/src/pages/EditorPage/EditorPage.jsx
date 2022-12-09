@@ -79,6 +79,9 @@ export const EditorPage = () => {
   }, [monaco]);
 
   useEffect(() => {
+    if(!location.state) {
+      return;
+    }
     setLecture(location.state.lecture);
     apiClient.get(`/api/assignments/${params.assignment_id}/`).then((value) => {
       setAss(value.data.data);

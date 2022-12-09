@@ -75,3 +75,28 @@ export const getRepoAction = (index) => {
         payload: index
     }
 }
+
+
+
+export const TESTCASE_ON = "TESTCASE_ON";
+export const TESTCASE_OFF = "TESTCASE_OFF";
+export const TESTCASE_ERROR = "TESTCASE_ERROR";
+
+export const setTestcaseOn = () =>{
+    return {
+        type: TESTCASE_ON
+    }
+}
+
+export const setTestcaseOff = () =>{
+    return {
+        type: TESTCASE_OFF
+    }
+}
+
+export const setTestcaseError = (is_error) =>{
+    return {
+        type: TESTCASE_ERROR,
+        is_error: is_error
+    }
+}
