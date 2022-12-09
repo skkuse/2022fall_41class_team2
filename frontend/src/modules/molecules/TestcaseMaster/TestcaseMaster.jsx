@@ -1,9 +1,10 @@
 import styled from "styled-components";
 import { EditorBackground, EditorHeader } from "../../atoms/";
 import { apiClient } from "./../../../api/axios";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useState } from "react";
 import { COLOR_SET } from './../../../service/GetColor';
+import { setTestcaseOff } from './../../../pages/EditorPage/EditorAction';
 
 const DescWrapper = styled.div`
   display: flex;
@@ -70,7 +71,7 @@ function TestcaseMaster({ bodyContent, testCases, darkMode, ...restProps }) {
   const headerContent = "테스트 케이스";
   const repoSelector = useSelector((state) => state.editorReducer);
   const settingSelector = useSelector((state) => state.SettingReducer);
-
+  const dispatch = useDispatch();
   const [pfList, setPfList] = useState(null);
 
   const executeTestCase = async (testcase_id) => {
@@ -107,6 +108,7 @@ function TestcaseMaster({ bodyContent, testCases, darkMode, ...restProps }) {
               color: COLOR_SET['EDITOR_TEST_BUTTON_FONT'][settingSelector.backgroundColor]
             }}
               onClick={async () => {
+                dispatch(setTestcaseOff());
                 let tempPfList = [];
                 for (const tc of testCases) {
                   if(tc.id && !tc.is_hidden) {

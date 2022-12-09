@@ -26,6 +26,7 @@ import { createRef } from "react";
 import { changeRepoAction } from "./../../../pages/EditorPage/EditorAction";
 import { COLOR_SET } from './../../../service/GetColor';
 import { SETTING_BACKGROUND_WHITE } from './../../../reducers/SettingReducer';
+import { setTestcaseOff } from './../../../pages/EditorPage/EditorAction';
 
 const EvaluationWindowGrid = styled.div`
   display: inline-grid;
@@ -146,6 +147,7 @@ export const CodeEditor = ({
   
 
   const headerContent = "코드 입력";
+  const testcaseSelector = useSelector((state) => state.testcaseReducer);
 
   const [editMode, setEditMode] = useState({ edit: true, altMode: "none" });
   const editorRef = createRef();
@@ -176,6 +178,7 @@ export const CodeEditor = ({
 
   const submitCode = async () => {
     // alert("submit!");
+    dispatch(setTestcaseOff());
     setSubmitLoading(true);
     try {
       const result = await apiClient.post("/api/outputs/results/", {
@@ -224,6 +227,7 @@ export const CodeEditor = ({
   };
 
   const scoringHandler = async () => {
+    dispatch(setTestcaseOff());
     let tempPfList = [];
     for (const tc of assignment.testcases) {
       if (tc.id) {
@@ -378,7 +382,10 @@ export const CodeEditor = ({
                 <div onClick={() => changeMode({ src: headerContent })}>
                   <EditorHeader content={headerContent} darkMode={darkMode} />
                 </div>
-                <Img src="/images/error.svg" alt="error indicator" />
+                {
+                  testcaseSelector.isOnTestcase && testcaseSelector.isError && <Img src="/images/error.svg" alt="error indicator" />
+                }
+                
               </div>
               <div style={{ marginRight: "27.78px" }}>
                 <ActionButtonWrapper darkMode={darkMode}>

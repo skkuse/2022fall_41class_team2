@@ -2,7 +2,7 @@ import styled from "styled-components";
 import { ResultVis } from "../../atoms";
 import React, { useEffect, useCallback, useState } from "react";
 import { Text } from "../../atoms";
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { COLOR_SET } from './../../../service/GetColor';
 import { setTestcaseError, setTestcaseOn } from './../../../pages/EditorPage/EditorAction';
 import { apiClient } from './../../../api/axios';
@@ -444,6 +444,7 @@ export const EditorBackground = ({
 
   ...restProps
 }) => {
+  const dispatch = useDispatch();
   const settingSelector = useSelector((state) => state.SettingReducer);
   // redability result
   let readabilityResult = [];
@@ -454,7 +455,7 @@ export const EditorBackground = ({
   useEffect(()=>{
     console.log("!!!!");
     console.log(testCaseValue);
-    setTestCaseData(testCaseValue);
+    setTestCaseData(testCaseValue)
     console.log(testCaseData);
   },[testCaseValue])
 
@@ -546,15 +547,17 @@ export const EditorBackground = ({
               console.log(pfListLocal);
               console.log(testCaseData);
 
-              if(pfListLocal.is_pass == null && testCaseData.id) {
-                setTestcaseOn();
+              if(testCaseData.is_pass == null && testCaseData.id) {
+                dispatch(setTestcaseOn());
                 const result = await executeTestCase(testCaseData.id);
+                dispatch(setTestcaseError(result.data.data.is_error));
                 setTestCaseData({
                   ...result.data.data,
                   id: testCaseData.id
-                })
+                });
+                console.log(result.data.data);
                 // console.log(result);
-                // let tempPfList = [...pfListLocal];
+                // let tempPfList = [...testCaseData];
                 // for (const key in tempPfList) {
                 //   if(tempPfList[key].id == content.id) {
                 //     tempPfList[key] = {
@@ -563,8 +566,7 @@ export const EditorBackground = ({
                 //     }
                 //   }
                 // }
-                // setPfListLocal(tempPfList);
-                setTestcaseError(pfListLocal.is_error);
+                // testCaseData(tempPfList);
               }
           }}>{testCaseData.is_pass != null ? JSON.stringify(testCaseData.is_pass) : "RESULT HERE"}</TestCaseResult>
         </TestCaseMasterContainer>

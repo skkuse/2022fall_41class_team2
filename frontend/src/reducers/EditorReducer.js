@@ -152,11 +152,13 @@ export function testcaseReducer(state = testcaseInitState, action) {
 
         case TESTCASE_OFF:
             return {
-                ...state,
-                isOnTestcase: false
+                isOnTestcase: false,
+                errorContent: "",
+                isError: false
             };
 
         case TESTCASE_ERROR:
+            console.log(action);
             return {
                 ...state,
                 isError: action.is_error
