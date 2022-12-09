@@ -488,7 +488,11 @@ export const CodeEditor = ({
         {!editMode.edit && (
           <>
             <EvaluationWindowGrid>
-              <EditorHeaderWrapper editMode={editMode} darkMode={darkMode}>
+              <EditorHeaderWrapper editMode={editMode} style={{
+                backgroundColor:COLOR_SET['EDITOR_EXPLAIN'][settingSelector.backgroundColor],
+                color: COLOR_SET['EDITOR_EXPLAIN_FONT'][settingSelector.backgroundColor]
+              }}>
+                
                 <div onClick={() => changeMode({ src: headerContent })}>
                   <EditorHeader content={headerContent} darkMode={darkMode} />
                 </div>
@@ -519,7 +523,7 @@ export const CodeEditor = ({
                       language={repoSelector.selectedModel.content.language}
                       original={repoSelector.selectedModel.content.code}
                       modified={assignment.contents[0].answer_code}
-                      theme={darkMode ? "vs-dark" : "light"}
+                      theme={settingSelector.backgroundColor === SETTING_BACKGROUND_WHITE ? 'light': 'vs-dark'}
                       options={{
                         renderSideBySide: false,
                         readOnly: true,
@@ -529,7 +533,7 @@ export const CodeEditor = ({
                     <Editor
                       // width="560px"
                       // height="820px"
-                      theme={darkMode ? "vs-dark" : "light"}
+                      theme={settingSelector.backgroundColor === SETTING_BACKGROUND_WHITE ? 'light': 'vs-dark'}
                       value={repoSelector.selectedModel.content.code}
                       language={repoSelector.selectedModel.content.language}
                     />
@@ -554,7 +558,7 @@ export const CodeEditor = ({
                   edit={editMode.edit}
                   altMode={editMode.altMode}
                 >
-                  <Grading darkMode={darkMode} pfList={pfList} />
+                  <Grading darkMode={darkMode} pfList={pfList}  />
                 </GradingWrapper>
               )}
               {/* 제출 결과*/}

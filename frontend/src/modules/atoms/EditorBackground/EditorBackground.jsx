@@ -527,7 +527,10 @@ export const EditorBackground = ({
         backgroundColor:COLOR_SET['EDITOR_EXPLAIN_CONTENT'][settingSelector.backgroundColor],
         color: COLOR_SET['EDITOR_EXPLAIN_CONTENT_FONT'][settingSelector.backgroundColor]
       }}>
-        <WindowWrapper>
+        <WindowWrapper style={{
+            backgroundColor:COLOR_SET['EDITOR_EXPLAIN_CONTENT'][settingSelector.backgroundColor],
+            color: COLOR_SET['EDITOR_EXPLAIN_CONTENT_FONT'][settingSelector.backgroundColor]
+          }}>
           <div>{`총점: ${score}점`}</div>
           {
              pfList.map((pf, index) => {
