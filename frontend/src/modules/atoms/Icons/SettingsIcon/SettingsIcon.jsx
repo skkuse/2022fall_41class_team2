@@ -4,6 +4,8 @@
 
 import { Img } from "../..";
 import styled from "styled-components";
+import { useSelector } from 'react-redux';
+import { ICON_SET } from "../../../../service/GetColor";
 
 const Wrapper = styled.div`
   // ! position 삭제
@@ -12,14 +14,14 @@ const Wrapper = styled.div`
 `;
 
 export const SettingsIcon = ({ inverted, darkMode, ...restProps }) => {
+  const settingSelector = useSelector((state) => state.SettingReducer);
+  
   return (
     <div>
       <Wrapper>
         <Img
           src={
-            inverted || darkMode
-              ? "/images/settings_inverted.svg"
-              : "/images/img_settings.svg"
+            ICON_SET['MAIN_SETTING'][settingSelector.backgroundColor]
           }
           alt="settings"
         />

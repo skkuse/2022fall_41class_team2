@@ -16,6 +16,9 @@ import { AuthContext } from "../../../App";
 import { getItemWithExpireTime } from "../../../service/localStorage";
 import { apiClient } from "./../../../api/axios";
 import { UserDisplay } from "./../../molecules/UserDisplay/UserDisplay";
+import { useSelector } from 'react-redux';
+import { Helmet } from 'react-helmet';
+import { COLOR_SET } from './../../../service/GetColor';
 
 const BannerContainer = styled.div`
   display: flex;
@@ -25,11 +28,12 @@ const BannerContainer = styled.div`
   width: 100%;
   height: 90px;
 
-  background: ${(props) => (props.darkMode ? "#1F1F32" : "#FFFFFF")};
+  /* background: ${(props) => (props.darkMode ? "#1F1F32" : "#FFFFFF")}; */
 
   box-shadow: 0px 11px 7px rgba(0, 0, 0, 0.05);
 
   position: relative;
+  /* top: 0; */
   z-index: 10;
 `;
 
@@ -52,8 +56,9 @@ const LowerContainer = styled.div`
   justify-content: space-around;
 `;
 
-export const LandingPageBanner = ({ darkMode }) => {
+export const LandingPageBanner = ({  }) => {
   // * 유저 정보 가져오기
+  const settingSelector = useSelector((state) => state.SettingReducer);
   const [userData, setUserData] = useState(null);
 
   useEffect(() => {
@@ -67,16 +72,26 @@ export const LandingPageBanner = ({ darkMode }) => {
   }, []);
 
   return (
-    <BannerContainer darkMode={darkMode}>
+    <>
+    {/* <Helmet
+        // bodyAttributes={{
+        //   style: darkMode ? "background : #000000" : "background : #ffffff",
+        // }}
+        bodyAttributes={{
+          style: `background : ${COLOR_SET['MAIN_TOP'][settingSelector.backgroundColor]}` ,
+        }}
+      /> */}
+
+    <BannerContainer style={{backgroundColor: COLOR_SET['MAIN_TOP'][settingSelector.backgroundColor]}}>
       <TopContainer style={{ marginTop: "10px" }}>
         {/* Settings icon */}
         <div style={{ marginLeft: "20px" }}>
-          <SettingsButton darkMode={darkMode} />
+          <SettingsButton />
         </div>
         {/* login and register button */}
         <div style={{ marginRight: "120px" }}>
           {userData ? (
-            <UserDisplay userData={userData} darkMode={darkMode} />
+            <UserDisplay userData={userData}  />
           ) : (
             !getItemWithExpireTime("user") && <LoginAndRegisterButton />
           )}
@@ -84,28 +99,30 @@ export const LandingPageBanner = ({ darkMode }) => {
       </TopContainer>
       <LowerContainer style={{ marginTop: "10px", marginBottom: "20px" }}>
         <div style={{ marginLeft: "120px" }}>
-          <LandingPageBannerButton darkMode={darkMode}>
+          <LandingPageBannerButton >
             문제
           </LandingPageBannerButton>
         </div>
-        <LandingPageBannerButton darkMode={darkMode}>
+        <LandingPageBannerButton >
           강의
         </LandingPageBannerButton>
-        <LandingPageBannerButton darkMode={darkMode}>
+        <LandingPageBannerButton >
           공지사항
         </LandingPageBannerButton>
-        <LandingPageBannerButton darkMode={darkMode}>
+        <LandingPageBannerButton >
           도움말
         </LandingPageBannerButton>
-        <LandingPageBannerButton darkMode={darkMode}>
+        <LandingPageBannerButton >
           게시판
         </LandingPageBannerButton>
         <div style={{ marginRight: "120px" }}>
-          <LandingPageBannerButton darkMode={darkMode}>
+          <LandingPageBannerButton >
             그룹
           </LandingPageBannerButton>
         </div>
       </LowerContainer>
     </BannerContainer>
+    </>
+    
   );
 };

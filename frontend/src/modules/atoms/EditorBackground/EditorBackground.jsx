@@ -635,10 +635,11 @@ export const EditorBackground = ({
               >
                 {/* TODO: activeIndexDesc state 받아서 표시  */}
                 <ScoreDescriptor darkMode={darkMode}>
-                  {activeIndexChart === READABILITY && (
-                    <DescriptionContainer>
+                  {activeIndexChart === READABILITY && content.readability_result && (
+                      <DescriptionContainer>
                       {/* {JSON.stringify(content.readability_result, null, 2)} */}
-                      {Object.keys(content.readability_result)
+                      {
+                      Object.keys(content.readability_result)
                         .filter((k) => k !== "id")
                         .map(function (key) {
                           return (
@@ -646,7 +647,9 @@ export const EditorBackground = ({
                               {key} : {content.readability_result[key]}
                             </div>
                           );
-                        })}
+                        })
+                        
+                      }
                     </DescriptionContainer>
                   )}
                   {activeIndexChart === EFFICIENCY && (

@@ -179,8 +179,16 @@ export const CodeEditor = ({
         language: repoSelector.selectedModel.content.language,
         code: repoSelector.selectedModel.content.code,
       });
-      setSubmitResult(result.data);
-      setSubmitComplete(true);
+      if(submitResultValidate(result.data)) {
+        setSubmitResult(result.data);
+        setSubmitComplete(true);  
+        changeMode({ src: "제출" });
+      }
+      else{
+        alert("solution 함수 아래에서 작성해주세요.");
+        setSubmitComplete(false);
+      }
+      
     } catch (error) {
       alert(error.response.data.data.detail);
       setSubmitComplete(false);
@@ -188,7 +196,12 @@ export const CodeEditor = ({
     setSubmitLoading(false);
   };
 
-  const [pfList, setPfList] = useState(null);
+  const submitResultValidate = (data) => {
+    console.log(data);
+    return data.code_description && data.functionality_result && data.efficiency_result && data.plagiarism_result && data.readability_result;
+  }
+
+  const [pfList, setPfList] = useState(null); 
 
   const executeTestCase = async (testcase_id) => {
     try {
@@ -200,7 +213,9 @@ export const CodeEditor = ({
         }
       );
       return result;
-    } catch (error) {}
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const scoringHandler = async () => {
@@ -218,6 +233,8 @@ export const CodeEditor = ({
       }
     }
     setPfList(tempPfList);
+    changeMode({ src: "채점" });
+    console.log(tempPfList);
   };
 
   useEffect(() => {
@@ -250,7 +267,6 @@ export const CodeEditor = ({
     );
     console.log(result.data.data.results);
     if (!result.data.data.results.length) {
-      console.log("삽입" + JSON.stringify(assignment.contents));
       const userSkeleton = findByLanguage(assignment.contents);
       const postResult = await addRepo(userSkeleton.skeleton_code);
       result = await apiClient.get(
@@ -292,11 +308,6 @@ export const CodeEditor = ({
     if (!monaco) return;
   }, [monaco]);
 
-  // useEffect(() => {
-  //   alert("false");
-  //   setChangeRepo(false);
-  // },[repoSelector.selectedModel])
-
   if (
     !(
       repoSelector &&
@@ -334,10 +345,9 @@ export const CodeEditor = ({
                     실행
                   </CoreButton>
                   <CoreButton
-                    onClick={async () => {
+                    onClick={() => {
                       // * 테스트케이스 채점
-                      await scoringHandler();
-                      changeMode({ src: "채점" });
+                      scoringHandler();
                     }}
                   >
                     채점
@@ -347,7 +357,7 @@ export const CodeEditor = ({
                   </CoreButton>
                   <CoreButton
                     style={{ color: "#0535DC" }}
-                    onClick={() => changeMode({ src: "제출" })}
+                    onClick={() => submitCode()}
                   >
                     제출
                     {/* {
@@ -442,7 +452,7 @@ export const CodeEditor = ({
                 <div onClick={() => changeMode({ src: headerContent })}>
                   <EditorHeader content={headerContent} darkMode={darkMode} />
                 </div>
-                <div style={{ marginRight: "27.78px" }}>
+                {/* <div style={{ marginRight: "27.78px" }}>
                   <ActionButtonWrapper>
                     <CoreButton onClick={() => changeMode({ src: "실행" })}>
                       실행
@@ -457,7 +467,7 @@ export const CodeEditor = ({
                       제출
                     </CoreButton>
                   </ActionButtonWrapper>
-                </div>
+                </div> */}
               </EditorHeaderWrapper>
               <div style={{ marginLeft: "12.42px", marginTop: "24.83px" }}>
                 <EditorWrapper>
@@ -480,7 +490,7 @@ export const CodeEditor = ({
                       // width="560px"
                       // height="820px"
                       theme={darkMode ? "vs-dark" : "light"}
-                      value={assignment.contents[0].answer_code}
+                      value={repoSelector.selectedModel.content.code}
                       language={repoSelector.selectedModel.content.language}
                     />
                   )}
