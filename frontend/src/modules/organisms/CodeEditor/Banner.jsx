@@ -38,6 +38,8 @@ import audioIcon from "../../../assets/images/image 32.png";
 import prevIcon from "../../../assets/images/image 31.png";
 import nextIcon from "../../../assets/images/image 30.png";
 import pauseIcon from "../../../assets/images/image 29.png";
+import { COLOR_SET } from './../../../service/GetColor';
+import { SettingsButtonBlack } from "../../molecules/SettingsButton";
 
 const SampleAudioList = [
   {
@@ -112,6 +114,7 @@ export const Banner = ({
 }) => {
   const [audio] = useState(SampleAudioList);
   const [audioIndex, setAudioIndex] = useState(0);
+  const settingSelector = useSelector((state) => state.SettingReducer);
 
   const [playing, setPlaying] = useState(false);
 
@@ -164,7 +167,7 @@ export const Banner = ({
   }
 
   return (
-    <Bg darkMode={darkMode}>
+    <Bg style={{backgroundColor: `${COLOR_SET['EDITOR_BANNER'][settingSelector.backgroundColor]}`}}>
       {/* {
         JSON.stringify(`${repoSelector}`)
       } */}
@@ -175,7 +178,7 @@ export const Banner = ({
       <ExitButton />
       {/* Settings */}
       <div style={{ marginLeft: "15px" }}>
-        <SettingsButton inverted={true} />
+        <SettingsButtonBlack />
       </div>
       {/* Lecture Name */}
       <div style={{ marginLeft: "83.48px" }}>

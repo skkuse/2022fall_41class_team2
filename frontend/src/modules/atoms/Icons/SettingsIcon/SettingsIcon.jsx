@@ -29,3 +29,19 @@ export const SettingsIcon = ({ inverted, darkMode, ...restProps }) => {
     </div>
   );
 };
+
+
+export const SettingsIconBlack = () => {
+  return (
+    <div>
+      <Wrapper>
+        <Img
+          src={
+            "/images/settings_inverted.svg"
+          }
+          alt="settings"
+        />
+      </Wrapper>
+    </div>
+  );
+};

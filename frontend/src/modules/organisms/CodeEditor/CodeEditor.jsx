@@ -14,7 +14,7 @@ import Editor, { DiffEditor, useMonaco } from "@monaco-editor/react";
 import { Resizable } from "re-resizable";
 import { useState, useEffect } from "react";
 import { render } from "react-dom";
-import MonacoEditor from "react-monaco-editor";
+// import MonacoEditor from "react-monaco-editor";
 import { apiClient } from "./../../../api/axios";
 import {
   clearRepoAction,
@@ -24,6 +24,8 @@ import { monaco } from "react-monaco-editor";
 import { saveRepoAction } from "./../../../pages/EditorPage/EditorAction";
 import { createRef } from "react";
 import { changeRepoAction } from "./../../../pages/EditorPage/EditorAction";
+import { COLOR_SET } from './../../../service/GetColor';
+import { SETTING_BACKGROUND_WHITE } from './../../../reducers/SettingReducer';
 
 const EvaluationWindowGrid = styled.div`
   display: inline-grid;
@@ -87,7 +89,7 @@ const EditorHeaderWrapper = styled.div`
   height: 41px;
   /* width: ${(props) => (props.editMode.edit ? "100%" : "572px")}; */
 
-  background: ${(props) => (props.darkMode ? "#525263" : "#bfbfbf")};
+  /* background: ${(props) => (props.darkMode ? "#525263" : "#bfbfbf")}; */
 `;
 
 const ActionButtonWrapper = styled.div`
@@ -141,6 +143,7 @@ export const CodeEditor = ({
   setChangeRepo,
 }) => {
   console.log(assignment);
+  
 
   const headerContent = "코드 입력";
 
@@ -237,6 +240,39 @@ export const CodeEditor = ({
     console.log(tempPfList);
   };
 
+  // useEffect(() => {
+  //   monaco.editor.defineTheme('myTheme', {
+  //     base: 'vs',
+  //     inherit: true,
+  //     rules: [{ background: 'EDF9FA' }],
+  //     colors: {
+  //       'editor.foreground': '#000000',
+  //       'editor.background': '#EDF9FA',
+  //       'editorCursor.foreground': '#8B0000',
+  //       'editor.lineHighlightBackground': '#0000FF20',
+  //       'editorLineNumber.foreground': '#008800',
+  //       'editor.selectionBackground': '#88000030',
+  //       'editor.inactiveSelectionBackground': '#88000015'
+  //     }
+  //   });
+  //   monaco.editor.setTheme('myTheme');
+
+
+  //   monaco.editor.defineTheme('dark', {
+  //     base: 'vs', 
+  //     inherit: true,
+  //     rules: [
+  //       { token: 'custom-info', foreground: 'a3a7a9', background: 'ffffff' },
+  //       { token: 'custom-error', foreground: 'ee4444' },
+  //       { token: 'custom-notice', foreground: '1055af' },
+  //       { token: 'custom-date', foreground: '20aa20' },
+  //     ],
+  //     colors: {
+  //       "editor.background": '#1F1F32'
+  //     }
+  //   })
+  // }, [])
+
   useEffect(() => {
     switch (editMode.altMode) {
       case "실행":
@@ -332,7 +368,10 @@ export const CodeEditor = ({
         {/* 코드 수정 상황 */}
         {editMode.edit && (
           <>
-            <EditorHeaderWrapper editMode={editMode} darkMode={darkMode}>
+            <EditorHeaderWrapper editMode={editMode} style={{
+              backgroundColor:COLOR_SET['EDITOR_EXPLAIN'][settingSelector.backgroundColor],
+              color: COLOR_SET['EDITOR_EXPLAIN_FONT'][settingSelector.backgroundColor]
+            }}>
               <div style={{display:"flex"}}>
                 <div onClick={() => changeMode({ src: headerContent })}>
                   <EditorHeader content={headerContent} darkMode={darkMode} />
@@ -398,8 +437,9 @@ export const CodeEditor = ({
                   <Editor
                     // width="1180px"
                     // height="820px"
+                    
                     language={repoSelector.selectedModel.content.language}
-                    theme={darkMode ? "vs-dark" : "light"}
+                    theme={settingSelector.backgroundColor === SETTING_BACKGROUND_WHITE ? 'light': 'vs-dark'}
                     value={repoSelector.selectedModel.content.code}
                     onChange={(e) => {
                       if (

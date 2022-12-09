@@ -3,6 +3,7 @@ import { EditorBackground, EditorHeader } from "../../atoms/";
 import { apiClient } from "./../../../api/axios";
 import { useSelector } from "react-redux";
 import { useState } from "react";
+import { COLOR_SET } from './../../../service/GetColor';
 
 const DescWrapper = styled.div`
   display: flex;
@@ -68,6 +69,7 @@ const ValidationButton = styled.div`
 function TestcaseMaster({ bodyContent, testCases, darkMode, ...restProps }) {
   const headerContent = "테스트 케이스";
   const repoSelector = useSelector((state) => state.editorReducer);
+  const settingSelector = useSelector((state) => state.SettingReducer);
 
   const [pfList, setPfList] = useState(null);
 
@@ -87,7 +89,10 @@ function TestcaseMaster({ bodyContent, testCases, darkMode, ...restProps }) {
   console.log(`testcases: ${JSON.stringify(testCases)}`);
   return (
     <DescWrapper>
-      <TestCaseHeaderContainer darkMode={darkMode}>
+      <TestCaseHeaderContainer style={{
+        backgroundColor:COLOR_SET['EDITOR_EXPLAIN'][settingSelector.backgroundColor],
+        color: COLOR_SET['EDITOR_EXPLAIN_FONT'][settingSelector.backgroundColor]
+      }}>
         <EditorHeader
           content={headerContent}
           assignmentId={restProps.assignmentId}
@@ -95,8 +100,12 @@ function TestcaseMaster({ bodyContent, testCases, darkMode, ...restProps }) {
         />
 
         <div style={{ marginRight: "16.13px" }}>
-          <ValidationButtonContainer darkMode={darkMode}>
+          <ValidationButtonContainer >
             <ValidationButton
+             style={{
+              backgroundColor:COLOR_SET['EDITOR_TEST_BUTTON'][settingSelector.backgroundColor],
+              color: COLOR_SET['EDITOR_TEST_BUTTON_FONT'][settingSelector.backgroundColor]
+            }}
               onClick={async () => {
                 let tempPfList = [];
                 for (const tc of testCases) {
@@ -125,7 +134,10 @@ function TestcaseMaster({ bodyContent, testCases, darkMode, ...restProps }) {
         JSON.stringify(testCases)
       }  */}
 
-        <TestCaseContainer darkMode={darkMode}>
+        <TestCaseContainer  style={{
+        backgroundColor:COLOR_SET['EDITOR_EXPLAIN_CONTENT'][settingSelector.backgroundColor],
+        color: COLOR_SET['EDITOR_EXPLAIN_CONTENT_FONT'][settingSelector.backgroundColor]
+      }}>
           {testCases.map((testcase, index) => {
             if(!testcase.id || testcase.is_hidden) {
               return (<></>);

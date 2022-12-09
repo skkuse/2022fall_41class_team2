@@ -17,6 +17,7 @@ import {
   Problem,
 } from "../../modules/organisms/CodeEditor";
 import { getTimeDiff } from "../../modules/organisms/AssignmentOverview/AssignmentOverview";
+import { COLOR_SET } from './../../service/GetColor';
 
 const EditorPageGrid = styled.div`
   display: inline-grid;
@@ -120,7 +121,7 @@ export const EditorPage = () => {
     <GeneralContainer>
       <Helmet
         bodyAttributes={{
-          style: darkMode ? "background : #000000" : "background : #FFFFFF",
+          style: `background : ${COLOR_SET['MAIN_BACKGROUND'][settingSelector.backgroundColor]}`,
         }}
       />
 

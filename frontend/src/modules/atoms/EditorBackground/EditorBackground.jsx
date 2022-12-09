@@ -2,6 +2,8 @@ import styled from "styled-components";
 import { ResultVis } from "../../atoms";
 import React, { useEffect, useCallback, useState } from "react";
 import { Text } from "../../atoms";
+import { useSelector } from 'react-redux';
+import { COLOR_SET } from './../../../service/GetColor';
 
 const READABILITY = 0;
 const EFFICIENCY = 1;
@@ -439,6 +441,7 @@ export const EditorBackground = ({
 
   ...restProps
 }) => {
+  const settingSelector = useSelector((state) => state.SettingReducer);
   // redability result
   let readabilityResult = [];
 
@@ -500,7 +503,10 @@ export const EditorBackground = ({
   if (mode === "testcase") {
     // console.log(content.input);
     return (
-      <BgTestCase darkMode={darkMode}>
+      <BgTestCase style={{
+        backgroundColor:COLOR_SET['EDITOR_EXPLAIN_CONTENT'][settingSelector.backgroundColor],
+        color: COLOR_SET['EDITOR_EXPLAIN_CONTENT_FONT'][settingSelector.backgroundColor]
+      }}>
         <TestCaseMasterContainer>
           <TestCaseIOContainer>
             <TestCaseInput>Input: {content.input}</TestCaseInput>
@@ -517,7 +523,10 @@ export const EditorBackground = ({
     const score = (pfList.filter((pf) => pf.is_pass).length / pfList.length)*100;
   
     return (
-      <SubmitResultBg darkMode={darkMode}>
+      <SubmitResultBg style={{
+        backgroundColor:COLOR_SET['EDITOR_EXPLAIN_CONTENT'][settingSelector.backgroundColor],
+        color: COLOR_SET['EDITOR_EXPLAIN_CONTENT_FONT'][settingSelector.backgroundColor]
+      }}>
         <WindowWrapper>
           <div>{`총점: ${score}점`}</div>
           {
@@ -539,10 +548,16 @@ export const EditorBackground = ({
     // SPECIAL CASE: ASSIGNMENT SUBMITTED
 
     return (
-      <SubmitResultBg darkMode={darkMode}>
+      <SubmitResultBg  style={{
+        backgroundColor:COLOR_SET['EDITOR_EXPLAIN_CONTENT'][settingSelector.backgroundColor],
+        color: COLOR_SET['EDITOR_EXPLAIN_CONTENT_FONT'][settingSelector.backgroundColor]
+      }}>
         <ResultVisContainer>
           {/* Separator */}
-          <Separator darkMode={darkMode}>
+          <Separator  style={{
+        backgroundColor:COLOR_SET['EDITOR_EXPLAIN_CONTENT'][settingSelector.backgroundColor],
+        color: COLOR_SET['EDITOR_EXPLAIN_CONTENT_FONT'][settingSelector.backgroundColor]
+      }}>
             {/* TODO */}
             <GradingHighlighter
               active={activeIndexDesc === GRADING}
@@ -705,7 +720,10 @@ export const EditorBackground = ({
                 marginRight: "7.5px",
               }}
             >
-              <CodeDescriptor darkMode={darkMode}>
+              <CodeDescriptor  style={{
+        backgroundColor:COLOR_SET['EDITOR_EXPLAIN_CONTENT'][settingSelector.backgroundColor],
+        color: COLOR_SET['EDITOR_EXPLAIN_CONTENT_FONT'][settingSelector.backgroundColor]
+      }}>
                 {content.code_description.split("\n").map((line) => (
                   <div style={{ marginBottom: "11px" }}>{line}</div>
                 ))}
@@ -721,7 +739,10 @@ export const EditorBackground = ({
                 marginRight: "7.5px",
               }}
             >
-              <CodeDescriptor darkMode={darkMode}>
+              <CodeDescriptor  style={{
+        backgroundColor:COLOR_SET['EDITOR_EXPLAIN_CONTENT'][settingSelector.backgroundColor],
+        color: COLOR_SET['EDITOR_EXPLAIN_CONTENT_FONT'][settingSelector.backgroundColor]
+      }}>
                 {Object.keys(content.references)
                   .filter((k) => k !== "id")
                   .map(function (key) {
@@ -743,6 +764,9 @@ export const EditorBackground = ({
     );
   } else {
     // general display
-    return <Bg darkMode={darkMode}>{content}</Bg>;
+    return <Bg  style={{
+      backgroundColor:COLOR_SET['EDITOR_EXPLAIN_CONTENT'][settingSelector.backgroundColor],
+      color: COLOR_SET['EDITOR_EXPLAIN_CONTENT_FONT'][settingSelector.backgroundColor]
+    }}>{content}</Bg>;
   }
 };
