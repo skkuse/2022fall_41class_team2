@@ -40,6 +40,10 @@ export const COLOR_SET = {
     EDITOR_TEST_BUTTON_FONT :{
         SETTING_BACKGROUND_WHITE : "#1e1e1e",
         SETTING_BACKGROUND_BLACK : "#D8D8D8",
+    },
+    EDITOR_RESULT: {
+        SETTING_BACKGROUND_WHITE : "#ffffff",
+        SETTING_BACKGROUND_BLACK : "#525263",
     }
 }
 

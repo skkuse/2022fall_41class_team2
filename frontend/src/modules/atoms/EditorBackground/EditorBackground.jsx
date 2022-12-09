@@ -564,7 +564,10 @@ export const EditorBackground = ({
             {/* TODO */}
             <GradingHighlighter
               active={activeIndexDesc === GRADING}
-              darkMode={darkMode}
+              style={{
+                backgroundColor:COLOR_SET['EDITOR_EXPLAIN'][settingSelector.backgroundColor],
+                color: COLOR_SET['EDITOR_EXPLAIN_FONT'][settingSelector.backgroundColor]
+              }}
             >
               <Button onClick={() => onButtonClickDesc(GRADING)}>
                 제출 성적
@@ -572,7 +575,10 @@ export const EditorBackground = ({
             </GradingHighlighter>
             <DescriptionHighlighter
               active={activeIndexDesc === DESCRIPTION}
-              darkMode={darkMode}
+              style={{
+                backgroundColor:COLOR_SET['EDITOR_EXPLAIN'][settingSelector.backgroundColor],
+                color: COLOR_SET['EDITOR_EXPLAIN_FONT'][settingSelector.backgroundColor]
+              }}
             >
               <Button onClick={() => onButtonClickDesc(DESCRIPTION)}>
                 코드 설명
@@ -580,7 +586,10 @@ export const EditorBackground = ({
             </DescriptionHighlighter>
             <RecommendationHighlighter
               active={activeIndexDesc === RECOMMENDATION}
-              darkMode={darkMode}
+              style={{
+                backgroundColor:COLOR_SET['EDITOR_EXPLAIN'][settingSelector.backgroundColor],
+                color: COLOR_SET['EDITOR_EXPLAIN_FONT'][settingSelector.backgroundColor]
+              }}
             >
               <Button onClick={() => onButtonClickDesc(RECOMMENDATION)}>
                 관련 자료
@@ -618,9 +627,12 @@ export const EditorBackground = ({
         가독성 : #FF9A3C
         효율 : #98D964
         기능 : #52C0E7 */}
-                  <Selector darkMode={darkMode}>
+                  <Selector >
                     <ReadabilityHighlighter
                       active={activeIndexChart === READABILITY}
+                      style={{
+                        backgroundColor:COLOR_SET['EDITOR_EXPLAIN'][settingSelector.backgroundColor],
+                      }}
                     >
                       <Button onClick={() => onButtonClickChart(READABILITY)}>
                         가독성
@@ -628,6 +640,9 @@ export const EditorBackground = ({
                     </ReadabilityHighlighter>
                     <EfficiencyHighlighter
                       active={activeIndexChart === EFFICIENCY}
+                      style={{
+                        backgroundColor:COLOR_SET['EDITOR_EXPLAIN'][settingSelector.backgroundColor],
+                      }}
                     >
                       <Button onClick={() => onButtonClickChart(EFFICIENCY)}>
                         효율
@@ -635,6 +650,9 @@ export const EditorBackground = ({
                     </EfficiencyHighlighter>
                     <FunctionalityHighlighter
                       active={activeIndexChart === FUNCTIONALITY}
+                      style={{
+                        backgroundColor:COLOR_SET['EDITOR_EXPLAIN'][settingSelector.backgroundColor],
+                      }}
                     >
                       <Button onClick={() => onButtonClickChart(FUNCTIONALITY)}>
                         기능
@@ -652,7 +670,10 @@ export const EditorBackground = ({
                 }}
               >
                 {/* TODO: activeIndexDesc state 받아서 표시  */}
-                <ScoreDescriptor darkMode={darkMode}>
+                <ScoreDescriptor style={{
+                backgroundColor:COLOR_SET['EDITOR_RESULT'][settingSelector.backgroundColor],
+                color: COLOR_SET['EDITOR_EXPLAIN_FONT'][settingSelector.backgroundColor]
+              }}>
                   {activeIndexChart === READABILITY && content.readability_result && (
                       <DescriptionContainer>
                       {/* {JSON.stringify(content.readability_result, null, 2)} */}

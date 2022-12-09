@@ -175,7 +175,7 @@ export const CodeEditor = ({
   };
 
   const submitCode = async () => {
-    alert("submit!");
+    // alert("submit!");
     setSubmitLoading(true);
     try {
       const result = await apiClient.post("/api/outputs/results/", {
