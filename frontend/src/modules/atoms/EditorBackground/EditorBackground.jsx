@@ -520,7 +520,7 @@ export const EditorBackground = ({
       const result = await apiClient.post(
         `/api/outputs/testcases/${testcase_id}/`,
         {
-          language: repoSelector.selectedModel.content.language,
+          language: settingSelector.language.toLowerCase(),
           code: repoSelector.selectedModel.content.code,
         }
       );
@@ -550,7 +550,7 @@ export const EditorBackground = ({
               if(testCaseData.is_pass == null && testCaseData.id) {
                 dispatch(setTestcaseOn());
                 const result = await executeTestCase(testCaseData.id);
-                dispatch(setTestcaseError(result.data.data.is_error));
+                dispatch(setTestcaseError(result.data.data.is_error, result.data.data.actual_output));
                 setTestCaseData({
                   ...result.data.data,
                   id: testCaseData.id

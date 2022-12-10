@@ -413,6 +413,9 @@ export const CodeEditor = ({
                 {
                   testcaseSelector.isOnTestcase && testcaseSelector.isError && <Img src="/images/error.svg" alt="error indicator" />
                 }
+                {
+                  testcaseSelector.isOnTestcase && testcaseSelector.isError && testcaseSelector.errorContent
+                }
                 
               </div>
               <div style={{ marginRight: "27.78px" }}>
@@ -471,35 +474,48 @@ export const CodeEditor = ({
                   </div> */}
 
                 {repoSelector.selectedModel && (
-                  <Editor
-                    // width="1180px"
-                    // height="820px"
-                    
-                    language={settingSelector.language.toLowerCase()}
-                    theme={settingSelector.backgroundColor === SETTING_BACKGROUND_WHITE ? 'light': 'vs-dark'}
-                    value={repoSelector.selectedModel.content.code}
-                    onChange={(e) => {
-                      if (
-                        repoSelector.repoChangeInfo.isChanging ||
-                        repoSelector.repoCreateInfo.isCreating
-                      ) {
-                        return;
+                  <div style={{position:"relative"}}>
+                      <Editor
+                        // width="1180px"
+                        // height="820px"
+                        
+                        language={settingSelector.language.toLowerCase()}
+                        theme={settingSelector.backgroundColor === SETTING_BACKGROUND_WHITE ? 'light': 'vs-dark'}
+                        value={repoSelector.selectedModel.content.code}
+                        onChange={(e) => {
+                          dispatch(setTestcaseOff());
+                          if (
+                            repoSelector.repoChangeInfo.isChanging ||
+                            repoSelector.repoCreateInfo.isCreating
+                          ) {
+                            return;
+                          }
+                          let repoTemp = {
+                            ...repoSelector.selectedModel,
+                          };
+                          repoTemp.content.code = e;
+                          dispatch(saveRepoAction(repoTemp));
+                          const result = apiClient.put(
+                            `/api/repos/${repoSelector.selectedModel.id}/`,
+                            {
+                              language: settingSelector.language.toLowerCase(),
+                              code: repoSelector.selectedModel.content.code,
+                              assignment_id: assignment.id,
+                            }
+                          );
+                        }}
+                      />
+
+                      {
+                        testcaseSelector.isOnTestcase && testcaseSelector.isError &&
+                        <div style={{position:"absolute", top: 10, zIndex: 100}}>
+                          {
+                            testcaseSelector.errorContent
+                          }
+                        </div>
                       }
-                      let repoTemp = {
-                        ...repoSelector.selectedModel,
-                      };
-                      repoTemp.content.code = e;
-                      dispatch(saveRepoAction(repoTemp));
-                      const result = apiClient.put(
-                        `/api/repos/${repoSelector.selectedModel.id}/`,
-                        {
-                          language: settingSelector.language.toLowerCase(),
-                          code: repoSelector.selectedModel.content.code,
-                          assignment_id: assignment.id,
-                        }
-                      );
-                    }}
-                  />
+                  </div>
+                  
                 )}
 
                 {(repoSelector.repoChangeInfo.isChanging ||
