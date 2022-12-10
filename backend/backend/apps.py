@@ -71,306 +71,306 @@ class BackendConfig(AppConfig):
                 {
                     'language': 'c',
                     'skeleton_code': '''
-        #include <stdio.h>
+#include <stdio.h>
 
-        void solution() {
+void solution() {
 
-        }
-        ''',
+}
+''',
                     'answer_code': '''
-        #include <malloc.h>
-        #include <stdbool.h>
-        #include <stdio.h>
-        #include <stdlib.h>
-        #include <string.h>
+#include <malloc.h>
+#include <stdbool.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
-        int N;
-        int peach_scores[11], lion_scores[11];
-        int ans[11];
-        int max_diff = -1;
+int N;
+int peach_scores[11], lion_scores[11];
+int ans[11];
+int max_diff = -1;
 
-        void dfs(int idx, int remain) {
-            if (idx == 11) {
-                int lion = 0, peach = 0;
-                for (int i = 0; i < 10; i++) {
-                    if (lion_scores[i] > peach_scores[i])
-                        lion += 10 - i;
-                    else if (lion_scores[i] < peach_scores[i])
-                        peach += 10 - i;
-                }
+void dfs(int idx, int remain) {
+    if (idx == 11) {
+        int lion = 0, peach = 0;
+        for (int i = 0; i < 10; i++) {
+            if (lion_scores[i] > peach_scores[i])
+                lion += 10 - i;
+            else if (lion_scores[i] < peach_scores[i])
+                peach += 10 - i;
+        }
 
-                if (lion > peach) {
-                    int diff = lion - peach;
-                    if (diff > max_diff) {
-                        max_diff = diff;
+        if (lion > peach) {
+            int diff = lion - peach;
+            if (diff > max_diff) {
+                max_diff = diff;
+                memcpy(ans, lion_scores, sizeof(lion_scores));
+            }
+            else if (diff == max_diff) {
+                for (int i = 10; i >= 0; i--) {
+                    if (ans[i] > lion_scores[i]) break;
+                    if (lion_scores[i] > ans[i]) {
                         memcpy(ans, lion_scores, sizeof(lion_scores));
-                    }
-                    else if (diff == max_diff) {
-                        for (int i = 10; i >= 0; i--) {
-                            if (ans[i] > lion_scores[i]) break;
-                            if (lion_scores[i] > ans[i]) {
-                                memcpy(ans, lion_scores, sizeof(lion_scores));
-                                break;
-                            }
-                        }
+                        break;
                     }
                 }
-                return;
             }
-
-            if (remain >= peach_scores[idx] + 1) {
-                lion_scores[idx] = peach_scores[idx] + 1;
-                dfs(idx + 1, remain - (peach_scores[idx] + 1));
-            }
-            lion_scores[idx] = idx == 10 ? remain : 0;
-            dfs(idx + 1, idx == 10 ? 0 : remain);
         }
+        return;
+    }
 
-        void solution() {
-            int n = 0, info[11];
-            int* answer;
+    if (remain >= peach_scores[idx] + 1) {
+        lion_scores[idx] = peach_scores[idx] + 1;
+        dfs(idx + 1, remain - (peach_scores[idx] + 1));
+    }
+    lion_scores[idx] = idx == 10 ? remain : 0;
+    dfs(idx + 1, idx == 10 ? 0 : remain);
+}
 
-            scanf("%d", &n);
-            for (int i = 0; i < 11; i++)
-                scanf("%d", &info[i]);
+void solution() {
+    int n = 0, info[11];
+    int* answer;
 
-            N = n;
-            for (int i = 0; i < 11; i++)
-                peach_scores[i] = info[i];
+    scanf("%d", &n);
+    for (int i = 0; i < 11; i++)
+        scanf("%d", &info[i]);
 
-            dfs(0, N);
+    N = n;
+    for (int i = 0; i < 11; i++)
+        peach_scores[i] = info[i];
 
-            printf("[");
+    dfs(0, N);
 
-            if (max_diff == -1) {
-                answer = (int*)malloc(sizeof(int));
-                answer[0] = -1;
+    printf("[");
 
-                printf("%d", answer[0]);
-            }
-            else {
-                answer = (int*)malloc(sizeof(int) * 11);
-                memcpy(answer, ans, sizeof(ans));
+    if (max_diff == -1) {
+        answer = (int*)malloc(sizeof(int));
+        answer[0] = -1;
 
-                for (int i = 0; i < 11; i++) {
-                    printf("%d", answer[i]);
-                    if (i != 10)
-                        printf(", ");
-                }
-            }
+        printf("%d", answer[0]);
+    }
+    else {
+        answer = (int*)malloc(sizeof(int) * 11);
+        memcpy(answer, ans, sizeof(ans));
 
-            printf("]");
+        for (int i = 0; i < 11; i++) {
+            printf("%d", answer[i]);
+            if (i != 10)
+                printf(", ");
         }
-        ''',
+    }
+
+    printf("]");
+}
+''',
                 },
                 {
                     'language': 'cpp',
                     'skeleton_code': '''
-        #include <iostream>
+#include <iostream>
 
-        void solution() {
+void solution() {
 
-        }
-        ''',
+}
+''',
                     'answer_code': '''
-        #include<iostream>
-        #include<vector>
-        using namespace std;
+#include<iostream>
+#include<vector>
+using namespace std;
 
-        int N;
-        vector<int> apeach;
-        vector<int> lion;
-        vector<int> maxRes;
-        int maxDiff = 0;
+int N;
+vector<int> apeach;
+vector<int> lion;
+vector<int> maxRes;
+int maxDiff = 0;
 
-        void dfs(int dpt, int asc, int lsc, int n) {
-            if (dpt == 11) {
-                if (lsc <= asc) return;
-                lion[10] += N - n;
-                if (lsc - asc > maxDiff) {
-                    maxRes = lion;
-                    maxDiff = lsc - asc;
-                }
-                else if (lsc - asc == maxDiff) {
-                    for (int i = 10; i >= 0; i--) {
-                        if (lion[i] == maxRes[i]) continue;
-                        else {
-                            if (lion[i] > maxRes[i]) {
-                                maxRes = lion;
-                            }
-                            break;
-                        }
+void dfs(int dpt, int asc, int lsc, int n) {
+    if (dpt == 11) {
+        if (lsc <= asc) return;
+        lion[10] += N - n;
+        if (lsc - asc > maxDiff) {
+            maxRes = lion;
+            maxDiff = lsc - asc;
+        }
+        else if (lsc - asc == maxDiff) {
+            for (int i = 10; i >= 0; i--) {
+                if (lion[i] == maxRes[i]) continue;
+                else {
+                    if (lion[i] > maxRes[i]) {
+                        maxRes = lion;
                     }
-                }
-                return;
-            }
-
-            int next = apeach[dpt] + 1;
-            if (next + n <= N) {
-                int nasc = asc;
-                int nlsc = lsc + 10 - dpt;
-                if (next != 1) nasc -= (10 - dpt);
-                lion.push_back(next);
-                dfs(dpt + 1, nasc, nlsc, next + n);
-                lion.pop_back();
-            }
-
-            lion.push_back(0);
-            dfs(dpt + 1, asc, lsc, n);
-            lion.pop_back();
-        }
-
-        void solution() {
-            int n = 0;
-            vector<int> info, answer;
-
-            cin >> n;
-            for (int i = 0; i < 11; i++) {
-                int temp;
-                cin >> temp;
-                info.push_back(temp);
-            }
-
-            N = n;
-            apeach = info;
-
-            int total = 0;
-            for (int i = 0; i < info.size(); i++) {
-                if (info[i]) {
-                    total += (10 - i);
+                    break;
                 }
             }
-
-            dfs(0, total, 0, 0);
-
-            if (maxDiff == 0) maxRes.push_back(-1);
-
-            cout << "[";
-            for (int i = 0; i < maxRes.size(); i++) {
-                cout << maxRes[i];
-                if (i != maxRes.size() - 1)
-                    cout << ", ";
-            }
-            cout << "]";
         }
-        ''',
+        return;
+    }
+
+    int next = apeach[dpt] + 1;
+    if (next + n <= N) {
+        int nasc = asc;
+        int nlsc = lsc + 10 - dpt;
+        if (next != 1) nasc -= (10 - dpt);
+        lion.push_back(next);
+        dfs(dpt + 1, nasc, nlsc, next + n);
+        lion.pop_back();
+    }
+
+    lion.push_back(0);
+    dfs(dpt + 1, asc, lsc, n);
+    lion.pop_back();
+}
+
+void solution() {
+    int n = 0;
+    vector<int> info, answer;
+
+    cin >> n;
+    for (int i = 0; i < 11; i++) {
+        int temp;
+        cin >> temp;
+        info.push_back(temp);
+    }
+
+    N = n;
+    apeach = info;
+
+    int total = 0;
+    for (int i = 0; i < info.size(); i++) {
+        if (info[i]) {
+            total += (10 - i);
+        }
+    }
+
+    dfs(0, total, 0, 0);
+
+    if (maxDiff == 0) maxRes.push_back(-1);
+
+    cout << "[";
+    for (int i = 0; i < maxRes.size(); i++) {
+        cout << maxRes[i];
+        if (i != maxRes.size() - 1)
+            cout << ", ";
+    }
+    cout << "]";
+}
+''',
                 },
                 {
                     'language': 'javascript',
                     'skeleton_code': '''
-        let solution = () => {
+let solution = () => {
 
-        }
-        ''',
+}
+''',
                     'answer_code': '''
-        const fs = require('fs');
-        let input = fs.readFileSync('/dev/stdin').toString().trim().split('\\n');
+const fs = require('fs');
+let input = fs.readFileSync('/dev/stdin').toString().trim().split('\\n');
 
-        [n, arr] = input;
-        n = Number(n);
-        info = arr.split(' ').map(Number);
+[n, arr] = input;
+n = Number(n);
+info = arr.split(' ').map(Number);
 
-        let solution = () => {
-            let max = 0;
-            let answer = [-1];
-            let lion = Array(11).fill(0);
+let solution = () => {
+    let max = 0;
+    let answer = [-1];
+    let lion = Array(11).fill(0);
 
-            function DFS(level,count){
-                if(level == 10){
-                    lion[level] = count;
-                    let sum = 0
-                    for (let i = 0; i < 10; i++) {
-                        if(lion[i] > info[i]){
-                            sum = sum + (10 - i);
-                        }else if(lion[i] === info[i]){
-                            continue;
-                        }else{
-                            sum = sum - (10 - i);
-                        }
-                    }
-
-                    if(sum > max){
-                        max = sum;
-                        answer = [...lion];
-                    }else if(sum == max){
-                        for (let j = 10; j > 0; j--) {
-                            if(answer[j] == lion[j]){
-                                continue;
-                            }else if(lion[j] > answer[j]){
-                                answer = [...lion];
-                                break;
-                            }else{
-                                break;
-                            }
-                        }
-                    }
+    function DFS(level,count){
+        if(level == 10){
+            lion[level] = count;
+            let sum = 0
+            for (let i = 0; i < 10; i++) {
+                if(lion[i] > info[i]){
+                    sum = sum + (10 - i);
+                }else if(lion[i] === info[i]){
+                    continue;
                 }else{
-                    if(count == 0 || count < info[level] + 1 ){
-                        DFS(level+1,count);
-                    }else{
-                        lion[level] = info[level] + 1
-                        count = count - (info[level] + 1);
-                        DFS(level+1,count)
-
-                        lion[level] = 0
-                        count = count + (info[level] + 1);
-                        DFS(level+1,count)
-                    }
+                    sum = sum - (10 - i);
                 }
             }
 
-            DFS(0,n)
+            if(sum > max){
+                max = sum;
+                answer = [...lion];
+            }else if(sum == max){
+                for (let j = 10; j > 0; j--) {
+                    if(answer[j] == lion[j]){
+                        continue;
+                    }else if(lion[j] > answer[j]){
+                        answer = [...lion];
+                        break;
+                    }else{
+                        break;
+                    }
+                }
+            }
+        }else{
+            if(count == 0 || count < info[level] + 1 ){
+                DFS(level+1,count);
+            }else{
+                lion[level] = info[level] + 1
+                count = count - (info[level] + 1);
+                DFS(level+1,count)
 
-            let output = answer.join(', ');
-            console.log(`[${output}]`);
+                lion[level] = 0
+                count = count + (info[level] + 1);
+                DFS(level+1,count)
+            }
         }
-        ''',
+    }
+
+    DFS(0,n)
+
+    let output = answer.join(', ');
+    console.log(`[${output}]`);
+}
+''',
                 },
                 {
                     'language': 'python',
                     'skeleton_code': '''
-        def solution():
+def solution():
 
-        ''',
+''',
                     'answer_code': '''
-        def solution():
-            n = int(input())
-            info = [*map(int, input().split())]
+def solution():
+    n = int(input())
+    info = [*map(int, input().split())]
 
-            global answer, result
+    global answer, result
 
-            def score(ryan):
-                s = 0
-                for i in range(11):
-                    if ryan[i] == info[i] == 0:
-                        continue
-                    if ryan[i] > info[i]:
-                        s += 10 - i
-                    else:
-                        s -= 10 - i
-                return s
+    def score(ryan):
+        s = 0
+        for i in range(11):
+            if ryan[i] == info[i] == 0:
+                continue
+            if ryan[i] > info[i]:
+                s += 10 - i
+            else:
+                s -= 10 - i
+        return s
 
-            def dfs(idx, left, ryan):
-                global answer, result
-                if idx == -1 and left:
-                    return
-                if left == 0:
-                    s = score(ryan)
-                    if result < s:
-                        answer = ryan[:]
-                        result = s
-                    return
-                for i in range(left, -1, -1):
-                    ryan[idx] = i
-                    dfs(idx-1, left-i, ryan)
-                    ryan[idx] = 0
+    def dfs(idx, left, ryan):
+        global answer, result
+        if idx == -1 and left:
+            return
+        if left == 0:
+            s = score(ryan)
+            if result < s:
+                answer = ryan[:]
+                result = s
+            return
+        for i in range(left, -1, -1):
+            ryan[idx] = i
+            dfs(idx-1, left-i, ryan)
+            ryan[idx] = 0
 
-            answer = [0 for _ in range(11)]
-            result = 0
-            dfs(10, n, [0 for _ in range(11)])
+    answer = [0 for _ in range(11)]
+    result = 0
+    dfs(10, n, [0 for _ in range(11)])
 
-            print(answer if result != 0 else [-1])
-        ''',
+    print(answer if result != 0 else [-1])
+''',
                 },
             ],
             references=[
@@ -420,161 +420,161 @@ class BackendConfig(AppConfig):
                 {
                     'language': 'c',
                     'skeleton_code': '''
-        #include <stdio.h>
+#include <stdio.h>
 
-        void solution() {
+void solution() {
 
-        }
-        ''',
+}
+''',
                     'answer_code': '''
-        #include <stdio.h>
+#include <stdio.h>
 
-        int dp[501][501];
+int dp[501][501];
 
-        int Max(int a, int b) {
-            return a > b ? a : b;
+int Max(int a, int b) {
+    return a > b ? a : b;
+}
+
+void solution() {
+    int n;
+    scanf("%d", &n);
+
+    int i, j;
+    for (i = 1; i <= n; i++)
+        for (j = 1; j <= i; j++)
+            scanf("%d", &dp[i][j]);
+
+    int max = -99999999;
+    for (i = 1; i <= n; i++) {
+        for (j = 1; j <= i; j++) {
+            if (j == 1)
+                dp[i][j] += dp[i - 1][j];
+            else if (i == j)
+                dp[i][j] += dp[i - 1][j - 1];
+            else
+                dp[i][j] = Max(dp[i - 1][j], dp[i - 1][j - 1]) + dp[i][j];
+            if (max < dp[i][j])
+                max = dp[i][j];
         }
+    }
 
-        void solution() {
-            int n;
-            scanf("%d", &n);
-
-            int i, j;
-            for (i = 1; i <= n; i++)
-                for (j = 1; j <= i; j++)
-                    scanf("%d", &dp[i][j]);
-
-            int max = -99999999;
-            for (i = 1; i <= n; i++) {
-                for (j = 1; j <= i; j++) {
-                    if (j == 1)
-                        dp[i][j] += dp[i - 1][j];
-                    else if (i == j)
-                        dp[i][j] += dp[i - 1][j - 1];
-                    else
-                        dp[i][j] = Max(dp[i - 1][j], dp[i - 1][j - 1]) + dp[i][j];
-                    if (max < dp[i][j])
-                        max = dp[i][j];
-                }
-            }
-
-            printf("%d", max);
-        }
-        ''',
+    printf("%d", max);
+}
+''',
                 },
                 {
                     'language': 'cpp',
                     'skeleton_code': '''
-        #include <iostream>
+#include <iostream>
 
-        void solution() {
+void solution() {
 
-        }
-        ''',
+}
+''',
                     'answer_code': '''
-        #include <string>
-        #include <vector>
-        #include <algorithm>
-        #include <iostream>
-        using namespace std;
+#include <string>
+#include <vector>
+#include <algorithm>
+#include <iostream>
+using namespace std;
 
-        void solution() {
-            int n = 0;
-            vector<vector<int>> triangle;
-            cin >> n;
+void solution() {
+    int n = 0;
+    vector<vector<int>> triangle;
+    cin >> n;
 
-            for (int i = 0; i < n; i++) {
-                vector <int> raw;
-                for (int j = 0; j < i + 1; j++) {
-                    int temp;
-                    cin >> temp;
-                    raw.push_back(temp);
-                }
-                triangle.push_back(raw);
-            }
-
-            int answer = 0;
-
-            vector<vector<int>> dp(triangle.size());
-            for(int i = 0 ; i < triangle.size(); i++){
-                dp[i].resize(triangle[i].size());
-            }
-
-            dp[0][0] = triangle[0][0];
-
-            for(int i = 0; i < triangle.size() - 1; i++){
-                for(int j = 0; j < triangle[i].size(); j++){
-                    dp[i + 1][j] = max(dp[i + 1][j], dp[i][j] + triangle[i+ 1][j]);
-                    dp[i + 1][j + 1] = max(dp[i + 1][j + 1], dp[i][j] + triangle[i+ 1][j + 1]);
-                }
-            }
-
-            int max_val = 0;
-            int N = triangle.size() - 1;
-            for(int j = 0; j < triangle[N].size(); j++){
-                max_val = max(max_val, dp[N][j]);
-            }
-
-            answer = max_val;
-            cout << answer;
+    for (int i = 0; i < n; i++) {
+        vector <int> raw;
+        for (int j = 0; j < i + 1; j++) {
+            int temp;
+            cin >> temp;
+            raw.push_back(temp);
         }
-        ''',
+        triangle.push_back(raw);
+    }
+
+    int answer = 0;
+
+    vector<vector<int>> dp(triangle.size());
+    for(int i = 0 ; i < triangle.size(); i++){
+        dp[i].resize(triangle[i].size());
+    }
+
+    dp[0][0] = triangle[0][0];
+
+    for(int i = 0; i < triangle.size() - 1; i++){
+        for(int j = 0; j < triangle[i].size(); j++){
+            dp[i + 1][j] = max(dp[i + 1][j], dp[i][j] + triangle[i+ 1][j]);
+            dp[i + 1][j + 1] = max(dp[i + 1][j + 1], dp[i][j] + triangle[i+ 1][j + 1]);
+        }
+    }
+
+    int max_val = 0;
+    int N = triangle.size() - 1;
+    for(int j = 0; j < triangle[N].size(); j++){
+        max_val = max(max_val, dp[N][j]);
+    }
+
+    answer = max_val;
+    cout << answer;
+}
+''',
                 },
                 {
                     'language': 'javascript',
                     'skeleton_code': '''
-        let solution = () => {
+let solution = () => {
 
-        }
-        ''',
+}
+''',
                     'answer_code': '''
-        const fs = require('fs');
-        let input = fs.readFileSync('/dev/stdin').toString().trim().split('\\n');
+const fs = require('fs');
+let input = fs.readFileSync('/dev/stdin').toString().trim().split('\\n');
 
-        [n, ...arr] = input;
-        n = Number(n);
-        triangle = arr.map(i => i.split(\' \').map(i => Number(i)));
+[n, ...arr] = input;
+n = Number(n);
+triangle = arr.map(i => i.split(\' \').map(i => Number(i)));
 
-        let solution = () => {
-            const dp = triangle.slice();
+let solution = () => {
+    const dp = triangle.slice();
 
-            for(let i = dp.length-2; i >= 0; i--) {
-              for(let j = 0; j < dp[i].length; j++) {
-                dp[i][j] += Math.max(dp[i+1][j], dp[i+1][j+1]);
-              }
-            }
+    for(let i = dp.length-2; i >= 0; i--) {
+      for(let j = 0; j < dp[i].length; j++) {
+        dp[i][j] += Math.max(dp[i+1][j], dp[i+1][j+1]);
+      }
+    }
 
-            console.log(dp[0][0]);
-        }
-        ''',
+    console.log(dp[0][0]);
+}
+''',
                 },
                 {
                     'language': 'python',
                     'skeleton_code': '''
-        def solution():
+def solution():
 
-        ''',
+''',
                     'answer_code': '''
-        def solution():
-            n = int(input())
+def solution():
+    n = int(input())
 
-            triangle = []
-            for i in range(n):
-                string = [*map(int, input().split())]
-                triangle.append(string)
+    triangle = []
+    for i in range(n):
+        string = [*map(int, input().split())]
+        triangle.append(string)
 
-            dp = []
-            for t in range(1, len(triangle)):
-                for i in range(t+1):
-                    if i == 0:
-                        triangle[t][0] += triangle[t-1][0]
-                    elif i == t:
-                        triangle[t][-1] += triangle[t-1][-1]
-                    else:
-                        triangle[t][i] += max(triangle[t-1][i-1], triangle[t-1][i])
+    dp = []
+    for t in range(1, len(triangle)):
+        for i in range(t+1):
+            if i == 0:
+                triangle[t][0] += triangle[t-1][0]
+            elif i == t:
+                triangle[t][-1] += triangle[t-1][-1]
+            else:
+                triangle[t][i] += max(triangle[t-1][i-1], triangle[t-1][i])
 
-            print(max(triangle[-1]))
-        ''',
+    print(max(triangle[-1]))
+''',
                 },
             ],
             references=[
