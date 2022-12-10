@@ -3,7 +3,7 @@ from django.db import models
 
 class Result(models.Model):
     repo = models.ForeignKey('repo.Repo', on_delete=models.PROTECT, related_name='results')
-    references = models.JSONField(default=dict)
+    references = models.JSONField(default=list)
     code_description = models.TextField(default="")
 
     class Meta:

@@ -20,6 +20,10 @@ def solution():
     return 9 + 10
 ''',
 }]
+references = [
+    'https://www.sample-1.com',
+    'https://www.sample-2.com',
+]
 
 
 class TestAssignment(TestCase):
@@ -42,6 +46,7 @@ class TestAssignment(TestCase):
             question=question,
             constraints=constraints,
             contents=contents,
+            references=references,
         )
 
         self.assertIsNotNone(assignment.id)
@@ -102,6 +107,7 @@ You can return the answer in any order.
             question=another_question,
             constraints=another_constraints,
             contents=contents,
+            references=references,
         )
 
         self.assertIsNotNone(assignment.id)
@@ -301,6 +307,7 @@ for i in range(n):
                 'skeleton_code': contents[0].get('skeleton_code'),
                 'answer_code': another_answer_code,
             }],
+            references=references,
         )
 
         self.assertIsNotNone(assignment.id)
@@ -322,6 +329,7 @@ for i in range(n):
             question=question,
             constraints=constraints,
             contents=contents,
+            references=references,
         )
 
         self.assertIsNotNone(assignment.id)
@@ -344,6 +352,7 @@ for i in range(n):
             question=question,
             constraints=constraints,
             contents=contents,
+            references=references,
         )
 
         result = assignment.delete()

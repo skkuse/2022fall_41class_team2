@@ -47,6 +47,10 @@ class TestAssignmentListOrCreate(TestCase):
                     'answer_code': 'function dummy() {}',
                 },
             ],
+            references=[
+                'https://www.sample-1.com',
+                'https://www.sample-2.com',
+            ],
         )
         testcase_1 = Testcase.objects.create(
             assignment=assignment,
@@ -187,6 +191,10 @@ class TestLectureRetrieveOrDestroy(TestCase):
                     'answer_code': 'function dummy1() {}',
                 },
             ],
+            references=[
+                'https://www.sample-1.com',
+                'https://www.sample-2.com',
+            ],
         )
         assignment2 = Assignment.objects.create(
             lecture=lecture,
@@ -205,6 +213,10 @@ class TestLectureRetrieveOrDestroy(TestCase):
                     'skeleton_code': 'console.log("skeleton2")',
                     'answer_code': 'function dummy2() {}',
                 },
+            ],
+            references=[
+                'https://www.sample-1.com',
+                'https://www.sample-2.com',
             ],
         )
         testcase1 = Testcase.objects.create(

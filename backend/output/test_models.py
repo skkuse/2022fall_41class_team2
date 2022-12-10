@@ -33,20 +33,11 @@ class TestResult(TestCase):
 
     def test_result_save(self):
         repo = Repo.objects.first()
-        references = {
-            'videos': [
-                'https://example-video-site-01.com',
-                'https://example-video-site-02.com',
-            ],
-            'problems': [
-                'https://example-problem-site-01.com',
-                'https://example-problem-site-02.com',
-            ],
-            'materials': [
-                'https://example-material-site-01.com',
-                'https://example-material-site-02.com',
-            ],
-        }
+        references = [
+            'https://example-video-site-01.com',
+            'https://example-problem-site-01.com',
+            'https://example-material-site-01.com',
+        ]
         code_description = 'example-code-description'
 
         result = Result.objects.create(
@@ -64,10 +55,11 @@ class TestResult(TestCase):
 
         result = Result.objects.create(
             repo=repo,
+            references=list(),
         )
 
         self.assertIsNotNone(result.id)
-        self.assertEqual(result.references, dict())
+        self.assertEqual(result.references, list())
         self.assertEqual(result.code_description, str())
 
     def test_result_remove(self):

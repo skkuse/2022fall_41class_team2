@@ -68,10 +68,9 @@ class ReadabilityResultSerializer(serializers.ModelSerializer):
 
 class ResultSerializer(serializers.ModelSerializer):
     repo_id = serializers.IntegerField(write_only=True)
-    references = serializers.DictField(
-        child=serializers.ListField(child=serializers.URLField()),
+    references = serializers.ListField(
+        child=serializers.CharField(),
         required=False,
-        read_only=True,
     )
     code_description = serializers.CharField(required=False, allow_blank=True)
     functionality_result = FunctionalityResultSerializer(read_only=True)

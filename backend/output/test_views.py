@@ -288,6 +288,10 @@ class TestResultListOrCreate(TestCase):
             name=self.mock_assignment_name,
             lecture=lecture,
             deadline=timezone.now() + timedelta(days=1),
+            references=[
+                'https://www.sample-1.com',
+                'https://www.sample-2.com',
+            ],
         )
         testcase_1 = Testcase.objects.create(
             assignment=assignment,
@@ -311,16 +315,6 @@ class TestResultListOrCreate(TestCase):
         )
         result_1 = Result.objects.create(
             repo=repo_1,
-            references={
-                'first': [
-                    'one',
-                    'two',
-                ],
-                'second': [
-                    'three',
-                    'four',
-                ],
-            },
         )
         result_2 = Result.objects.create(
             repo=repo_2,
@@ -371,6 +365,7 @@ def solution():
         ret = response.data
 
         self.assertIsNotNone(ret.get('id'))
+        self.assertIsNotNone(ret.get('references'))
         self.assertIsNotNone(ret.get('functionality_result'))
         self.assertIsNotNone(ret.get('efficiency_result'))
         self.assertIsNotNone(ret.get('plagiarism_result'))
@@ -409,6 +404,7 @@ void solution() {
         ret = response.data
 
         self.assertIsNotNone(ret.get('id'))
+        self.assertIsNotNone(ret.get('references'))
         self.assertIsNotNone(ret.get('functionality_result'))
         self.assertIsNone(ret.get('efficiency_result'))
         self.assertIsNone(ret.get('plagiarism_result'))
@@ -440,6 +436,7 @@ def solution():
         ret = response.data
 
         self.assertIsNotNone(ret.get('id'))
+        self.assertIsNotNone(ret.get('references'))
         self.assertIsNone(ret.get('functionality_result'))
         self.assertIsNone(ret.get('efficiency_result'))
         self.assertIsNone(ret.get('plagiarism_result'))
@@ -544,6 +541,10 @@ class TestResultRetrieve(TestCase):
         assignment = Assignment.objects.create(
             name=self.mock_assignment_name,
             lecture=lecture,
+            references=[
+                'https://www.sample-1.com',
+                'https://www.sample-2.com',
+            ],
         )
         repo_1 = Repo.objects.create(
             assignment=assignment,
@@ -551,16 +552,6 @@ class TestResultRetrieve(TestCase):
         )
         result_1 = Result.objects.create(
             repo=repo_1,
-            references={
-                'first': [
-                    'one',
-                    'two',
-                ],
-                'second': [
-                    'three',
-                    'four',
-                ],
-            },
         )
 
     def test_result_retrieve(self):
