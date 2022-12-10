@@ -3,6 +3,9 @@ from django.urls import path, include
 from rest_framework.permissions import AllowAny
 from drf_spectacular.views import SpectacularAPIView, SpectacularRedocView, SpectacularSwaggerView
 from backend.handler import custom_404_handler, custom_500_handler
+from backend.data_injector import inject
+
+inject()
 
 
 class CustomAPIView(SpectacularAPIView):

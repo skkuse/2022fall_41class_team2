@@ -41,7 +41,6 @@ INSTALLED_APPS = [
     'testcase',
     'repo',
     'output',
-    'backend',
 ]
 
 AUTH_USER_MODEL = 'authentication.User'
