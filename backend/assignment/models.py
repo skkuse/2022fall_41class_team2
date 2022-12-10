@@ -9,6 +9,7 @@ class Assignment(models.Model):
     question = models.TextField(blank=True, default='')
     constraints = models.TextField(blank=True, default='')
     contents = models.JSONField(default=list)
+    references = models.JSONField(default=list)
 
     class Meta:
         ordering = ['name']
