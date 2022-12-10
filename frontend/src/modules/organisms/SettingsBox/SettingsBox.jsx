@@ -204,9 +204,9 @@ export const SettingsBox = ({ className, ...restProps }) => {
     { key: 1, value: SETTING_LANGUAGE_PYTHON },
     { key: 2, value: SETTING_LANGUAGE_JAVASCRIPT },
     { key: 3, value: SETTING_LANGUAGE_CPP },
-    { key: 4, value: SETTING_LANGUAGE_JAVA },
+    // { key: 4, value: SETTING_LANGUAGE_JAVA },
     { key: 5, value: SETTING_LANGUAGE_C },
-    { key: 6, value: SETTING_LANGUAGE_CSHARP },
+    // { key: 6, value: SETTING_LANGUAGE_CSHARP },
   ];
 
   // Theme options

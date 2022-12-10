@@ -47,9 +47,9 @@ export const SubmissionMaster = ({ resultObj, darkMode, ...restProps }) => {
           assignmentId={restProps.assignmentId}
           darkMode={darkMode}
         />
-        <div style={{ marginRight: "11px" }}>
+        {plagiarism && <div style={{ marginRight: "11px" }}>
           표절률 {plagiarism? plagiarism.similarity_score : 0}%
-        </div>
+        </div>}
       </PlagiarismIndicator>
       <EditorBackground
         mode="submit"

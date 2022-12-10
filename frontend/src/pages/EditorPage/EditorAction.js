@@ -94,9 +94,10 @@ export const setTestcaseOff = () =>{
     }
 }
 
-export const setTestcaseError = (is_error) =>{
+export const setTestcaseError = (is_error, errorContent) =>{
     return {
         type: TESTCASE_ERROR,
-        is_error: is_error
+        is_error: is_error,
+        errorContent: errorContent
     }
 }

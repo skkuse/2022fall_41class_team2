@@ -139,7 +139,7 @@ export function editorReducer(state = editorInitState, action) {
 let testcaseInitState = {
     isOnTestcase: false,
     errorContent: "",
-    isError: false
+    isError: false,
 };
 
 export function testcaseReducer(state = testcaseInitState, action) {
@@ -161,7 +161,8 @@ export function testcaseReducer(state = testcaseInitState, action) {
             console.log(action);
             return {
                 ...state,
-                isError: action.is_error
+                isError: action.is_error,
+                errorContent: action.errorContent
             };
 
         default:

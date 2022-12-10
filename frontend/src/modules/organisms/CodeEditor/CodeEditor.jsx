@@ -142,6 +142,8 @@ export const CodeEditor = ({
   darkMode,
   changeRepo,
   setChangeRepo,
+  editMode,
+  setEditMode
 }) => {
   console.log(assignment);
   
@@ -149,7 +151,7 @@ export const CodeEditor = ({
   const headerContent = "코드 입력";
   const testcaseSelector = useSelector((state) => state.testcaseReducer);
 
-  const [editMode, setEditMode] = useState({ edit: true, altMode: "none" });
+  // const [editMode, setEditMode] = useState({ edit: true, altMode: "none" });
   const editorRef = createRef();
 
   const [repo, setRepo] = useState();
@@ -183,21 +185,27 @@ export const CodeEditor = ({
     try {
       const result = await apiClient.post("/api/outputs/results/", {
         repo_id: repoSelector.selectedModel.id,
-        language: repoSelector.selectedModel.content.language,
+        language: settingSelector.language.toLowerCase(),
         code: repoSelector.selectedModel.content.code,
       });
-      if(submitResultValidate(result.data.data)) {
-        setSubmitResult(result.data);
-        setSubmitComplete(true);  
-        changeMode({ src: "제출" });
-      }
-      else{
-        console.log(result.data.data);
-        alert("solution 함수 아래에서 작성해주세요.");
-        setSubmitComplete(false);
-      }
+
+      setSubmitResult(result.data);
+      setSubmitComplete(true);  
+      changeMode({ src: "제출" });
+
+      // if(submitResultValidate(result.data.data)) {
+      //   setSubmitResult(result.data);
+      //   setSubmitComplete(true);  
+      //   changeMode({ src: "제출" });
+      // }
+      // else{
+      //   console.log(result.data.data);
+      //   alert("solution 함수 아래에서 작성해주세요.");
+      //   setSubmitComplete(false);
+      // }
       
     } catch (error) {
+      console.log(error);
       alert(error.response.data.data.detail);
       setSubmitComplete(false);
     }
@@ -216,7 +224,7 @@ export const CodeEditor = ({
       const result = await apiClient.post(
         `/api/outputs/testcases/${testcase_id}/`,
         {
-          language: repoSelector.selectedModel.content.language,
+          language: settingSelector.language.toLowerCase(),
           code: repoSelector.selectedModel.content.code,
         }
       );
@@ -226,21 +234,47 @@ export const CodeEditor = ({
     }
   };
 
+
+  const executeAllTestCase = async() => {
+    try {
+      const result = await apiClient.post(
+        `/api/outputs/testcases/`,
+        {
+          language: settingSelector.language.toLowerCase(),
+          code: repoSelector.selectedModel.content.code,
+          assignment_id: assignment.id
+        }
+      );
+      console.log(result);
+      return result;
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   const scoringHandler = async () => {
     dispatch(setTestcaseOff());
     let tempPfList = [];
-    for (const tc of assignment.testcases) {
-      if (tc.id) {
-        const result = await executeTestCase(tc.id);
-        console.log(result);
-        if (result) {
-          tempPfList.push({
-            ...result.data.data,
-            id: tc.id,
-          });
-        }
+    const result = await executeAllTestCase();
+    tempPfList = result.data.data.map((res) => {
+      return {
+        ...res,
+        id: res.id
       }
-    }
+    })
+    console.log(tempPfList);
+    // for (const tc of assignment.testcases) {
+    //   if (tc.id) {
+    //     const result = await executeTestCase(tc.id);
+    //     console.log(result);
+    //     if (result) {
+    //       tempPfList.push({
+    //         ...result.data.data,
+    //         id: tc.id,
+    //       });
+    //     }
+    //   }
+    // }
     setPfList(tempPfList);
     changeMode({ src: "채점" });
     console.log(tempPfList);
@@ -300,6 +334,7 @@ export const CodeEditor = ({
 
   const findByLanguage = (contents) => {
     const userLanguage = settingSelector.language.toLowerCase();
+    console.log(contents.find((content) => content.language == userLanguage));
     return contents.find((content) => content.language == userLanguage);
   };
 
@@ -385,13 +420,17 @@ export const CodeEditor = ({
                 {
                   testcaseSelector.isOnTestcase && testcaseSelector.isError && <Img src="/images/error.svg" alt="error indicator" />
                 }
+                {
+                  testcaseSelector.isOnTestcase && testcaseSelector.isError && testcaseSelector.errorContent
+                }
                 
               </div>
               <div style={{ marginRight: "27.78px" }}>
                 <ActionButtonWrapper darkMode={darkMode}>
-                  <CoreButton onClick={() => changeMode({ src: "실행" })}>
+                  {/* // ! 실행 삭제 */}
+                  {/* <CoreButton onClick={() => changeMode({ src: "실행" })}>
                     실행
-                  </CoreButton>
+                  </CoreButton> */}
                   <CoreButton
                     onClick={() => {
                       // * 테스트케이스 채점
@@ -443,36 +482,49 @@ export const CodeEditor = ({
                   </div> */}
 
                 {repoSelector.selectedModel && (
-                  <Editor
-                    // width="1180px"
-                    // height="820px"
-                    
-                    language={repoSelector.selectedModel.content.language}
-                    theme={settingSelector.backgroundColor === SETTING_BACKGROUND_WHITE ? 'light': 'vs-dark'}
-                    value={repoSelector.selectedModel.content.code}
-                    onChange={(e) => {
-                      if (
-                        repoSelector.repoChangeInfo.isChanging ||
-                        repoSelector.repoCreateInfo.isCreating
-                      ) {
-                        return;
-                      }
-                      let repoTemp = {
-                        ...repoSelector.selectedModel,
-                      };
-                      repoTemp.content.code = e;
-                      dispatch(saveRepoAction(repoTemp));
-                      const result = apiClient.put(
-                        `/api/repos/${repoSelector.selectedModel.id}/`,
-                        {
-                          language: repoSelector.selectedModel.content.language,
-                          code: repoSelector.selectedModel.content.code,
-                          assignment_id: assignment.id,
-                        }
-                      );
-                    }}
-                  />
+                      <Editor
+                        // width="1180px"
+                        // height="820px"
+                        
+                        language={settingSelector.language.toLowerCase()}
+                        theme={settingSelector.backgroundColor === SETTING_BACKGROUND_WHITE ? 'light': 'vs-dark'}
+                        value={repoSelector.selectedModel.content.code}
+                        onChange={(e) => {
+                          dispatch(setTestcaseOff());
+                          if (
+                            repoSelector.repoChangeInfo.isChanging ||
+                            repoSelector.repoCreateInfo.isCreating
+                          ) {
+                            return;
+                          }
+                          let repoTemp = {
+                            ...repoSelector.selectedModel,
+                          };
+                          repoTemp.content.code = e;
+                          dispatch(saveRepoAction(repoTemp));
+                          const result = apiClient.put(
+                            `/api/repos/${repoSelector.selectedModel.id}/`,
+                            {
+                              language: settingSelector.language.toLowerCase(),
+                              code: repoSelector.selectedModel.content.code,
+                              assignment_id: assignment.id,
+                            }
+                          );
+                        }}
+                      />
+
+                      
+                  
                 )}
+
+                {
+                    repoSelector.selectedModel && testcaseSelector.isOnTestcase && testcaseSelector.isError &&
+                    <div style={{position:"absolute", top: 10, zIndex: 100}}>
+                      {
+                        testcaseSelector.errorContent
+                      }
+                    </div>
+                  }
 
                 {(repoSelector.repoChangeInfo.isChanging ||
                   repoSelector.repoCreateInfo.isCreating) && (
@@ -529,9 +581,9 @@ export const CodeEditor = ({
                       // TODO : inline diff로 변경?
                       // width="560px"
                       // height="820px"
-                      language={repoSelector.selectedModel.content.language}
+                      language={settingSelector.language.toLowerCase()}
                       original={repoSelector.selectedModel.content.code}
-                      modified={assignment.contents[0].answer_code}
+                      modified={ findByLanguage(assignment.contents).answer_code}
                       theme={settingSelector.backgroundColor === SETTING_BACKGROUND_WHITE ? 'light': 'vs-dark'}
                       options={{
                         renderSideBySide: false,
@@ -544,14 +596,15 @@ export const CodeEditor = ({
                       // height="820px"
                       theme={settingSelector.backgroundColor === SETTING_BACKGROUND_WHITE ? 'light': 'vs-dark'}
                       value={repoSelector.selectedModel.content.code}
-                      language={repoSelector.selectedModel.content.language}
+                      language={settingSelector.language.toLowerCase()}
                     />
                   )}
                 </EditorWrapper>
               </div>
 
               {/* 실행 결과*/}
-              {editMode.altMode === "실행" && (
+              {/* // ! 실행 삭제 */}
+              {/* {editMode.altMode === "실행" && (
                 <TerminalWrapper
                   style={{ marginLeft: "12.72px" }}
                   edit={editMode.edit}
@@ -559,7 +612,7 @@ export const CodeEditor = ({
                 >
                   <Terminal darkMode={darkMode} />
                 </TerminalWrapper>
-              )}
+              )} */}
               {/* 채점 결과*/}
               {editMode.altMode === "채점" && (
                 <GradingWrapper

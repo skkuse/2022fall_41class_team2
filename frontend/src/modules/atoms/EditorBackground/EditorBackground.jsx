@@ -520,7 +520,7 @@ export const EditorBackground = ({
       const result = await apiClient.post(
         `/api/outputs/testcases/${testcase_id}/`,
         {
-          language: repoSelector.selectedModel.content.language,
+          language: settingSelector.language.toLowerCase(),
           code: repoSelector.selectedModel.content.code,
         }
       );
@@ -550,7 +550,7 @@ export const EditorBackground = ({
               if(testCaseData.is_pass == null && testCaseData.id) {
                 dispatch(setTestcaseOn());
                 const result = await executeTestCase(testCaseData.id);
-                dispatch(setTestcaseError(result.data.data.is_error));
+                dispatch(setTestcaseError(result.data.data.is_error, result.data.data.actual_output));
                 setTestCaseData({
                   ...result.data.data,
                   id: testCaseData.id
@@ -656,19 +656,27 @@ export const EditorBackground = ({
           {activeIndexDesc === GRADING && (
             <div style={{ marginTop: "20px" }}>
               <ChartContainer>
-                {activeIndexChart === READABILITY && (
-                  <ResultVis
-                    data={content.readability_result}
-                    chartColor="#FF9A3C"
-                  />
-                )}
-                {activeIndexChart === EFFICIENCY && (
-                  <ResultVis
+                {
+                    content.readability_result
+                    ?
+                    activeIndexChart === READABILITY && <ResultVis
+                        data={content.readability_result}
+                        chartColor="#FF9A3C"
+                      />
+                  :
+                  activeIndexChart === READABILITY &&  <div style={{width:"600px", height: "300px"}}> 현재 가독성 채점 기능은 python만 지원합니다.</div>
+                }
+                {
+                  content.efficiency_result
+                  ?
+                  activeIndexChart === EFFICIENCY && <ResultVis
                     data={content.efficiency_result}
                     chartColor="#98D964"
                   />
-                )}
-                {activeIndexChart === FUNCTIONALITY && (
+                  :
+                  activeIndexChart === EFFICIENCY &&  <div style={{width:"600px", height: "300px"}}> 현재 효율성 채점 기능은 python만 지원합니다. </div>
+                }
+                {activeIndexChart === FUNCTIONALITY && content.functionality_result && (
                   <ResultVis
                     data={content.functionality_result.testcase_results}
                     chartColor="#52C0E7"
@@ -746,7 +754,7 @@ export const EditorBackground = ({
                       }
                     </DescriptionContainer>
                   )}
-                  {activeIndexChart === EFFICIENCY && (
+                  {activeIndexChart === EFFICIENCY && content.efficiency_result && (
                     <DescriptionContainer>
                       {Object.keys(content.efficiency_result)
                         .filter((k) => k !== "id")
@@ -759,7 +767,7 @@ export const EditorBackground = ({
                         })}
                     </DescriptionContainer>
                   )}
-                  {activeIndexChart === FUNCTIONALITY && (
+                  {activeIndexChart === FUNCTIONALITY && content.functionality_result && (
                     <DescriptionContainer>
                       {/*여러 테스트케이스가 어레이 형태로 있음, 다른 형태로 처리 필요 */}
                       {content.functionality_result.testcase_results.map(
@@ -803,9 +811,14 @@ export const EditorBackground = ({
         backgroundColor:COLOR_SET['EDITOR_EXPLAIN_CONTENT'][settingSelector.backgroundColor],
         color: COLOR_SET['EDITOR_EXPLAIN_CONTENT_FONT'][settingSelector.backgroundColor]
       }}>
-                {content.code_description.split("\n").map((line) => (
+                {
+                content.code_description?
+                content.code_description.split("\n").map((line) => (
                   <div style={{ marginBottom: "11px" }}>{line}</div>
-                ))}
+                ))
+                :
+                "현재 코드 설명 기능은 python만 지원합니다."
+                }
               </CodeDescriptor>
               ;
             </div>
@@ -822,7 +835,21 @@ export const EditorBackground = ({
         backgroundColor:COLOR_SET['EDITOR_EXPLAIN_CONTENT'][settingSelector.backgroundColor],
         color: COLOR_SET['EDITOR_EXPLAIN_CONTENT_FONT'][settingSelector.backgroundColor]
       }}>
-                {Object.keys(content.references)
+
+            {
+              content.references.map((ref, index) => {
+                return (
+                  <div style={{ marginBottom: "50px" }}>
+                    <div >
+                      {index+1}. 
+                      <a href={ref} target="_blank"> {ref} </a>
+                    </div>
+                    {!ref.includes('youtu.be') && !ref.includes('namu.wiki') && <iframe width={'100%'} scrolling="no" height={"300px"} src={ref} seamless></iframe> }
+                  </div>
+                );
+              })
+            }
+                {/* {Object.keys(content.references)
                   .filter((k) => k !== "id")
                   .map(function (key) {
                     return (
@@ -833,7 +860,7 @@ export const EditorBackground = ({
                         </div>
                       </>
                     );
-                  })}
+                  })} */}
               </CodeDescriptor>
               ;
             </div>
