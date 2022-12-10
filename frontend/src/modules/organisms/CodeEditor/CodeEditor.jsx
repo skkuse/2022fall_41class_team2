@@ -200,6 +200,7 @@ export const CodeEditor = ({
       }
       
     } catch (error) {
+      console.log(error);
       alert(error.response.data.data.detail);
       setSubmitComplete(false);
     }
@@ -328,6 +329,7 @@ export const CodeEditor = ({
 
   const findByLanguage = (contents) => {
     const userLanguage = settingSelector.language.toLowerCase();
+    console.log(contents.find((content) => content.language == userLanguage));
     return contents.find((content) => content.language == userLanguage);
   };
 
@@ -420,9 +422,10 @@ export const CodeEditor = ({
               </div>
               <div style={{ marginRight: "27.78px" }}>
                 <ActionButtonWrapper darkMode={darkMode}>
-                  <CoreButton onClick={() => changeMode({ src: "실행" })}>
+                  {/* // ! 실행 삭제 */}
+                  {/* <CoreButton onClick={() => changeMode({ src: "실행" })}>
                     실행
-                  </CoreButton>
+                  </CoreButton> */}
                   <CoreButton
                     onClick={() => {
                       // * 테스트케이스 채점
@@ -474,7 +477,6 @@ export const CodeEditor = ({
                   </div> */}
 
                 {repoSelector.selectedModel && (
-                  <div style={{position:"relative"}}>
                       <Editor
                         // width="1180px"
                         // height="820px"
@@ -506,17 +508,18 @@ export const CodeEditor = ({
                         }}
                       />
 
-                      {
-                        testcaseSelector.isOnTestcase && testcaseSelector.isError &&
-                        <div style={{position:"absolute", top: 10, zIndex: 100}}>
-                          {
-                            testcaseSelector.errorContent
-                          }
-                        </div>
-                      }
-                  </div>
+                      
                   
                 )}
+
+                {
+                    repoSelector.selectedModel && testcaseSelector.isOnTestcase && testcaseSelector.isError &&
+                    <div style={{position:"absolute", top: 10, zIndex: 100}}>
+                      {
+                        testcaseSelector.errorContent
+                      }
+                    </div>
+                  }
 
                 {(repoSelector.repoChangeInfo.isChanging ||
                   repoSelector.repoCreateInfo.isCreating) && (
@@ -575,7 +578,7 @@ export const CodeEditor = ({
                       // height="820px"
                       language={settingSelector.language.toLowerCase()}
                       original={repoSelector.selectedModel.content.code}
-                      modified={assignment.contents[0].answer_code}
+                      modified={ findByLanguage(assignment.contents).answer_code}
                       theme={settingSelector.backgroundColor === SETTING_BACKGROUND_WHITE ? 'light': 'vs-dark'}
                       options={{
                         renderSideBySide: false,
@@ -595,7 +598,8 @@ export const CodeEditor = ({
               </div>
 
               {/* 실행 결과*/}
-              {editMode.altMode === "실행" && (
+              {/* // ! 실행 삭제 */}
+              {/* {editMode.altMode === "실행" && (
                 <TerminalWrapper
                   style={{ marginLeft: "12.72px" }}
                   edit={editMode.edit}
@@ -603,7 +607,7 @@ export const CodeEditor = ({
                 >
                   <Terminal darkMode={darkMode} />
                 </TerminalWrapper>
-              )}
+              )} */}
               {/* 채점 결과*/}
               {editMode.altMode === "채점" && (
                 <GradingWrapper

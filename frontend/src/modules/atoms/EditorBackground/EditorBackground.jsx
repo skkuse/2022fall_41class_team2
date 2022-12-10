@@ -822,7 +822,21 @@ export const EditorBackground = ({
         backgroundColor:COLOR_SET['EDITOR_EXPLAIN_CONTENT'][settingSelector.backgroundColor],
         color: COLOR_SET['EDITOR_EXPLAIN_CONTENT_FONT'][settingSelector.backgroundColor]
       }}>
-                {Object.keys(content.references)
+
+            {
+              content.references.map((ref, index) => {
+                return (
+                  <div style={{ marginBottom: "50px" }}>
+                    <div >
+                      {index}. 
+                      <a href={ref}>{ref}</a>
+                    </div>
+                    {!ref.includes('youtu.be') && !ref.includes('namu.wiki') && <iframe width={'100%'} scrolling="no" height={"300px"} src={ref} seamless></iframe> }
+                  </div>
+                );
+              })
+            }
+                {/* {Object.keys(content.references)
                   .filter((k) => k !== "id")
                   .map(function (key) {
                     return (
@@ -833,7 +847,7 @@ export const EditorBackground = ({
                         </div>
                       </>
                     );
-                  })}
+                  })} */}
               </CodeDescriptor>
               ;
             </div>
