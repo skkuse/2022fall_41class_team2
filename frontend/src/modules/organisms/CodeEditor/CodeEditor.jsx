@@ -188,16 +188,21 @@ export const CodeEditor = ({
         language: settingSelector.language.toLowerCase(),
         code: repoSelector.selectedModel.content.code,
       });
-      if(submitResultValidate(result.data.data)) {
-        setSubmitResult(result.data);
-        setSubmitComplete(true);  
-        changeMode({ src: "제출" });
-      }
-      else{
-        console.log(result.data.data);
-        alert("solution 함수 아래에서 작성해주세요.");
-        setSubmitComplete(false);
-      }
+
+      setSubmitResult(result.data);
+      setSubmitComplete(true);  
+      changeMode({ src: "제출" });
+
+      // if(submitResultValidate(result.data.data)) {
+      //   setSubmitResult(result.data);
+      //   setSubmitComplete(true);  
+      //   changeMode({ src: "제출" });
+      // }
+      // else{
+      //   console.log(result.data.data);
+      //   alert("solution 함수 아래에서 작성해주세요.");
+      //   setSubmitComplete(false);
+      // }
       
     } catch (error) {
       console.log(error);
