@@ -54,7 +54,7 @@ def execute_multimetric(full_filename: str):
 
 
 def execute_memory_profiler(full_filename: str):
-    program = subprocess.Popen(["python", full_filename])
+    program = subprocess.Popen(["python3", full_filename])
     mem_usage = memory_usage(proc=program, timeout=1)
     df_complexity_score = round(max(mem_usage), 2)
 
