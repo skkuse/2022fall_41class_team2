@@ -274,6 +274,13 @@ const TestCaseOutput = styled.div`
 `;
 const TestCaseResult = styled.div`
   display: flex;
+  grid-column: col 4;
+  display: flex;
+  flex-direction: column;
+
+  justify-content: center;
+  align-items: center;
+
 `;
 
 const TestCaseSeparator = styled.div`
@@ -287,11 +294,11 @@ const TestCaseSeparator = styled.div`
   transform: rotate(180deg);
 `;
 
-const TestCaseMasterContainer = styled.div`
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
+const TestCaseMasterGrid = styled.div`
+  display: grid;
+  grid-gap: 10px;
+  grid-template-columns: [col] 150px [col] 150px [col] 150px [col] 150px;
+  grid-template-rows: auto;
 `;
 const TestCaseIOContainer = styled.div`
   display: flex;
@@ -300,6 +307,10 @@ const TestCaseIOContainer = styled.div`
   justify-content: space-around;
 
   min-height: 80px;
+
+  grid-column: col 1 / span 3;
+  border-top: 4px solid #bfbfbf;
+  border-bottom: 4px solid #bfbfbf;
 `;
 // const TestCaseResultContainer = styled.div`
 //   display: flex;
@@ -545,7 +556,7 @@ export const EditorBackground = ({
             ],
         }}
       >
-        <TestCaseMasterContainer>
+        <TestCaseMasterGrid>
           <TestCaseIOContainer>
             <TestCaseInput>Input: {content.input}</TestCaseInput>
             <TestCaseOutput>Output: {content.output}</TestCaseOutput>
@@ -590,7 +601,7 @@ export const EditorBackground = ({
               ? JSON.stringify(testCaseData.is_pass)
               : "RESULT HERE"}
           </TestCaseResult>
-        </TestCaseMasterContainer>
+        </TestCaseMasterGrid>
       </BgTestCase>
     );
     // return <Bg darkMode={darkMode}>{content}</Bg>;
