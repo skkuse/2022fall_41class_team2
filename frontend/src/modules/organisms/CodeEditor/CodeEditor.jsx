@@ -142,6 +142,8 @@ export const CodeEditor = ({
   darkMode,
   changeRepo,
   setChangeRepo,
+  editMode,
+  setEditMode
 }) => {
   console.log(assignment);
   
@@ -149,7 +151,7 @@ export const CodeEditor = ({
   const headerContent = "코드 입력";
   const testcaseSelector = useSelector((state) => state.testcaseReducer);
 
-  const [editMode, setEditMode] = useState({ edit: true, altMode: "none" });
+  // const [editMode, setEditMode] = useState({ edit: true, altMode: "none" });
   const editorRef = createRef();
 
   const [repo, setRepo] = useState();
@@ -447,7 +449,7 @@ export const CodeEditor = ({
                     // width="1180px"
                     // height="820px"
                     
-                    language={repoSelector.selectedModel.content.language}
+                    language={settingSelector.language.toLowerCase()}
                     theme={settingSelector.backgroundColor === SETTING_BACKGROUND_WHITE ? 'light': 'vs-dark'}
                     value={repoSelector.selectedModel.content.code}
                     onChange={(e) => {

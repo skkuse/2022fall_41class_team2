@@ -113,6 +113,8 @@ export const Banner = ({
   darkMode,
   changeRepo,
   setChangeRepo,
+  editMode,
+  setEditMode
 }) => {
   const [audio] = useState(SampleAudioList);
   const [audioIndex, setAudioIndex] = useState(0);
@@ -200,8 +202,12 @@ export const Banner = ({
   }, []);
 
   const findByLanguage = (contents) => {
+    // const userLanguage =
+    //   repoSelector.selectedModel.content.language.toLowerCase();
     const userLanguage =
-      repoSelector.selectedModel.content.language.toLowerCase();
+      settingSelector.language.toLowerCase();
+    console.log(userLanguage);
+      // repoSelector.selectedModel.content.language.toLowerCase();
     return contents.find((content) => content.language == userLanguage);
   };
 
@@ -408,6 +414,7 @@ export const Banner = ({
       <div
         style={{ marginLeft: "14.86px" }}
         onClick={() => {
+          console.log(assignment.contents);
           const skeletonCode = findByLanguage(
             assignment.contents
           ).skeleton_code;
@@ -452,6 +459,7 @@ export const Banner = ({
           assignment={assignment}
           changeRepo={changeRepo}
           setChangeRepo={setChangeRepo}
+          setEditMode={setEditMode}
         />
         <SaveButtonComp
           repoSelector={repoSelector}
@@ -459,6 +467,7 @@ export const Banner = ({
           assignment={assignment}
           changeRepo={changeRepo}
           setChangeRepo={setChangeRepo}
+          setEditMode={setEditMode}
         />
         <SaveButtonComp
           repoSelector={repoSelector}
@@ -466,6 +475,7 @@ export const Banner = ({
           assignment={assignment}
           changeRepo={changeRepo}
           setChangeRepo={setChangeRepo}
+          setEditMode={setEditMode}
         />
       </div>
     </Bg>
@@ -478,6 +488,7 @@ const SaveButtonComp = ({
   assignment,
   changeRepo,
   setChangeRepo,
+  setEditMode
 }) => {
   const dispatch = useDispatch();
   const isSaved = repoSelector.repoList.length - 1 >= index;
@@ -528,6 +539,7 @@ const SaveButtonComp = ({
     <div
       style={{ marginLeft: "14.86px" }}
       onClick={async () => {
+        setEditMode({ edit: true, altMode:  "none" });
         // * 코드 저장
         if (
           isSaved &&

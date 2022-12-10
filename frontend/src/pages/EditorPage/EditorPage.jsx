@@ -73,6 +73,7 @@ export const EditorPage = () => {
   const [changeRepo, setChangeRepo] = useState(false);
 
   const settingSelector = useSelector((state) => state.SettingReducer);
+  const [editMode, setEditMode] = useState({ edit: true, altMode: "none" });
 
   useEffect(() => {
     if (!monaco) return;
@@ -137,6 +138,8 @@ export const EditorPage = () => {
         darkMode={darkMode}
         changeRepo={changeRepo}
         setChangeRepo={setChangeRepo}
+        editMode={editMode}
+        setEditMode={setEditMode}
       />
       {/* Problem section*/}
       <EditorPageGrid>
@@ -169,6 +172,8 @@ export const EditorPage = () => {
             darkMode={darkMode}
             changeRepo={changeRepo}
             setChangeRepo={setChangeRepo}
+            editMode={editMode}
+            setEditMode={setEditMode}
           />
         </CodeEditorWrapper>
       </EditorPageGrid>

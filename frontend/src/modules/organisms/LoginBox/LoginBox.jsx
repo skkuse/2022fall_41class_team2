@@ -146,7 +146,7 @@ export const LoginBox = ({ className, ...restProps }) => {
   const navigate = useNavigate();
 
   const client_id = process.env.REACT_APP_GITHUB_CLIENT_ID;
-  const callback_uri = `http://${window.location.host}/auth/github`;
+  const callback_uri = `${window.location.protocol}//${window.location.host}/auth/github`;
   console.log(callback_uri);
 
   return (

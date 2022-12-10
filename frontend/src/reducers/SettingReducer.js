@@ -7,7 +7,7 @@ export const SETTING_BACKGROUND_BLACK = "SETTING_BACKGROUND_BLACK";
 
 export const SETTING_LANGUAGE_PYTHON = "Python";
 export const SETTING_LANGUAGE_JAVASCRIPT = "JavaScript";
-export const SETTING_LANGUAGE_CPP = "C++";
+export const SETTING_LANGUAGE_CPP = "CPP";
 export const SETTING_LANGUAGE_JAVA = "Java";
 export const SETTING_LANGUAGE_C = "C";
 export const SETTING_LANGUAGE_CSHARP = "C#";
