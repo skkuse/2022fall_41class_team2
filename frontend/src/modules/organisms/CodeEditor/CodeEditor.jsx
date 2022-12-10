@@ -153,7 +153,7 @@ export const CodeEditor = ({
 
   // const [editMode, setEditMode] = useState({ edit: true, altMode: "none" });
   const editorRef = createRef();
-
+  const monaco = useMonaco();
   const [repo, setRepo] = useState();
   const [monacoOption, setMonacoOption] = useState();
   const dispatch = useDispatch();
@@ -165,6 +165,19 @@ export const CodeEditor = ({
 
   const [submitResult, setSubmitResult] = useState(null);
   const [submitLoading, setSubmitLoading] = useState(null);
+
+  const [scrollPosition, setScrollPosition] = useState(0);
+  const handleScroll = () => {
+      const position = window.pageYOffset;
+      setScrollPosition(position);
+      console.log(position);
+  };
+  useEffect(() => {
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => {
+        window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
 
   const changeMode = ({ src, ...restProps }) => {
     // altMode : none, grading, execution, submission
@@ -381,9 +394,14 @@ export const CodeEditor = ({
     };
   }, []);
 
+
   useEffect(() => {
     if (!monaco) return;
   }, [monaco]);
+
+  if(!monaco) {
+    return <></>
+  }
 
   if (
     !(
@@ -402,6 +420,7 @@ export const CodeEditor = ({
 
   // TODO: 에러 표시
   const error = true;
+  
 
   return (
     <>
@@ -420,9 +439,9 @@ export const CodeEditor = ({
                 {
                   testcaseSelector.isOnTestcase && testcaseSelector.isError && <Img src="/images/error.svg" alt="error indicator" />
                 }
-                {
-                  testcaseSelector.isOnTestcase && testcaseSelector.isError && testcaseSelector.errorContent
-                }
+                {/* {
+                  testcaseSelector.isOnTestcase && testcaseSelector.isError && JSON.stringify(testcaseSelector.errorContent)
+                } */}
                 
               </div>
               <div style={{ marginRight: "27.78px" }}>
@@ -455,7 +474,11 @@ export const CodeEditor = ({
               </div>
             </EditorHeaderWrapper>
             <div style={{ marginLeft: "12.42px", marginTop: "24.83px" }}>
-              <EditorWrapper style={{ position: "relative" }}>
+              <EditorWrapper style={{ position: "relative" }} onScrollCapture={()=>{
+                console.log("?/");
+              }} onScroll={(e)=>{
+                console.log(e);
+              }}>
                 {/* {
                   repoSelector.repoList.map((repo) => {
                     return (
@@ -482,14 +505,70 @@ export const CodeEditor = ({
                   </div> */}
 
                 {repoSelector.selectedModel && (
+                      
                       <Editor
-                        // width="1180px"
-                        // height="820px"
+                    
+                      beforeMount={(monaco2)=>{
+                        // let editor = monaco2.editor.getEditors();
+                       
+                        // console.log(editor);
+                      }}
+                      
+                        onMount={(editor, monaco2) => {
+                          // monaco.editor
+                          // console.log(monaco.editor.deltaDecorations);
+                          // monaco.editor.getEditors();
+                          editor.deltaDecorations(
+                            [],
+                            [
+                              {
+                                range: new monaco.Range(1, 1, 10, 1),
+                                options: {
+                                  isWholeLine: true,
+                                  className: 'myContentClass',
+                                  glyphMarginClassName: 'myGlyphMarginClass',
+                                  zIndex: 1000,
+                                  minimap:false
+                                }
+                              }
+                            ]
+                          );
+                          setTimeout(()=>{
+                            editor.deltaDecorations(
+                              [],
+                              [
+                                {
+                                  range: new monaco.Range(1, 1, 10, 1),
+                                  options: {
+                                    isWholeLine: true,
+                                    className: 'myContentClass',
+                                    glyphMarginClassName: 'myGlyphMarginClass',
+                                    zIndex: 1000,
+                                    minimap:false
+                                  }
+                                }
+                              ]
+                            );
+                          }, 1000);
+                          
+
+                          // alert(JSON.stringify(editor.getLineDecorations(2)));
+                          console.log(editor.getLineDecorations(2));
+                        }}
+
+                        // beforeMount={(monaco)=>{
+                        //   monaco.editor.edit
+                        // }}
                         
+                        options={{
+                          glyphMargin: true,
+                          
+                        }}
+                        glyphMargin={true}
                         language={settingSelector.language.toLowerCase()}
                         theme={settingSelector.backgroundColor === SETTING_BACKGROUND_WHITE ? 'light': 'vs-dark'}
                         value={repoSelector.selectedModel.content.code}
-                        onChange={(e) => {
+                        onChange={(e,ev) => {
                           dispatch(setTestcaseOff());
                           if (
                             repoSelector.repoChangeInfo.isChanging ||
@@ -512,17 +591,26 @@ export const CodeEditor = ({
                           );
                         }}
                       />
-
-                      
-                  
                 )}
 
                 {
                     repoSelector.selectedModel && testcaseSelector.isOnTestcase && testcaseSelector.isError &&
-                    <div style={{position:"absolute", top: 10, zIndex: 100}}>
+                    <div style={{position:"absolute", top: testcaseSelector.errorContent.top, zIndex: 100, }}>
+                      <div style={{backgroundColor:"rgba(249, 86, 86, 0.1)", width: "100%", height:"19px"}}>
+
+                      </div>
+
                       {
-                        testcaseSelector.errorContent
+                        testcaseSelector.errorContent.content.split("\n").map((line) => {
+                          return (
+                            <div style={{paddingLeft:"83px", backgroundColor:"rgba(204, 229, 198, 1.0)", width: "100vw"}}>
+                              {line}
+                            </div>
+                          )
+                        })
                       }
+                      
+
                     </div>
                   }
 
