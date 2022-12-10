@@ -492,10 +492,11 @@ const SaveButtonComp = ({
 }) => {
   const dispatch = useDispatch();
   const isSaved = repoSelector.repoList.length - 1 >= index;
-
+  const settingSelector = useSelector((state) => state.SettingReducer);
+  
   const findByLanguage = (contents) => {
     const userLanguage =
-      repoSelector.selectedModel.content.language.toLowerCase();
+      settingSelector.language.toLowerCase();
     return contents.find((content) => content.language == userLanguage);
   };
 
@@ -549,7 +550,7 @@ const SaveButtonComp = ({
           const result = await apiClient.put(
             `/api/repos/${repoSelector.selectedModel.id}/`,
             {
-              language: repoSelector.selectedModel.content.language,
+              language: settingSelector.language.toLowerCase(),
               code: repoSelector.selectedModel.content.code,
               assignment_id: assignment.id,
             }

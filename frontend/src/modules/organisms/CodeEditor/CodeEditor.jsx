@@ -185,7 +185,7 @@ export const CodeEditor = ({
     try {
       const result = await apiClient.post("/api/outputs/results/", {
         repo_id: repoSelector.selectedModel.id,
-        language: repoSelector.selectedModel.content.language,
+        language: settingSelector.language.toLowerCase(),
         code: repoSelector.selectedModel.content.code,
       });
       if(submitResultValidate(result.data.data)) {
@@ -218,7 +218,7 @@ export const CodeEditor = ({
       const result = await apiClient.post(
         `/api/outputs/testcases/${testcase_id}/`,
         {
-          language: repoSelector.selectedModel.content.language,
+          language: settingSelector.language.toLowerCase(),
           code: repoSelector.selectedModel.content.code,
         }
       );
@@ -228,21 +228,47 @@ export const CodeEditor = ({
     }
   };
 
+
+  const executeAllTestCase = async() => {
+    try {
+      const result = await apiClient.post(
+        `/api/outputs/testcases/`,
+        {
+          language: settingSelector.language.toLowerCase(),
+          code: repoSelector.selectedModel.content.code,
+          assignment_id: assignment.id
+        }
+      );
+      console.log(result);
+      return result;
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   const scoringHandler = async () => {
     dispatch(setTestcaseOff());
     let tempPfList = [];
-    for (const tc of assignment.testcases) {
-      if (tc.id) {
-        const result = await executeTestCase(tc.id);
-        console.log(result);
-        if (result) {
-          tempPfList.push({
-            ...result.data.data,
-            id: tc.id,
-          });
-        }
+    const result = await executeAllTestCase();
+    tempPfList = result.data.data.map((res) => {
+      return {
+        ...res,
+        id: res.id
       }
-    }
+    })
+    console.log(tempPfList);
+    // for (const tc of assignment.testcases) {
+    //   if (tc.id) {
+    //     const result = await executeTestCase(tc.id);
+    //     console.log(result);
+    //     if (result) {
+    //       tempPfList.push({
+    //         ...result.data.data,
+    //         id: tc.id,
+    //       });
+    //     }
+    //   }
+    // }
     setPfList(tempPfList);
     changeMode({ src: "채점" });
     console.log(tempPfList);
@@ -467,7 +493,7 @@ export const CodeEditor = ({
                       const result = apiClient.put(
                         `/api/repos/${repoSelector.selectedModel.id}/`,
                         {
-                          language: repoSelector.selectedModel.content.language,
+                          language: settingSelector.language.toLowerCase(),
                           code: repoSelector.selectedModel.content.code,
                           assignment_id: assignment.id,
                         }
@@ -531,7 +557,7 @@ export const CodeEditor = ({
                       // TODO : inline diff로 변경?
                       // width="560px"
                       // height="820px"
-                      language={repoSelector.selectedModel.content.language}
+                      language={settingSelector.language.toLowerCase()}
                       original={repoSelector.selectedModel.content.code}
                       modified={assignment.contents[0].answer_code}
                       theme={settingSelector.backgroundColor === SETTING_BACKGROUND_WHITE ? 'light': 'vs-dark'}
@@ -546,7 +572,7 @@ export const CodeEditor = ({
                       // height="820px"
                       theme={settingSelector.backgroundColor === SETTING_BACKGROUND_WHITE ? 'light': 'vs-dark'}
                       value={repoSelector.selectedModel.content.code}
-                      language={repoSelector.selectedModel.content.language}
+                      language={settingSelector.language.toLowerCase()}
                     />
                   )}
                 </EditorWrapper>
