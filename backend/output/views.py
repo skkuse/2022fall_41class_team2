@@ -20,6 +20,10 @@ from output import utils_execution, utils_code_explain, utils_functionality, uti
 
 SERVER_CODE_DIR = str(BASE_DIR) + os.environ['SERVER_CODE_DIR'] if not TESTING else str(BASE_DIR) + '/temp/'
 MAX_RESULT_NUM = 3
+EXCEPT_USER = [
+    os.environ.get('EXCEPT_USER_1'),
+    os.environ.get('EXCEPT_USER_2'),
+]
 
 
 @extend_schema(
@@ -248,10 +252,14 @@ class ResultListOrCreate(generics.ListCreateAPIView):
         if assignment.deadline.astimezone() < timezone.now().astimezone():
             raise BadRequestError(detail='Exceed assignment deadline')
 
-        if Result.objects.filter(
-            repo__assignment=assignment,
-            repo__author=user,
-        ).count() >= MAX_RESULT_NUM:
+        if (
+                user.nickname not in EXCEPT_USER
+        ) and (
+            Result.objects.filter(
+                repo__assignment=assignment,
+                repo__author=user,
+            ).count() >= MAX_RESULT_NUM
+        ):
             raise BadRequestError(detail=f'Submission could not be over {MAX_RESULT_NUM} times.')
 
         data = request.data

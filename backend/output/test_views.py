@@ -1,3 +1,4 @@
+import os
 from datetime import timedelta
 from unittest.mock import patch
 from django.test import TestCase
@@ -518,6 +519,34 @@ def solution():
         response = client.post('/outputs/results/', data=data, format='json')
 
         self.assertEqual(response.status_code, 400)
+
+    def test_results_create_when_exceed_possible_attempts_with_except_user(self):
+        assignment = Assignment.objects.first()
+        except_user = User.objects.create(
+            oauth_id='specific-user-oauth-id',
+            nickname=os.environ.get('EXCEPT_USER_1'),
+        )
+        repo = Repo.objects.create(
+            assignment=assignment,
+            author=except_user,
+        )
+
+        for i in range(3):
+            Result.objects.create(
+                repo=repo,
+            )
+
+        data = {
+            'repo_id': repo.id,
+            'language': 'python',
+            'code': 'dummy-code',
+        }
+
+        client = APIClient()
+        client.force_authenticate(user=except_user)
+        response = client.post('/outputs/results/', data=data, format='json')
+
+        self.assertEqual(response.status_code, 201)
 
 
 class TestResultRetrieve(TestCase):
