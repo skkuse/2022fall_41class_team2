@@ -480,10 +480,12 @@ export const CodeEditor = ({
               </div>
             </EditorHeaderWrapper>
             <div style={{ marginLeft: "12.42px", marginTop: "24.83px" }}>
-              <EditorWrapper style={{ position: "relative" }} onScrollCapture={()=>{
+              <EditorWrapper style={{ position: "relative" }} 
+              onScrollCapture={()=>{
+                dispatch(setTestcaseOff());
                 console.log("?/");
-              }} onScroll={(e)=>{
-                console.log(e);
+              }} onScroll={()=>{
+                console.log("?/");
               }}>
                 {/* {
                   repoSelector.repoList.map((repo) => {
@@ -513,7 +515,7 @@ export const CodeEditor = ({
                 {repoSelector.selectedModel && (
                       
                       <Editor
-                    
+                      height={`calc(100% - 130px)`}
                       beforeMount={(monaco2)=>{
                         // let editor = monaco2.editor.getEditors();
                        
@@ -524,6 +526,11 @@ export const CodeEditor = ({
                           // monaco.editor
                           // console.log(monaco.editor.deltaDecorations);
                           // monaco.editor.getEditors();
+                          editor.onDidScrollChange=()=>{
+                            dispatch(setTestcaseOff());
+                            console.log("??????????");
+                          }
+
                           editor.deltaDecorations(
                             [],
                             [
@@ -568,12 +575,18 @@ export const CodeEditor = ({
                         
                         options={{
                           glyphMargin: true,
-                          
+                          scrollBeyondLastLine:false,
+                          scrollbar:{
+                            alwaysConsumeMouseWheel: false, // defaults is true, false enables the behavior you describe
+                        }
                         }}
                         glyphMargin={true}
                         language={repoSelector.selectedModel.content.language.toLowerCase()}
                         theme={settingSelector.backgroundColor === SETTING_BACKGROUND_WHITE ? 'light': 'vs-dark'}
                         value={repoSelector.selectedModel.content.code}
+                        onScroll={()=>{
+                          console.log("??");
+                        }}
                         onChange={(e,ev) => {
                           console.log(repoSelector.selectedModel);
                           dispatch(setTestcaseOff());
