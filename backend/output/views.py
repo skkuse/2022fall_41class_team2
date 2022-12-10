@@ -254,6 +254,9 @@ class ResultListOrCreate(generics.ListCreateAPIView):
         ).count() >= MAX_RESULT_NUM:
             raise BadRequestError(detail=f'Submission could not be over {MAX_RESULT_NUM} times.')
 
+        data = request.data
+        data.update({'references': assignment.references})
+
         # When code is non-executable just return result instance
         if utils_execution.run(
             base_dir=SERVER_CODE_DIR,
@@ -261,7 +264,7 @@ class ResultListOrCreate(generics.ListCreateAPIView):
             raw_code=raw_code,
             raw_input=sample_testcase.input,
         ).get('exit_status') != 0:
-            serializer = self.get_serializer(data=request.data)
+            serializer = self.get_serializer(data=data)
             serializer.is_valid(raise_exception=True)
             result = serializer.save()
             return Response(
@@ -284,7 +287,6 @@ class ResultListOrCreate(generics.ListCreateAPIView):
             raw_code=raw_code,
             language=language,
         )
-        data = request.data
         data.update({'code_description': code_description})
 
         # Save init result object
