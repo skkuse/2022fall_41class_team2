@@ -13,7 +13,7 @@ import { LectureName, AssignmentName, Deadline } from "../../atoms";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams, useLocation, useNavigate } from "react-router-dom";
 import { apiClient } from "./../../../api/axios";
-import { COLOR_SET } from './../../../service/GetColor';
+import { COLOR_SET } from "./../../../service/GetColor";
 
 /* Styled components */
 const GeneralContainer = styled.div`
@@ -211,7 +211,9 @@ export const AssignmentOverview = ({ className, darkMode, ...restProps }) => {
     <>
       <Helmet
         bodyAttributes={{
-          style:  `background : ${COLOR_SET['MAIN_BACKGROUND'][settingSelector.backgroundColor]}`
+          style: `background : ${
+            COLOR_SET["MAIN_BACKGROUND"][settingSelector.backgroundColor]
+          }`,
         }}
       />
       <GridAligner>
@@ -242,17 +244,19 @@ export const AssignmentOverview = ({ className, darkMode, ...restProps }) => {
           {/* TODO 강의 개수만큼 pooling */}
           {lectureSelector.results && lectureSelector.results.length ? (
             lectureSelector.results.map((lecture, index) => {
-              return (
-                <>
-                  <LectureGroupComp
-                    key={JSON.stringify(lecture)}
-                    lecture={lecture}
-                    color={colorList[(colorList.length - 1) % (index + 1)]}
-                  />
+              // console.log(lecture.assignments.count);
+              if (lecture.assignments.count > 0)
+                return (
+                  <>
+                    <LectureGroupComp
+                      key={JSON.stringify(lecture)}
+                      lecture={lecture}
+                      color={colorList[(colorList.length - 1) % (index + 1)]}
+                    />
 
-                  <Separator></Separator>
-                </>
-              );
+                    <Separator></Separator>
+                  </>
+                );
             })
           ) : (
             <div>아직 지정된 강의가 없습니다.</div>
