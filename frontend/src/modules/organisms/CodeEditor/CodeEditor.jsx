@@ -198,7 +198,7 @@ export const CodeEditor = ({
     try {
       const result = await apiClient.post("/api/outputs/results/", {
         repo_id: repoSelector.selectedModel.id,
-        language: settingSelector.language.toLowerCase(),
+        language: repoSelector.selectedModel.content.language.toLowerCase(),
         code: repoSelector.selectedModel.content.code,
       });
 
@@ -237,7 +237,7 @@ export const CodeEditor = ({
       const result = await apiClient.post(
         `/api/outputs/testcases/${testcase_id}/`,
         {
-          language: settingSelector.language.toLowerCase(),
+          language: repoSelector.selectedModel.content.language.toLowerCase(),
           code: repoSelector.selectedModel.content.code,
         }
       );
@@ -253,7 +253,7 @@ export const CodeEditor = ({
       const result = await apiClient.post(
         `/api/outputs/testcases/`,
         {
-          language: settingSelector.language.toLowerCase(),
+          language: repoSelector.selectedModel.content.language.toLowerCase(),
           code: repoSelector.selectedModel.content.code,
           assignment_id: assignment.id
         }
@@ -345,8 +345,14 @@ export const CodeEditor = ({
     console.log(editMode);
   }, [editMode]);
 
-  const findByLanguage = (contents) => {
+  const findByLanguageDefault = (contents) => {
     const userLanguage = settingSelector.language.toLowerCase();
+    console.log(contents.find((content) => content.language == userLanguage));
+    return contents.find((content) => content.language == userLanguage);
+  };
+
+  const findByLanguageUsed = (contents) => {
+    const userLanguage = repoSelector.selectedModel.content.language.toLowerCase();
     console.log(contents.find((content) => content.language == userLanguage));
     return contents.find((content) => content.language == userLanguage);
   };
@@ -357,7 +363,7 @@ export const CodeEditor = ({
     );
     console.log(result.data.data.results);
     if (!result.data.data.results.length) {
-      const userSkeleton = findByLanguage(assignment.contents);
+      const userSkeleton = findByLanguageDefault(assignment.contents);
       const postResult = await addRepo(userSkeleton.skeleton_code);
       result = await apiClient.get(
         `/api/repos/?assignment_id=${assignment.id}`
@@ -565,10 +571,11 @@ export const CodeEditor = ({
                           
                         }}
                         glyphMargin={true}
-                        language={settingSelector.language.toLowerCase()}
+                        language={repoSelector.selectedModel.content.language.toLowerCase()}
                         theme={settingSelector.backgroundColor === SETTING_BACKGROUND_WHITE ? 'light': 'vs-dark'}
                         value={repoSelector.selectedModel.content.code}
                         onChange={(e,ev) => {
+                          console.log(repoSelector.selectedModel);
                           dispatch(setTestcaseOff());
                           if (
                             repoSelector.repoChangeInfo.isChanging ||
@@ -584,7 +591,7 @@ export const CodeEditor = ({
                           const result = apiClient.put(
                             `/api/repos/${repoSelector.selectedModel.id}/`,
                             {
-                              language: settingSelector.language.toLowerCase(),
+                              language: repoSelector.selectedModel.content.language.toLowerCase(),
                               code: repoSelector.selectedModel.content.code,
                               assignment_id: assignment.id,
                             }
@@ -669,9 +676,9 @@ export const CodeEditor = ({
                       // TODO : inline diff로 변경?
                       // width="560px"
                       // height="820px"
-                      language={settingSelector.language.toLowerCase()}
+                      language={repoSelector.selectedModel.content.language.toLowerCase()}
                       original={repoSelector.selectedModel.content.code}
-                      modified={ findByLanguage(assignment.contents).answer_code}
+                      modified={ findByLanguageUsed(assignment.contents).answer_code}
                       theme={settingSelector.backgroundColor === SETTING_BACKGROUND_WHITE ? 'light': 'vs-dark'}
                       options={{
                         renderSideBySide: false,
@@ -684,7 +691,7 @@ export const CodeEditor = ({
                       // height="820px"
                       theme={settingSelector.backgroundColor === SETTING_BACKGROUND_WHITE ? 'light': 'vs-dark'}
                       value={repoSelector.selectedModel.content.code}
-                      language={settingSelector.language.toLowerCase()}
+                      language={repoSelector.selectedModel.content.language.toLowerCase()}
                     />
                   )}
                 </EditorWrapper>

@@ -201,16 +201,11 @@ export const Banner = ({
     }, 1000);
   }, []);
 
-  const findByLanguage = (contents) => {
-    // const userLanguage =
-    //   repoSelector.selectedModel.content.language.toLowerCase();
+  const findByLanguageUsed = (contents) => {
     const userLanguage =
-      settingSelector.language.toLowerCase();
-    console.log(userLanguage);
-      // repoSelector.selectedModel.content.language.toLowerCase();
+    repoSelector.selectedModel.content.language.toLowerCase();
     return contents.find((content) => content.language == userLanguage);
   };
-
   
   const prevSong = ()=>{
     setPlaying(false);
@@ -415,7 +410,7 @@ export const Banner = ({
         style={{ marginLeft: "14.86px" }}
         onClick={() => {
           console.log(assignment.contents);
-          const skeletonCode = findByLanguage(
+          const skeletonCode = findByLanguageUsed(
             assignment.contents
           ).skeleton_code;
           console.log(skeletonCode);
@@ -494,9 +489,15 @@ const SaveButtonComp = ({
   const isSaved = repoSelector.repoList.length - 1 >= index;
   const settingSelector = useSelector((state) => state.SettingReducer);
   
-  const findByLanguage = (contents) => {
+  const findByLanguageUsed = (contents) => {
     const userLanguage =
-      settingSelector.language.toLowerCase();
+    repoSelector.selectedModel.content.language.toLowerCase();
+    return contents.find((content) => content.language == userLanguage);
+  };
+
+  const findByLanguageDefault = (contents) => {
+    const userLanguage =
+    settingSelector.language.toLowerCase();
     return contents.find((content) => content.language == userLanguage);
   };
 
@@ -523,10 +524,10 @@ const SaveButtonComp = ({
       !isSaved &&
       repoSelector.repoCreateInfo.prevId == index
     ) {
-      const skeletonCode = findByLanguage(assignment.contents).skeleton_code;
+      const skeletonCode = findByLanguageDefault(assignment.contents).skeleton_code;
       apiClient
         .post(`/api/repos/`, {
-          language: "python",
+          language: settingSelector.language.toLowerCase(),
           code: skeletonCode,
           assignment_id: assignment.id,
         })
