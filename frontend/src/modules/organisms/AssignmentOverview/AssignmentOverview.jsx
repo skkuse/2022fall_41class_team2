@@ -269,6 +269,7 @@ export const AssignmentOverview = ({ className, darkMode, ...restProps }) => {
 
 const LectureGroupComp = ({ lecture, color }) => {
   // console.log(JSON.stringify(lecture));
+  
   return (
     <LectureGroup numAssignment={`${lecture.assignments.results.length}`}>
       {/* <>
@@ -283,6 +284,8 @@ const LectureGroupComp = ({ lecture, color }) => {
 
       <AssignmentGrid numAssignment={`${lecture.assignments.results.length}`}>
         {lecture.assignments.results.map((ass) => {
+          // console.log(Date.parse(ass.deadline));
+          // console.log(Date());
           return (
             <>
               <Link
@@ -311,14 +314,14 @@ const LectureGroupComp = ({ lecture, color }) => {
                     submission={false}
                   ></AssignmentName>
 
-                  <Deadline
+                  {/* <Deadline
                     remainingTime={`${getTimeDiff(
                       new Date(ass.deadline),
                       new Date()
                     )}`}
                     background={color[2]}
                     submission={false}
-                  ></Deadline>
+                  ></Deadline> */}
                 </AssignmentBlockContainer>
               </Link>
             </>
@@ -330,10 +333,10 @@ const LectureGroupComp = ({ lecture, color }) => {
 };
 
 export const getTimeDiff = (time1, now) => {
-  let diff = new Date(time1 - now);
-  // console.log(time1);
+  console.log(time1);
   // console.log(diff.getFullYear() - 1970);
   // console.log(diff.getMonth());
+  let diff = new Date(time1 - now);
   const diffDate = diff.getDate();
   const diffHour = diff.getHours();
   const diffMin = diff.getMinutes();
