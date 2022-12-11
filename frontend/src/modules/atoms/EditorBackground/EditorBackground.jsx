@@ -297,14 +297,14 @@ const TestCaseSeparator = styled.div`
 const TestCaseMasterGrid = styled.div`
   display: grid;
   grid-gap: 10px;
-  grid-template-columns: [col] 150px [col] 150px [col] 150px [col] 150px;
+  grid-template-columns: [col] 1fr [col] 1fr [col] 1fr [col] 1fr;
   grid-template-rows: auto;
 `;
 const TestCaseIOContainer = styled.div`
   display: flex;
   flex-direction: column;
 
-  justify-content: space-around;
+  justify-content: center;
 
   min-height: 80px;
 
@@ -460,9 +460,9 @@ export const EditorBackground = ({
 }) => {
   const dispatch = useDispatch();
   const settingSelector = useSelector((state) => state.SettingReducer);
+  const testcaseSelector = useSelector((state) => state.testcaseReducer);
   // redability result
   let readabilityResult = [];
-
   const [pfListLocal, setPfListLocal] = useState(pfList);
   const [testCaseData, setTestCaseData] = useState(testCaseValue);
 
@@ -559,8 +559,20 @@ export const EditorBackground = ({
       >
         <TestCaseMasterGrid>
           <TestCaseIOContainer>
-            <TestCaseInput>Input: {content.input}</TestCaseInput>
-            <TestCaseOutput>Output: {content.output}</TestCaseOutput>
+            <TestCaseInput style={{ marginBottom: "11px" }}>
+              Input: {content.input}
+            </TestCaseInput>
+            <TestCaseOutput style={{ marginBottom: "11px" }}>
+              Expected Output: {content.output}
+            </TestCaseOutput>
+            <TestCaseOutput style={{ marginBottom: "11px" }}>
+              Actual Output:
+              {testCaseData.actual_output}
+            </TestCaseOutput>
+
+            {/* <ul>Input: {testcase.input}</ul>
+            <ul>Expected Output: {testcase.expected_output}</ul>
+            <ul>Actual Output: {testcase.actual_output}</ul> */}
           </TestCaseIOContainer>
 
           <TestCaseResult
@@ -583,6 +595,7 @@ export const EditorBackground = ({
                   ...result.data.data,
                   id: testCaseData.id,
                 });
+                console.log("!!!!asdf");
                 console.log(result.data.data);
                 // console.log(result);
                 // let tempPfList = [...testCaseData];
@@ -599,7 +612,9 @@ export const EditorBackground = ({
             }}
           >
             {testCaseData.is_pass != null
-              ? JSON.stringify(testCaseData.is_pass)
+              ? testCaseData.is_pass
+                ? "PASS"
+                : "FAIL"
               : "RESULT HERE"}
           </TestCaseResult>
         </TestCaseMasterGrid>
