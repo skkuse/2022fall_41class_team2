@@ -574,7 +574,12 @@ const SaveButtonComp = ({
         }
       }}
     >
-      <SaveFuncButton slot={index} saved={isSaved} />
+      <SaveFuncButton slot={index} saved={isSaved} 
+      isSelected={
+        repoSelector.selectedModel && repoSelector.repoList[index]? 
+        repoSelector.selectedModel.id === repoSelector.repoList[index].id : 
+        false} 
+        />
     </div>
   );
 };
