@@ -70,15 +70,13 @@ class BackendConfig(AppConfig):
             contents=[
                 {
                     'language': 'c',
-                    'skeleton_code': '''
-#include <stdio.h>
+                    'skeleton_code': '''#include <stdio.h>
 
 void solution() {
 
 }
 ''',
-                    'answer_code': '''
-#include <malloc.h>
+                    'answer_code': '''#include <malloc.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -165,15 +163,13 @@ void solution() {
                 },
                 {
                     'language': 'cpp',
-                    'skeleton_code': '''
-#include <iostream>
+                    'skeleton_code': '''#include <iostream>
 
 void solution() {
 
 }
 ''',
-                    'answer_code': '''
-#include<iostream>
+                    'answer_code': '''#include<iostream>
 #include<vector>
 using namespace std;
 
@@ -257,13 +253,11 @@ void solution() {
                 },
                 {
                     'language': 'javascript',
-                    'skeleton_code': '''
-let solution = () => {
+                    'skeleton_code': '''let solution = () => {
 
 }
 ''',
-                    'answer_code': '''
-const fs = require('fs');
+                    'answer_code': '''const fs = require('fs');
 let input = fs.readFileSync('/dev/stdin').toString().trim().split('\\n');
 
 [n, arr] = input;
@@ -328,12 +322,10 @@ let solution = () => {
                 },
                 {
                     'language': 'python',
-                    'skeleton_code': '''
-def solution():
+                    'skeleton_code': '''def solution():
 
 ''',
-                    'answer_code': '''
-def solution():
+                    'answer_code': '''def solution():
     n = int(input())
     info = [*map(int, input().split())]
 
@@ -396,7 +388,7 @@ def solution():
             assignment=assignment_dfs,
             is_hidden=False,
             input='1\n1 0 0 0 0 0 0 0 0 0 0',
-            output='-1',
+            output='[-1]',
         )
         Testcase.objects.get_or_create(
             assignment=assignment_dfs,
@@ -419,15 +411,13 @@ def solution():
             contents=[
                 {
                     'language': 'c',
-                    'skeleton_code': '''
-#include <stdio.h>
+                    'skeleton_code': '''#include <stdio.h>
 
 void solution() {
 
 }
 ''',
-                    'answer_code': '''
-#include <stdio.h>
+                    'answer_code': '''#include <stdio.h>
 
 int dp[501][501];
 
@@ -464,15 +454,13 @@ void solution() {
                 },
                 {
                     'language': 'cpp',
-                    'skeleton_code': '''
-#include <iostream>
+                    'skeleton_code': '''#include <iostream>
 
 void solution() {
 
 }
 ''',
-                    'answer_code': '''
-#include <string>
+                    'answer_code': '''#include <string>
 #include <vector>
 #include <algorithm>
 #include <iostream>
@@ -522,13 +510,11 @@ void solution() {
                 },
                 {
                     'language': 'javascript',
-                    'skeleton_code': '''
-let solution = () => {
+                    'skeleton_code': '''let solution = () => {
 
 }
 ''',
-                    'answer_code': '''
-const fs = require('fs');
+                    'answer_code': '''const fs = require('fs');
 let input = fs.readFileSync('/dev/stdin').toString().trim().split('\\n');
 
 [n, ...arr] = input;
@@ -550,12 +536,10 @@ let solution = () => {
                 },
                 {
                     'language': 'python',
-                    'skeleton_code': '''
-def solution():
+                    'skeleton_code': '''def solution():
 
 ''',
-                    'answer_code': '''
-def solution():
+                    'answer_code': '''def solution():
     n = int(input())
 
     triangle = []
