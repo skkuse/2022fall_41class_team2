@@ -298,13 +298,13 @@ class TestResultListOrCreate(TestCase):
             assignment=assignment,
             is_hidden=False,
             input='3\n1 2 3\n',
-            output='6.0\n'
+            output='6.0'
         )
         testcase_2 = Testcase.objects.create(
             assignment=assignment,
             is_hidden=True,
             input='3\n1.1 2.2 3.3',
-            output='6.6\n',
+            output='6.6',
         )
         repo_1 = Repo.objects.create(
             assignment=assignment,
