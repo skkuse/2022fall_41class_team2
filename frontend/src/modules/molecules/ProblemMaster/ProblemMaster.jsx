@@ -15,7 +15,7 @@ const GeneralContainer = styled.div`
   height: 100vh;
 `;
 
-function ProblemMaster({ bodyContent, darkMode, ...restProps }) {
+function ProblemMaster({ bodyContent, darkMode, prob, restr, ...restProps }) {
   // console.log(`Problem props: ${bodyContent}`);
   const headerContent = "문제/참조&제약사항";
   return (
@@ -29,6 +29,8 @@ function ProblemMaster({ bodyContent, darkMode, ...restProps }) {
         content={bodyContent}
         assignmentId={restProps.assignmentId}
         darkMode={darkMode}
+        prob={prob}
+        restr= {restr}
       />
     </DescWrapper>
   );

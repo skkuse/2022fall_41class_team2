@@ -151,7 +151,11 @@ export const EditorPage = () => {
       <EditorPageGrid>
         <ProblemWrapper style={{ marginLeft: "43px", marginTop: "25px" }}>
           {/* scroll test */}
-          <Problem bodyContent={ass.question} darkMode={darkMode} />
+          <Problem
+            prob={ass.question}
+            restr={ass.constraints}
+            darkMode={darkMode}
+          />
         </ProblemWrapper>
         {/* TestCase */}
         <TestcaseWrapper style={{ marginLeft: "43px", marginTop: "10px" }}>
