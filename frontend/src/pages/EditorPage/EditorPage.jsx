@@ -9,7 +9,9 @@ import { apiClient } from "../../api/axios";
 
 import { render } from "react-dom";
 import MonacoEditor from "react-monaco-editor";
-
+import React from 'react';
+import ReactDOM from 'react-dom';
+import Modal from 'react-modal';
 import {
   Banner,
   CodeEditor,
@@ -18,6 +20,7 @@ import {
 } from "../../modules/organisms/CodeEditor";
 import { getTimeDiff } from "../../modules/organisms/AssignmentOverview/AssignmentOverview";
 import { COLOR_SET } from "./../../service/GetColor";
+import { setTestcaseOff } from './EditorAction';
 
 const Testbox = styled.div`
   background: #000000;
@@ -65,6 +68,19 @@ const GeneralContainer = styled.div`
   overflow-y: hidden;
 `;
 
+const customStyles = {
+  content: {
+    top: '50%',
+    left: '50%',
+    right: 'auto',
+    bottom: 'auto',
+    marginRight: '-50%',
+    transform: 'translate(-50%, -50%)',
+
+  },
+};
+// Modal.setAppElement('#yourAppElement');
+
 export const EditorPage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -78,6 +94,39 @@ export const EditorPage = () => {
 
   const settingSelector = useSelector((state) => state.SettingReducer);
   const [editMode, setEditMode] = useState({ edit: true, altMode: "none" });
+
+  let subtitle;
+  const [modalIsOpen, setIsOpen] = React.useState(false);
+  const testcaseSelector = useSelector((state) => state.testcaseReducer);
+
+  function openModal() {
+    setIsOpen(true);
+  }
+
+  function afterOpenModal() {
+    // references are now sync'd and can be accessed.
+    subtitle.style.color = '#f00';
+  }
+
+  function closeModal() {
+    setIsOpen(false);
+  }
+
+  useEffect(()=>{
+    if(!modalIsOpen) {
+      dispatch(setTestcaseOff());
+    }
+  }, [modalIsOpen])
+
+  useEffect(()=>{
+      if(testcaseSelector.isOnTestcase && testcaseSelector.isError) {
+        console.log(testcaseSelector.errorContent);
+        openModal();
+      }
+      else{
+        closeModal();
+      }
+  }, [testcaseSelector.isOnTestcase, testcaseSelector.isError])
 
   useEffect(() => {
     if (!monaco) return;
@@ -134,6 +183,28 @@ export const EditorPage = () => {
           }`,
         }}
       />
+      {/* <button onClick={openModal}>Open Modal</button> */}
+      {/* {
+        JSON.stringify(testcaseSelector)
+      } */}
+    <Modal
+        isOpen={modalIsOpen}
+        onAfterOpen={afterOpenModal}
+        onRequestClose={closeModal}
+        style={customStyles}
+        contentLabel="Example Modal"
+      >
+        {/* <h2 ref={(_subtitle) => (subtitle = _subtitle)}>Hello</h2> */}
+        {/* <button onClick={closeModal}>close</button> */}
+        <div>{testcaseSelector.errorContent.content}</div>
+        {/* <form>
+          <input />
+          <button>tab navigation</button>
+          <button>stays</button>
+          <button>inside</button>
+          <button>the modal</button>
+        </form> */}
+      </Modal>
 
       {/* Banner */}
       <Banner

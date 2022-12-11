@@ -46,6 +46,11 @@ import { setItemWithExpireTime } from './../../../service/localStorage';
 
 const SampleAudioList = [
   {
+    title: "Please Calm My Mind",
+    author: "Lesfm",
+    audio: new Audio(natureAudio),
+  },
+  {
     title: "Lifelike",
     author: "AlexiAction",
     audio: new Audio(lifeAudio),
@@ -64,11 +69,6 @@ const SampleAudioList = [
     title: "The Beat of Nature",
     author: "Olexy",
     audio: new Audio(calmAudio),
-  },
-  {
-    title: "Please Calm My Mind",
-    author: "Lesfm",
-    audio: new Audio(natureAudio),
   },
 ];
 

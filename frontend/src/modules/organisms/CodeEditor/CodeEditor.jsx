@@ -613,7 +613,7 @@ export const CodeEditor = ({
                       />
                 )}
 
-                {
+                {/* {
                     repoSelector.selectedModel && testcaseSelector.isOnTestcase && testcaseSelector.isError &&
                     <div style={{position:"absolute", top: testcaseSelector.errorContent.top, zIndex: 100, }}>
                       <div style={{backgroundColor:"rgba(249, 86, 86, 0.1)", width: "100%", height:"19px"}}>
@@ -632,7 +632,7 @@ export const CodeEditor = ({
                       
 
                     </div>
-                  }
+                  } */}
 
                 {(repoSelector.repoChangeInfo.isChanging ||
                   repoSelector.repoCreateInfo.isCreating) && (
