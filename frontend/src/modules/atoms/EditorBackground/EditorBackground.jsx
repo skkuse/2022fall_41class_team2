@@ -185,11 +185,10 @@ const Separator = styled.div`
   box-sizing: border-box;
 `;
 const ScoreDescriptor = styled.div`
-  width: 100%;
-  display: flex;
-  align-items: stretch;
-  justify-content: stretch;
   box-sizing: border-box;
+
+  width: 100%;
+
   height: 455px;
   min-height: 412px;
   background: ${(props) => (props.darkMode ? "#525263" : "#f6f6f6")};
@@ -197,10 +196,10 @@ const ScoreDescriptor = styled.div`
     props.darkMode ? "2px solid #52c0e7" : "2px solid #52c0e7"};
   border-radius: 11px;
   padding: 18.55px 18.55px 18.55px 18.55px;
+
   overflow-wrap: break-word;
   word-wrap: break-word;
   hyphens: auto;
-
   overflow-x: hidden;
   overflow-y: auto;
 
@@ -221,7 +220,7 @@ const CodeDescriptor = styled.div`
   box-sizing: border-box;
 
   width: 100%;
-  
+
   height: 82vh;
   min-height: 412px;
   background: ${(props) => (props.darkMode ? "#525263" : "#f6f6f6")};
@@ -863,115 +862,111 @@ export const EditorBackground = ({
                   }}
                 >
                   {/* TODO: activeIndexDesc state 받아서 표시  */}
-                  <Aligner>
-                    <ChartContainer>
-                      <ScoreDescriptor
-                        style={{
-                          backgroundColor:
-                            COLOR_SET["EDITOR_RESULT"][
-                              settingSelector.backgroundColor
-                            ],
-                          color:
-                            COLOR_SET["EDITOR_EXPLAIN_FONT"][
-                              settingSelector.backgroundColor
-                            ],
-                        }}
-                      >
-                        {activeIndexChart === READABILITY &&
-                          content.readability_result && (
-                            <DescriptionContainer>
-                              {/* {JSON.stringify(content.readability_result, null, 2)} */}
-                              {Object.keys(content.readability_result)
-                                .filter((k) => k !== "id")
-                                .map(function (key) {
-                                  return (
-                                    <div style={{ marginBottom: "11px" }}>
-                                      {key} : {content.readability_result[key]}
-                                    </div>
-                                  );
-                                })}
-                            </DescriptionContainer>
-                          )}
-                        {activeIndexChart === EFFICIENCY &&
-                          content.efficiency_result && (
-                            <DescriptionContainer>
-                              {Object.keys(content.efficiency_result)
-                                .filter((k) => k !== "id")
-                                .map(function (key) {
-                                  return (
-                                    <div style={{ marginBottom: "11px" }}>
-                                      {key} : {content.efficiency_result[key]}
-                                    </div>
-                                  );
-                                })}
-                            </DescriptionContainer>
-                          )}
-                        {activeIndexChart === FUNCTIONALITY &&
-                          content.functionality_result && (
-                            <DescriptionContainer>
-                              {/*여러 테스트케이스가 어레이 형태로 있음, 다른 형태로 처리 필요 */}
-                              {console.log(
-                                JSON.stringify(
-                                  content.functionality_result.testcase_results
-                                )
-                              )}
-                              {content.functionality_result.testcase_results.map(
-                                (testcase, index) => {
-                                  if (!testcase.input) {
-                                    if (testcase.is_hidden) {
-                                      return (
-                                        <>
-                                          <div style={{ marginBottm: "11px" }}>
-                                            {testcase.is_hidden
-                                              ? "히든"
-                                              : "공개"}{" "}
-                                            테스트케이스 {index + 1} :{" "}
-                                            {testcase.is_pass ? "PASS" : "FAIL"}
-                                          </div>
-                                          <div style={{ marginBottm: "0px" }}>
-                                            <ul>Input: {testcase.input}</ul>
-                                            <ul>
-                                              Expected Output:{" "}
-                                              {testcase.expected_output}
-                                            </ul>
-                                            <ul>
-                                              Actual Output:{" "}
-                                              {testcase.actual_output}
-                                            </ul>
-                                          </div>
-                                        </>
-                                      );
-                                    }
 
-                                    return <></>;
+                  <ChartContainer>
+                    <ScoreDescriptor
+                      style={{
+                        backgroundColor:
+                          COLOR_SET["EDITOR_RESULT"][
+                            settingSelector.backgroundColor
+                          ],
+                        color:
+                          COLOR_SET["EDITOR_EXPLAIN_FONT"][
+                            settingSelector.backgroundColor
+                          ],
+                      }}
+                    >
+                      {activeIndexChart === READABILITY &&
+                        content.readability_result && (
+                          <DescriptionContainer>
+                            {/* {JSON.stringify(content.readability_result, null, 2)} */}
+                            {Object.keys(content.readability_result)
+                              .filter((k) => k !== "id")
+                              .map(function (key) {
+                                return (
+                                  <div style={{ marginBottom: "11px" }}>
+                                    {key} : {content.readability_result[key]}
+                                  </div>
+                                );
+                              })}
+                          </DescriptionContainer>
+                        )}
+                      {activeIndexChart === EFFICIENCY &&
+                        content.efficiency_result && (
+                          <DescriptionContainer>
+                            {Object.keys(content.efficiency_result)
+                              .filter((k) => k !== "id")
+                              .map(function (key) {
+                                return (
+                                  <div style={{ marginBottom: "11px" }}>
+                                    {key} : {content.efficiency_result[key]}
+                                  </div>
+                                );
+                              })}
+                          </DescriptionContainer>
+                        )}
+                      {activeIndexChart === FUNCTIONALITY &&
+                        content.functionality_result && (
+                          <DescriptionContainer>
+                            {/*여러 테스트케이스가 어레이 형태로 있음, 다른 형태로 처리 필요 */}
+                            {console.log(
+                              JSON.stringify(
+                                content.functionality_result.testcase_results
+                              )
+                            )}
+                            {content.functionality_result.testcase_results.map(
+                              (testcase, index) => {
+                                if (!testcase.input) {
+                                  if (testcase.is_hidden) {
+                                    return (
+                                      <>
+                                        <div style={{ marginBottm: "11px" }}>
+                                          {testcase.is_hidden ? "히든" : "공개"}{" "}
+                                          테스트케이스 {index + 1} :{" "}
+                                          {testcase.is_pass ? "PASS" : "FAIL"}
+                                        </div>
+                                        <div style={{ marginBottm: "0px" }}>
+                                          <ul>Input: {testcase.input}</ul>
+                                          <ul>
+                                            Expected Output:{" "}
+                                            {testcase.expected_output}
+                                          </ul>
+                                          <ul>
+                                            Actual Output:{" "}
+                                            {testcase.actual_output}
+                                          </ul>
+                                        </div>
+                                      </>
+                                    );
                                   }
-                                  return (
-                                    <>
-                                      <div style={{ marginBottm: "11px" }}>
-                                        {testcase.is_hidden ? "히든" : "공개"}{" "}
-                                        테스트케이스 {index + 1} :{" "}
-                                        {testcase.is_pass ? "PASS" : "FAIL"}
-                                      </div>
-                                      <div style={{ marginBottm: "0px" }}>
-                                        <ul>Input: {testcase.input}</ul>
-                                        <ul>
-                                          Expected Output:{" "}
-                                          {testcase.expected_output}
-                                        </ul>
-                                        <ul>
-                                          Actual Output:{" "}
-                                          {testcase.actual_output}
-                                        </ul>
-                                      </div>
-                                    </>
-                                  );
+
+                                  return <></>;
                                 }
-                              )}
-                            </DescriptionContainer>
-                          )}
-                      </ScoreDescriptor>
-                    </ChartContainer>
-                  </Aligner>
+                                return (
+                                  <>
+                                    <div style={{ marginBottm: "11px" }}>
+                                      {testcase.is_hidden ? "히든" : "공개"}{" "}
+                                      테스트케이스 {index + 1} :{" "}
+                                      {testcase.is_pass ? "PASS" : "FAIL"}
+                                    </div>
+                                    <div style={{ marginBottm: "0px" }}>
+                                      <ul>Input: {testcase.input}</ul>
+                                      <ul>
+                                        Expected Output:{" "}
+                                        {testcase.expected_output}
+                                      </ul>
+                                      <ul>
+                                        Actual Output: {testcase.actual_output}
+                                      </ul>
+                                    </div>
+                                  </>
+                                );
+                              }
+                            )}
+                          </DescriptionContainer>
+                        )}
+                    </ScoreDescriptor>
+                  </ChartContainer>
                 </div>
               </div>
             )}
