@@ -534,21 +534,26 @@ const SaveButtonComp = ({
         })
         .then((result) => {
           dispatch(createRepoAction(result.data.data));
+          setItemWithExpireTime(`ass${assignment.id}`, result.data.data.id, 60*60*1000);
         });
     }
   });
+
+  // if(!repoSelector.selectedModel){
+  //   return <></>;
+  // }
 
   return (
     <div
       style={{ marginLeft: "14.86px" }}
       onClick={async () => {
         setEditMode({ edit: true, altMode:  "none" });
-        setItemWithExpireTime(`ass${assignment.id}`, repoSelector.repoList[index].id, 60*60*1000);
         // * 코드 저장
         if (
           isSaved &&
           repoSelector.selectedModel.id === repoSelector.repoList[index].id
         ) {
+          setItemWithExpireTime(`ass${assignment.id}`, repoSelector.repoList[index].id, 60*60*1000);
           console.log(assignment.id);
           const result = await apiClient.put(
             `/api/repos/${repoSelector.selectedModel.id}/`,
@@ -562,6 +567,7 @@ const SaveButtonComp = ({
         }
         // * 코드 불러오기
         else if (isSaved) {
+          setItemWithExpireTime(`ass${assignment.id}`, repoSelector.repoList[index].id, 60*60*1000);
           dispatch(readyChangeSelectedRepoAction(index));
           // // setChangeRepo(true);
           // setTimeout(() => {

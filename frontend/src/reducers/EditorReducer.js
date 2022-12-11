@@ -31,7 +31,10 @@ export function editorReducer(state = editorInitState, action) {
             return { 
                 ...state, 
                 repoList : action.payload,
-                selectedModel: action.payload.find((repo)=>repo.id == getItemWithExpireTime(`ass${action.assignmentId}`))
+                selectedModel: getItemWithExpireTime(`ass${action.assignmentId}`)?
+                                action.payload.find((repo)=>repo.id == getItemWithExpireTime(`ass${action.assignmentId}`))
+                                :
+                                action.payload[action.payload.length - 1]
             };
         
         // * 다른 과제로 들어갈 때 저장된 코드 비우기
@@ -75,6 +78,7 @@ export function editorReducer(state = editorInitState, action) {
             //         code: "hello world!"
             //     }
             // })
+
             return {
                 ...state,
                 repoList: tempList,
@@ -161,7 +165,7 @@ export function testcaseReducer(state = testcaseInitState, action) {
             };
 
         case TESTCASE_ERROR:
-            // console.log(action);
+            console.log(action);
             let errorContentTemp = action.errorContent;
             const re = new RegExp('line [0-9]*','g');
             console.log(errorContentTemp.match(re));

@@ -418,7 +418,7 @@ export const CodeEditor = ({
   }, [monaco]);
 
   if (!monaco) {
-    return <></>;
+    return <>sdfd</>;
   }
 
   if (
@@ -430,7 +430,7 @@ export const CodeEditor = ({
     )
   ) {
     console.log(repoSelector);
-    return <></>;
+    return <>dfsd</>;
   }
 
   console.log(editorRef);

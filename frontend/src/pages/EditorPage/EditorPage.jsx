@@ -23,9 +23,6 @@ import { COLOR_SET } from "./../../service/GetColor";
 import { setTestcaseOff } from './EditorAction';
 import { SETTING_BACKGROUND_WHITE } from './../../reducers/SettingReducer';
 import { Img } from './../../modules/atoms/Img/index';
-=======
-import { Img } from "../../modules/atoms";
->>>>>>> f7d4ef3d71afba7175ce6f3a3f2a00dd16be59e4
 
 const Testbox = styled.div`
   background: #000000;
@@ -106,7 +103,6 @@ export const EditorPage = () => {
   const settingSelector = useSelector((state) => state.SettingReducer);
   const [editMode, setEditMode] = useState({ edit: true, altMode: "none" });
 
-<<<<<<< HEAD
   let subtitle;
   const [modalIsOpen, setIsOpen] = React.useState(false);
   const testcaseSelector = useSelector((state) => state.testcaseReducer);
@@ -139,10 +135,8 @@ export const EditorPage = () => {
         closeModal();
       }
   }, [testcaseSelector.isOnTestcase, testcaseSelector.isError])
-=======
   // Magnifier
   const [magnified1, setMagnified1] = useState(false);
->>>>>>> f7d4ef3d71afba7175ce6f3a3f2a00dd16be59e4
 
   useEffect(() => {
     if (!monaco) return;
@@ -240,7 +234,9 @@ export const EditorPage = () => {
           options={{
             readOnly: true,
             lineNumbers: ((lineNumber)=>{
-              return testcaseSelector.errorContent.line -6 +lineNumber;
+              return  testcaseSelector.errorContent.line >= 6 ? 
+                      testcaseSelector.errorContent.line -6 +lineNumber : 
+                      lineNumber;
             }),
             scrollBeyondLastLine:false,
             scrollbar:{
@@ -261,7 +257,7 @@ export const EditorPage = () => {
             repoSelector.selectedModel && testcaseSelector.isOnTestcase && testcaseSelector.isError &&
             <div style={{
               position:"absolute", 
-              top: `calc(19px * 6 + 40px + 60px)`, 
+              top: `calc(19px * ${testcaseSelector.errorContent.line >= 6 ? 6 : testcaseSelector.errorContent.line} + 40px + 60px)`, 
               zIndex: 100, }}>
               <div style={{backgroundColor:"rgba(249, 86, 86, 0.1)", width: "100%",  height:"19px", maxWidth: '688px',}}>
               </div>
@@ -278,6 +274,9 @@ export const EditorPage = () => {
           }
         
       </Modal>
+      {
+        JSON.stringify(testcaseSelector.errorContent)
+      }
 
       {/* Banner */}
       <Banner
