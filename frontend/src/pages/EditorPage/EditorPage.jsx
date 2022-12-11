@@ -30,7 +30,7 @@ const EditorPageGrid = styled.div`
   grid-template-columns: [col] 1fr [col] 1fr [col] 1fr;
   grid-template-rows: [row] 1fr [row] 1fr;
 
-  width: 97%;
+  width: 100%;
   height: 97%;
 `;
 
@@ -158,9 +158,8 @@ export const EditorPage = () => {
       <EditorPageGrid>
         <ProblemWrapper
           magnified={magnified1}
-          style={{ marginLeft: "43px", marginTop: "25px" }}
+          style={{ marginLeft: "25px", marginTop: "25px" }}
         >
-
           {/* scroll test */}
           <Problem
             prob={ass.question}
@@ -172,7 +171,7 @@ export const EditorPage = () => {
         </ProblemWrapper>
         {/* TestCase */}
         <TestcaseWrapper
-          style={{ marginLeft: "43px", marginTop: "10px" }}
+          style={{ marginLeft: "25px", marginTop: "10px" }}
           magnified={magnified1}
         >
           <Testcase
@@ -188,8 +187,8 @@ export const EditorPage = () => {
         {/* Editor */}
         <CodeEditorWrapper
           style={{
-            marginLeft: "12.72px",
             marginTop: "25px",
+            marginRight: "25px",
           }}
           magnified={magnified1}
         >

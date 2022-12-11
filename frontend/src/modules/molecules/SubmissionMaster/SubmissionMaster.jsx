@@ -1,7 +1,8 @@
 import styled from "styled-components";
 import { EditorHeader, EditorBackground } from "../../atoms";
-import { useSelector } from 'react-redux';
-import { COLOR_SET } from './../../../service/GetColor';
+import { useSelector } from "react-redux";
+import { COLOR_SET } from "./../../../service/GetColor";
+import { Img } from "../../atoms";
 
 const DescWrapper = styled.div`
   display: flex;
@@ -26,8 +27,19 @@ const PlagiarismIndicator = styled.div`
   justify-content: space-between;
   background: ${(props) => (props.darkMode ? "#525263" : "#bfbfbf")};
 `;
+const MagnifierContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`;
 
-export const SubmissionMaster = ({ resultObj, darkMode, ...restProps }) => {
+export const SubmissionMaster = ({
+  resultObj,
+  darkMode,
+  magnified,
+  setMagnified,
+  ...restProps
+}) => {
   console.log(`SubmissionMaster ${JSON.stringify(resultObj)}`);
   const settingSelector = useSelector((state) => state.SettingReducer);
   const data = resultObj.data;
@@ -38,18 +50,32 @@ export const SubmissionMaster = ({ resultObj, darkMode, ...restProps }) => {
   const headerContent = "제출결과";
   return (
     <DescWrapper>
-      <PlagiarismIndicator style={{
-        backgroundColor: COLOR_SET['EDITOR_EXPLAIN'][settingSelector.backgroundColor],
-        color: COLOR_SET['EDITOR_EXPLAIN_FONT'][settingSelector.backgroundColor]
-      }}>
+      <PlagiarismIndicator
+        style={{
+          backgroundColor:
+            COLOR_SET["EDITOR_EXPLAIN"][settingSelector.backgroundColor],
+          color:
+            COLOR_SET["EDITOR_EXPLAIN_FONT"][settingSelector.backgroundColor],
+        }}
+      >
         <EditorHeader
           content={headerContent}
           assignmentId={restProps.assignmentId}
           darkMode={darkMode}
         />
-        {plagiarism && <div style={{ marginRight: "11px" }}>
-          표절률 {plagiarism? plagiarism.similarity_score : 0}%
-        </div>}
+        <MagnifierContainer>
+          <Img
+            src={magnified ? "/images/minimize.svg" : "/images/maximize.svg"}
+            onClick={() => setMagnified(!magnified)}
+          />
+          <div style={{ marginLeft: "10px" }}>
+            {plagiarism && (
+              <div style={{ marginRight: "11px" }}>
+                표절률 {plagiarism ? plagiarism.similarity_score : 0}%
+              </div>
+            )}
+          </div>
+        </MagnifierContainer>
       </PlagiarismIndicator>
       <EditorBackground
         mode="submit"

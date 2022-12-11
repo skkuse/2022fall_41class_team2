@@ -9,11 +9,10 @@ const DescWrapper = styled.div`
   overflow-x: hidden;
 `;
 
-const GeneralContainer = styled.div`
+const MagnifierContainer = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  /* background: ${(props) => (props.darkMode ? "#525263" : "#bfbfbf")}; */
 `;
 
 function ProblemMaster({
@@ -31,7 +30,7 @@ function ProblemMaster({
   const headerContent = "문제/참조&제약사항";
   return (
     <DescWrapper>
-      <GeneralContainer
+      <MagnifierContainer
         style={{
           background:
             COLOR_SET["EDITOR_EXPLAIN"][settingSelector.backgroundColor],
@@ -52,7 +51,7 @@ function ProblemMaster({
             onClick={() => setMagnified(!magnified)}
           />
         </div>
-      </GeneralContainer>
+      </MagnifierContainer>
       <EditorBackground
         content={bodyContent}
         assignmentId={restProps.assignmentId}

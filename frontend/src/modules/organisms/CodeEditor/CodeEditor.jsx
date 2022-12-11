@@ -24,25 +24,32 @@ import { monaco } from "react-monaco-editor";
 import { saveRepoAction } from "./../../../pages/EditorPage/EditorAction";
 import { createRef } from "react";
 import { changeRepoAction } from "./../../../pages/EditorPage/EditorAction";
-import { COLOR_SET } from './../../../service/GetColor';
-import { SETTING_BACKGROUND_WHITE } from './../../../reducers/SettingReducer';
-import { setTestcaseOff } from './../../../pages/EditorPage/EditorAction';
+import { COLOR_SET } from "./../../../service/GetColor";
+import { SETTING_BACKGROUND_WHITE } from "./../../../reducers/SettingReducer";
+import { setTestcaseOff } from "./../../../pages/EditorPage/EditorAction";
 
-const EvaluationWindowGrid = styled.div`
-  display: inline-grid;
-  grid-template:
-    "c d"
-    "c d";
-  grid-template-columns: repeat(2, 1fr);
-  grid-template-rows: repeat(1, 1fr);
-  height: 100vh;
-`;
 const EditorWindowWrapper = styled.div`
   display: flex;
   flex-direction: column;
-
+  width: 100%;
   height: 100%;
   overflow: hidden;
+`;
+
+const EvaluationWindowGrid = styled.div`
+  display: grid;
+  grid-gap: 10px;
+  grid-template-columns: [col] 1fr [col] 1fr;
+
+  width: 100%;
+  height: 100%;
+`;
+
+const CodeEditorWrapper = styled.div`
+  display: ${(props) => (props.others ? "none" : "inline")};
+  grid-column: ${(props) =>
+    props.magnified ? "col 1 / span 2" : "col 1 / span 1"};
+  min-width: 360px;
 `;
 
 const TerminalWrapper = styled.div`
@@ -50,8 +57,9 @@ const TerminalWrapper = styled.div`
   display: ${(props) =>
     props.edit && props.altMode === "실행" ? "none" : "inline"};
 
-  grid-area: d;
-  grid-row: 1 / 3;
+  grid-column: ${(props) =>
+    props.magnified ? "col 1 / span 2" : "col 2 / span 1"};
+  min-width: 360px;
 
   height: 100%;
 `;
@@ -61,8 +69,9 @@ const GradingWrapper = styled.div`
   display: ${(props) =>
     props.edit && props.altMode === "채점" ? "none" : "inline"};
 
-  grid-area: d;
-  grid-row: 1 / 3;
+  grid-column: ${(props) =>
+    props.magnified ? "col 1 / span 2" : "col 2 / span 1"};
+  min-width: 360px;
 
   height: 100%;
 `;
@@ -143,12 +152,13 @@ export const CodeEditor = ({
   changeRepo,
   setChangeRepo,
   editMode,
-  setEditMode
+  setEditMode,
 }) => {
   console.log(assignment);
 
   // Magnifier
   const [magnified2, setMagnified2] = useState(false);
+  const [magnified3, setMagnified3] = useState(true);
 
   const headerContent = "코드 입력";
   const testcaseSelector = useSelector((state) => state.testcaseReducer);
@@ -683,23 +693,24 @@ export const CodeEditor = ({
         {!editMode.edit && (
           <>
             <EvaluationWindowGrid>
-              <EditorHeaderWrapper
-                editMode={editMode}
-                style={{
-                  backgroundColor:
-                    COLOR_SET["EDITOR_EXPLAIN"][
-                      settingSelector.backgroundColor
-                    ],
-                  color:
-                    COLOR_SET["EDITOR_EXPLAIN_FONT"][
-                      settingSelector.backgroundColor
-                    ],
-                }}
-              >
-                <div onClick={() => changeMode({ src: headerContent })}>
-                  <EditorHeader content={headerContent} darkMode={darkMode} />
-                </div>
-                {/* <div style={{ marginRight: "27.78px" }}>
+              <CodeEditorWrapper magnified={magnified2} others={magnified3}>
+                <EditorHeaderWrapper
+                  editMode={editMode}
+                  style={{
+                    backgroundColor:
+                      COLOR_SET["EDITOR_EXPLAIN"][
+                        settingSelector.backgroundColor
+                      ],
+                    color:
+                      COLOR_SET["EDITOR_EXPLAIN_FONT"][
+                        settingSelector.backgroundColor
+                      ],
+                  }}
+                >
+                  <div onClick={() => changeMode({ src: headerContent })}>
+                    <EditorHeader content={headerContent} darkMode={darkMode} />
+                  </div>
+                  {/* <div style={{ marginRight: "27.78px" }}>
                   <ActionButtonWrapper>
                     <CoreButton onClick={() => changeMode({ src: "실행" })}>
                       실행
@@ -715,46 +726,57 @@ export const CodeEditor = ({
                     </CoreButton>
                   </ActionButtonWrapper>
                 </div> */}
-              </EditorHeaderWrapper>
-              <div style={{ marginLeft: "12.42px", marginTop: "24.83px" }}>
-                <EditorWrapper>
-                  {submitComplete ? (
-                    <DiffEditor
-                      // TODO : inline diff로 변경?
-                      // width="560px"
-                      // height="820px"
-                      language={repoSelector.selectedModel.content.language.toLowerCase()}
-                      original={repoSelector.selectedModel.content.code}
-                      modified={
-                        findByLanguageUsed(assignment.contents).answer_code
+                  <div style={{ marginRight: "10px" }}>
+                    <Img
+                      src={
+                        magnified2
+                          ? "/images/minimize.svg"
+                          : "/images/maximize.svg"
                       }
-                      theme={
-                        settingSelector.backgroundColor ===
-                        SETTING_BACKGROUND_WHITE
-                          ? "light"
-                          : "vs-dark"
-                      }
-                      options={{
-                        renderSideBySide: false,
-                        readOnly: true,
-                      }}
+                      onClick={() => setMagnified2(!magnified2)}
                     />
-                  ) : (
-                    <Editor
-                      // width="560px"
-                      // height="820px"
-                      theme={
-                        settingSelector.backgroundColor ===
-                        SETTING_BACKGROUND_WHITE
-                          ? "light"
-                          : "vs-dark"
-                      }
-                      value={repoSelector.selectedModel.content.code}
-                      language={repoSelector.selectedModel.content.language.toLowerCase()}
-                    />
-                  )}
-                </EditorWrapper>
-              </div>
+                  </div>
+                </EditorHeaderWrapper>
+                <div style={{ marginTop: "24.83px" }}>
+                  <EditorWrapper>
+                    {submitComplete ? (
+                      <DiffEditor
+                        // TODO : inline diff로 변경?
+                        // width="560px"
+                        // height="820px"
+                        language={repoSelector.selectedModel.content.language.toLowerCase()}
+                        original={repoSelector.selectedModel.content.code}
+                        modified={
+                          findByLanguageUsed(assignment.contents).answer_code
+                        }
+                        theme={
+                          settingSelector.backgroundColor ===
+                          SETTING_BACKGROUND_WHITE
+                            ? "light"
+                            : "vs-dark"
+                        }
+                        options={{
+                          renderSideBySide: false,
+                          readOnly: true,
+                        }}
+                      />
+                    ) : (
+                      <Editor
+                        // width="560px"
+                        // height="820px"
+                        theme={
+                          settingSelector.backgroundColor ===
+                          SETTING_BACKGROUND_WHITE
+                            ? "light"
+                            : "vs-dark"
+                        }
+                        value={repoSelector.selectedModel.content.code}
+                        language={repoSelector.selectedModel.content.language.toLowerCase()}
+                      />
+                    )}
+                  </EditorWrapper>
+                </div>
+              </CodeEditorWrapper>
 
               {/* 실행 결과*/}
               {/* // ! 실행 삭제 */}
@@ -770,11 +792,16 @@ export const CodeEditor = ({
               {/* 채점 결과*/}
               {editMode.altMode === "채점" && (
                 <GradingWrapper
-                  style={{ marginLeft: "12.72px" }}
                   edit={editMode.edit}
                   altMode={editMode.altMode}
+                  magnified={magnified3}
                 >
-                  <Grading darkMode={darkMode} pfList={pfList} />
+                  <Grading
+                    darkMode={darkMode}
+                    pfList={pfList}
+                    magnified={magnified3}
+                    setMagnified={setMagnified3}
+                  />
                 </GradingWrapper>
               )}
               {/* 제출 결과*/}
@@ -783,13 +810,15 @@ export const CodeEditor = ({
                 submitResult &&
                 submitResult.data && (
                   <TerminalWrapper
-                    style={{ marginLeft: "12.72px" }}
                     edit={editMode.edit}
                     altMode={editMode.altMode}
+                    magnified={magnified3}
                   >
                     <SubmissionResult
                       darkMode={darkMode}
                       submitResult={submitResult}
+                      magnified={magnified3}
+                      setMagnified={setMagnified3}
                     />
                   </TerminalWrapper>
                 )}
