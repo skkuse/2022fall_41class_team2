@@ -42,8 +42,14 @@ import musicIcon from "../../../assets/images/music.svg";
 import playIcon from "../../../assets/images/play.svg";
 import { COLOR_SET } from './../../../service/GetColor';
 import { SettingsButtonBlack } from "../../molecules/SettingsButton";
+import { setItemWithExpireTime } from './../../../service/localStorage';
 
 const SampleAudioList = [
+  {
+    title: "Please Calm My Mind",
+    author: "Lesfm",
+    audio: new Audio(natureAudio),
+  },
   {
     title: "Lifelike",
     author: "AlexiAction",
@@ -63,11 +69,6 @@ const SampleAudioList = [
     title: "The Beat of Nature",
     author: "Olexy",
     audio: new Audio(calmAudio),
-  },
-  {
-    title: "Please Calm My Mind",
-    author: "Lesfm",
-    audio: new Audio(natureAudio),
   },
 ];
 
@@ -533,9 +534,14 @@ const SaveButtonComp = ({
         })
         .then((result) => {
           dispatch(createRepoAction(result.data.data));
+          setItemWithExpireTime(`ass${assignment.id}`, result.data.data.id, 60*60*1000);
         });
     }
   });
+
+  // if(!repoSelector.selectedModel){
+  //   return <></>;
+  // }
 
   return (
     <div
@@ -547,6 +553,7 @@ const SaveButtonComp = ({
           isSaved &&
           repoSelector.selectedModel.id === repoSelector.repoList[index].id
         ) {
+          setItemWithExpireTime(`ass${assignment.id}`, repoSelector.repoList[index].id, 60*60*1000);
           console.log(assignment.id);
           const result = await apiClient.put(
             `/api/repos/${repoSelector.selectedModel.id}/`,
@@ -560,6 +567,7 @@ const SaveButtonComp = ({
         }
         // * 코드 불러오기
         else if (isSaved) {
+          setItemWithExpireTime(`ass${assignment.id}`, repoSelector.repoList[index].id, 60*60*1000);
           dispatch(readyChangeSelectedRepoAction(index));
           // // setChangeRepo(true);
           // setTimeout(() => {
@@ -574,7 +582,12 @@ const SaveButtonComp = ({
         }
       }}
     >
-      <SaveFuncButton slot={index} saved={isSaved} />
+      <SaveFuncButton slot={index} saved={isSaved} 
+      isSelected={
+        repoSelector.selectedModel && repoSelector.repoList[index]? 
+        repoSelector.selectedModel.id === repoSelector.repoList[index].id : 
+        false} 
+        />
     </div>
   );
 };

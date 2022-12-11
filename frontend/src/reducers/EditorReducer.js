@@ -1,4 +1,5 @@
 import { CHANGE_REPO, CLEAR_SELECTED_REPO, READY_CHANGE_SELECTED_REPO, SAVE_REPO, SAVE_REPO_LIST, TESTCASE_OFF, UPDATE_REPO } from "../pages/EditorPage/EditorAction";
+import { getItemWithExpireTime } from "../service/localStorage";
 import { GET_REPO, CREATE_REPO, CLEAR_REPO, READY_CREATE_SELECTED_REPO, TESTCASE_ON, TESTCASE_ERROR } from './../pages/EditorPage/EditorAction';
 
 let editorInitState = {
@@ -18,17 +19,22 @@ export function editorReducer(state = editorInitState, action) {
     switch (action.type) {
         case SAVE_REPO_LIST:
             console.log("SAVE_REPO_LIST");
-            if(state.selectedModel) {
-                return { 
-                    ...state, 
-                    repoList : action.payload,
-                };
-            }
+            console.log(action);
+            // if(state.selectedModel) {
+            //     return { 
+            //         ...state, 
+            //         repoList : action.payload,
+            //     };
+            // }
+            console.log(getItemWithExpireTime(`ass${action.assignmentId}`));
 
             return { 
                 ...state, 
                 repoList : action.payload,
-                selectedModel: action.payload[action.payload.length - 1]
+                selectedModel: getItemWithExpireTime(`ass${action.assignmentId}`)?
+                                action.payload.find((repo)=>repo.id == getItemWithExpireTime(`ass${action.assignmentId}`))
+                                :
+                                action.payload[action.payload.length - 1]
             };
         
         // * 다른 과제로 들어갈 때 저장된 코드 비우기
@@ -72,6 +78,7 @@ export function editorReducer(state = editorInitState, action) {
             //         code: "hello world!"
             //     }
             // })
+
             return {
                 ...state,
                 repoList: tempList,
@@ -158,21 +165,20 @@ export function testcaseReducer(state = testcaseInitState, action) {
             };
 
         case TESTCASE_ERROR:
-            // console.log(action);
+            console.log(action);
             let errorContentTemp = action.errorContent;
-            let errorLineInfo = errorContentTemp.split('line');
-            let lineInfo = Number(errorLineInfo[errorLineInfo.length - 1].trim()[0]);
-            // console.log(lineInfo[0]);
-            // console.log(lineInfo);
-            console.log(lineInfo);
-            console.log(19*(lineInfo-1));
+            const re = new RegExp('line [0-9]*','g');
+            console.log(errorContentTemp.match(re));
+            let errorLineInfo = errorContentTemp.match(re)[errorContentTemp.match(re).length - 1].split(' ');
+            let lineInfo = Number(errorLineInfo[1]);
             return {
                 ...state,
                 isError: action.is_error,
                 errorContent: {
                     content: action.errorContent,
                     line: lineInfo,
-                    top: 19*(lineInfo-1)
+                    top: 19*(lineInfo),
+                    
                 }
             };
 

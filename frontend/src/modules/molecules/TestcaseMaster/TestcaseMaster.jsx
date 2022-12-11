@@ -5,6 +5,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { useState } from "react";
 import { COLOR_SET } from './../../../service/GetColor';
 import { setTestcaseOff } from './../../../pages/EditorPage/EditorAction';
+import React from 'react';
+import ReactDOM from 'react-dom';
+import Modal from 'react-modal';
 
 const DescWrapper = styled.div`
   display: flex;
@@ -67,12 +70,41 @@ const ValidationButton = styled.div`
   cursor: pointer;
 `;
 
+
+const customStyles = {
+  content: {
+    top: '50%',
+    left: '50%',
+    right: 'auto',
+    bottom: 'auto',
+    marginRight: '-50%',
+    transform: 'translate(-50%, -50%)',
+  },
+};
+// Modal.setAppElement('#yourAppElement');
+
 function TestcaseMaster({ bodyContent, testCases, darkMode, ...restProps }) {
   const headerContent = "테스트 케이스";
   const repoSelector = useSelector((state) => state.editorReducer);
   const settingSelector = useSelector((state) => state.SettingReducer);
   const dispatch = useDispatch();
   const [pfList, setPfList] = useState(null);
+
+  let subtitle;
+  const [modalIsOpen, setIsOpen] = React.useState(false);
+
+  function openModal() {
+    setIsOpen(true);
+  }
+
+  function afterOpenModal() {
+    // references are now sync'd and can be accessed.
+    subtitle.style.color = '#f00';
+  }
+
+  function closeModal() {
+    setIsOpen(false);
+  }
 
   const executeTestCase = async (testcase_id) => {
     try {
@@ -102,6 +134,7 @@ function TestcaseMaster({ bodyContent, testCases, darkMode, ...restProps }) {
           assignmentId={restProps.assignmentId}
           darkMode={darkMode}
         />
+    
 
         <div style={{ marginRight: "16.13px" }}>
           <ValidationButtonContainer >
@@ -162,6 +195,7 @@ function TestcaseMaster({ bodyContent, testCases, darkMode, ...restProps }) {
                 />
             );
           })}
+          
       </TestCaseContainer>
 
     </DescWrapper>

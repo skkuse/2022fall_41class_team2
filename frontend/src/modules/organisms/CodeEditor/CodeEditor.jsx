@@ -401,8 +401,8 @@ export const CodeEditor = ({
 
   const handleRepo = async () => {
     repoList = await fetchRepoList();
-    dispatch(saveRepoListAction(repoList));
-    dispatch(changeRepoAction(repoList[repoList.length - 1]));
+    dispatch(saveRepoListAction(repoList, assignment.id));
+    // dispatch(changeRepoAction(repoList[repoList.length - 1]));
   };
 
   useEffect(() => {
@@ -418,7 +418,7 @@ export const CodeEditor = ({
   }, [monaco]);
 
   if (!monaco) {
-    return <></>;
+    return <>sdfd</>;
   }
 
   if (
@@ -430,7 +430,7 @@ export const CodeEditor = ({
     )
   ) {
     console.log(repoSelector);
-    return <></>;
+    return <>dfsd</>;
   }
 
   console.log(editorRef);
@@ -634,23 +634,12 @@ export const CodeEditor = ({
                   />
                 )}
 
-                {repoSelector.selectedModel &&
-                  testcaseSelector.isOnTestcase &&
-                  testcaseSelector.isError && (
-                    <div
-                      style={{
-                        position: "absolute",
-                        top: testcaseSelector.errorContent.top,
-                        zIndex: 100,
-                      }}
-                    >
-                      <div
-                        style={{
-                          backgroundColor: "rgba(249, 86, 86, 0.1)",
-                          width: "100%",
-                          height: "19px",
-                        }}
-                      ></div>
+                {/* {
+                    repoSelector.selectedModel && testcaseSelector.isOnTestcase && testcaseSelector.isError &&
+                    <div style={{position:"absolute", top: testcaseSelector.errorContent.top, zIndex: 100, }}>
+                      <div style={{backgroundColor:"rgba(249, 86, 86, 0.1)", width: "100%", height:"19px"}}>
+
+                      </div>
 
                       {testcaseSelector.errorContent.content
                         .split("\n")
@@ -668,7 +657,7 @@ export const CodeEditor = ({
                           );
                         })}
                     </div>
-                  )}
+                  } */}
 
                 {(repoSelector.repoChangeInfo.isChanging ||
                   repoSelector.repoCreateInfo.isCreating) && (

@@ -173,6 +173,7 @@ const ChartContainer = styled.div`
   flex-direction: column;
   align-items: stretch;
   justify-content: stretch;
+  height: 100%;
 
   width: 95%;
 `;
@@ -188,9 +189,12 @@ const ScoreDescriptor = styled.div`
   box-sizing: border-box;
 
   width: 100%;
+  
+  /* height: 100%; */
+  /* height: 100vh; */
 
-  height: 455px;
-  min-height: 412px;
+  height: 350px;
+  /* min-height: 412px; */
   background: ${(props) => (props.darkMode ? "#525263" : "#f6f6f6")};
   border: ${(props) =>
     props.darkMode ? "2px solid #52c0e7" : "2px solid #52c0e7"};
@@ -202,6 +206,7 @@ const ScoreDescriptor = styled.div`
   hyphens: auto;
   overflow-x: hidden;
   overflow-y: auto;
+  overflow: auto;
 
   ::-webkit-scrollbar {
     -webkit-appearance: none;
@@ -257,7 +262,10 @@ const Button = styled.div`
   font-style: normal;
   font-weight: 700;
   font-size: 18px;
-  line-height: 21px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* line-height: 21px; */
   /* identical to box height */
 
   text-align: center;
@@ -421,7 +429,7 @@ align-items:center;
   border-radius: 5px;
   display:flex
   flex-direction:column;
-  align-itmes:stretch;
+  align-items:stretch;
   background: ${(props) => (props.darkMode ? "#666681" : "#d9d9d9")};
   color: ${(props) => (props.darkMode ? "#d8d8d8" : "#3c3c3c")};
   box-sizing:border-box;
@@ -434,9 +442,10 @@ align-items:center;
 `;
 
 const DescriptionContainer = styled.div`
-  width: 100%
-  overflow-y: auto;
-  
+  width: 100%;
+  /* height: 400px; */
+  /* overflow: auto; */
+
   ::-webkit-scrollbar {
     -webkit-appearance: none;
     width: 9.76px;
@@ -595,12 +604,15 @@ export const EditorBackground = ({
               if (testCaseData.is_pass == null && testCaseData.id) {
                 dispatch(setTestcaseOn());
                 const result = await executeTestCase(testCaseData.id);
-                dispatch(
-                  setTestcaseError(
-                    result.data.data.is_error,
-                    result.data.data.actual_output
-                  )
-                );
+                if( result.data.data.is_error) {
+                  dispatch(
+                    setTestcaseError(
+                      result.data.data.is_error,
+                      result.data.data.actual_output
+                    )
+                  );
+                }
+                
                 setTestCaseData({
                   ...result.data.data,
                   id: testCaseData.id,
@@ -774,9 +786,13 @@ export const EditorBackground = ({
                             />
                           )
                         : activeIndexChart === READABILITY && (
-                            <div style={{ width: "600px", height: "300px" }}>
-                              {" "}
-                              현재 가독성 채점 기능은 python만 지원합니다.
+                            <div style={{ width: "600px", height: "300px", textAlign:"left" }}>
+                              {
+                                repoSelector.selectedModel.content.language == "python"?
+                                "제출 코드에 오류가 발생했습니다.":
+                                "현재 가독성 채점 기능은 python만 지원합니다."
+                              }
+                              
                             </div>
                           )}
                       {content.efficiency_result
@@ -788,18 +804,31 @@ export const EditorBackground = ({
                           )
                         : activeIndexChart === EFFICIENCY && (
                             <div style={{ width: "600px", height: "300px" }}>
-                              {" "}
-                              현재 효율성 채점 기능은 python만 지원합니다.{" "}
+                              {
+                                repoSelector.selectedModel.content.language == "python"?
+                                "제출 코드에 오류가 발생했습니다.":
+                                "현재 효율성 채점 기능은 python만 지원합니다."
+                              }
                             </div>
                           )}
-                      {activeIndexChart === FUNCTIONALITY &&
-                        content.functionality_result && (
+
+                      {content.functionality_result
+                        ? activeIndexChart === FUNCTIONALITY &&(
                           <ResultVis
                             data={content.functionality_result.testcase_results}
                             chartColor="#52C0E7"
                             radial={true}
                           />
-                        )}
+                        )
+                        : activeIndexChart === FUNCTIONALITY && (
+                            <div style={{ width: "600px", height: "300px" }}>
+                              {
+                                repoSelector.selectedModel.content.language == "python"?
+                                "제출 코드에 오류가 발생했습니다.":
+                                "현재 기능성 채점 기능은 python만 지원합니다."
+                              }
+                            </div>
+                          )}
                     </Aligner>
                     {/* pie chart selector */}
 
@@ -997,7 +1026,11 @@ export const EditorBackground = ({
                         .map((line) => (
                           <div style={{ marginBottom: "11px" }}>{line}</div>
                         ))
-                    : "현재 코드 설명 기능은 python만 지원합니다."}
+                    :
+                      repoSelector.selectedModel.content.language == "python"?
+                      "제출 코드에 오류가 발생했습니다.":
+                      "현재 코드 설명 기능은 python만 지원합니다."
+                    }
                 </CodeDescriptor>
                 ;
               </div>
@@ -1020,12 +1053,15 @@ export const EditorBackground = ({
                       COLOR_SET["EDITOR_EXPLAIN_CONTENT_FONT"][
                         settingSelector.backgroundColor
                       ],
+                      // maxWidth:"300px"
                   }}
                 >
                   {content.references.map((ref, index) => {
                     return (
                       <div style={{ marginBottom: "50px" }}>
-                        <div>
+                        <div style={{
+                          maxWidth:"500px"
+                        }}>
                           {index + 1}.
                           <a href={ref} target="_blank">
                             {" "}
@@ -1035,7 +1071,7 @@ export const EditorBackground = ({
                         {!ref.includes("youtu.be") &&
                           !ref.includes("namu.wiki") && (
                             <iframe
-                              width={"100%"}
+                              width={"500px"}
                               scrolling="no"
                               height={"300px"}
                               src={ref}
@@ -1045,6 +1081,7 @@ export const EditorBackground = ({
                       </div>
                     );
                   })}
+                  
                   {/* {Object.keys(content.references)
                   .filter((k) => k !== "id")
                   .map(function (key) {
