@@ -74,6 +74,7 @@ const Bg = styled.div`
     -webkit-appearance: none;
     width: 9.76px;
     background-color: ${(props) => (props.darkMode ? "#131323" : "#ffffff")};
+    border-radius: 975.505px 975.505px 0px 0px;
   }
 
   ::-webkit-scrollbar-thumb {
@@ -280,7 +281,6 @@ const TestCaseResult = styled.div`
 
   justify-content: center;
   align-items: center;
-
 `;
 
 const TestCaseSeparator = styled.div`
@@ -454,7 +454,8 @@ export const EditorBackground = ({
   id,
   pfList,
   testCaseValue,
-
+  prob,
+  restr,
   ...restProps
 }) => {
   const dispatch = useDispatch();
@@ -995,7 +996,9 @@ export const EditorBackground = ({
       </SubmitResultBg>
     );
   } else {
-    // general display
+    // problem/restrictions display
+    console.log(content);
+
     return (
       <Bg
         style={{
@@ -1009,7 +1012,16 @@ export const EditorBackground = ({
             ],
         }}
       >
-        {content}
+        <div style={{ fontWeight: "bold", marginBottom: "11px" }}>문제</div>
+        {prob.split("\n").map((line) => (
+          <div style={{ marginBottom: "11px", lineHeight: "22px" }}>{line}</div>
+        ))}
+        <div style={{ fontWeight: "bold", marginBottom: "11px" }}>
+          제약 사항
+        </div>
+        {restr.split("\n").map((line) => (
+          <div style={{ marginBottom: "11px", lineHeight: "22px" }}>{line}</div>
+        ))}
       </Bg>
     );
   }
