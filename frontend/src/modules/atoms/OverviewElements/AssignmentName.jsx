@@ -28,7 +28,7 @@ export const AssignmentName = ({
   remainingTime,
 }) => {
   // console.log(`SUBMISSION PROP: ${submission}`);
-  const danger = remainingTime.split(" ")[0].slice(-1) === "d" ? false : true;
+  const danger = remainingTime.split(" ")[0] === "0d" ? true : false;
 
   if (submission) {
     background = `linear-gradient(0deg, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), ${background}`;
