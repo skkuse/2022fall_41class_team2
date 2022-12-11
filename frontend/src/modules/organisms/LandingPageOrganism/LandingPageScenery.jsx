@@ -1,8 +1,8 @@
 import styled from "styled-components";
-
+import { Helmet } from "react-helmet";
 import { Img } from "../../atoms";
-import { useSelector } from 'react-redux';
-import { COLOR_SET, ICON_SET } from './../../../service/GetColor';
+import { useSelector } from "react-redux";
+import { COLOR_SET, ICON_SET } from "./../../../service/GetColor";
 
 const SceneryContainer = styled.div`
   display: flex;
@@ -39,24 +39,48 @@ export const LandingPageScenery = ({ darkMode, ...restProps }) => {
   const settingSelector = useSelector((state) => state.SettingReducer);
   return (
     <>
-      <SceneryContainer style={{backgroundColor: COLOR_SET['MAIN_BACKGROUND'][settingSelector.backgroundColor]}} >
+      <Helmet
+        bodyAttributes={{
+          style: `background : ${
+            COLOR_SET["MAIN_BACKGROUND"][settingSelector.backgroundColor]
+          }`,
+        }}
+      />
+      <SceneryContainer
+        style={{
+          backgroundColor:
+            COLOR_SET["MAIN_BACKGROUND"][settingSelector.backgroundColor],
+        }}
+      >
         <div style={{ marginTop: "41px" }}>
-          <Title style={{color: COLOR_SET['MAIN_BANNER_FONT'][settingSelector.backgroundColor] }}>Coding Cat</Title>
+          <Title
+            style={{
+              color:
+                COLOR_SET["MAIN_BANNER_FONT"][settingSelector.backgroundColor],
+            }}
+          >
+            Coding Cat
+          </Title>
         </div>
         <div style={{ marginTop: "15.67px" }}>
-          <SubTitle style={{color: COLOR_SET['MAIN_BANNER_FONT'][settingSelector.backgroundColor] }}>
+          <SubTitle
+            style={{
+              color:
+                COLOR_SET["MAIN_BANNER_FONT"][settingSelector.backgroundColor],
+            }}
+          >
             프로그래밍 문제를 풀고 온라인으로 채점받을 수 있는 곳입니다.
           </SubTitle>
         </div>
         <Img
-          src={ICON_SET['MAIN_BOTTOM'][settingSelector.backgroundColor]}
+          src={ICON_SET["MAIN_BOTTOM"][settingSelector.backgroundColor]}
           className="illustrationOne1"
           alt="scenery1"
           style={{ marginTop: "34.33px" }}
         />
 
         <Img
-          src={ICON_SET['MAIN_LINE'][settingSelector.backgroundColor]}
+          src={ICON_SET["MAIN_LINE"][settingSelector.backgroundColor]}
           className="illustrationOne2"
           alt="scenery2"
           style={{ marginTop: "17px" }}

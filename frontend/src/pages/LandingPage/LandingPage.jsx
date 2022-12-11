@@ -31,7 +31,7 @@ export const LandingPage = (...restProps) => {
   const settingSelector = useSelector((state) => state.SettingReducer);
   const dispatch = useDispatch();
   // TODO: settingSelector에 따라서 LandingPageScenery의 배경을 바꿔야 함
-  const darkMode = false;
+  // const darkMode = false;
 
   useEffect(() => {
     console.log(settingSelector.backgroundColor);
