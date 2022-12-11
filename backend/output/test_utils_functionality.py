@@ -72,15 +72,16 @@ def solution():
     def test_generate_functionality_result(self):
         result = Result.objects.first()
         testcases = Testcase.objects.all()
-        testcase = Testcase.objects.first()
+        public_testcase = Testcase.objects.first()
+        private_testcase = Testcase.objects.last()
 
         ret = run(result.id, testcases, SERVER_CODE_DIR, self.language, self.code)
 
         self.assertIsNotNone(ret.get('id'))
         self.assertEqual(len(ret.get('testcase_results')), 2)
-        self.assertEqual(ret.get('testcase_results')[0].get('input'), testcase.input)
-        self.assertEqual(ret.get('testcase_results')[0].get('expected_output'), testcase.output)
+        self.assertEqual(ret.get('testcase_results')[0].get('input'), public_testcase.input)
+        self.assertEqual(ret.get('testcase_results')[0].get('expected_output'), public_testcase.output)
         self.assertIsNotNone(ret.get('testcase_results')[0].get('actual_output'))
-        self.assertIsNone(ret.get('testcase_results')[1].get('input'))
-        self.assertIsNone(ret.get('testcase_results')[1].get('expected_output'))
-        self.assertIsNone(ret.get('testcase_results')[1].get('actual_output'))
+        self.assertEqual(ret.get('testcase_results')[1].get('input'), private_testcase.input)
+        self.assertEqual(ret.get('testcase_results')[1].get('expected_output'), private_testcase.output)
+        self.assertIsNotNone(ret.get('testcase_results')[1].get('actual_output'))
