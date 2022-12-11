@@ -163,19 +163,18 @@ export function testcaseReducer(state = testcaseInitState, action) {
         case TESTCASE_ERROR:
             // console.log(action);
             let errorContentTemp = action.errorContent;
-            let errorLineInfo = errorContentTemp.split('line');
-            let lineInfo = Number(errorLineInfo[errorLineInfo.length - 1].trim()[0]);
-            // console.log(lineInfo[0]);
-            // console.log(lineInfo);
-            console.log(lineInfo);
-            console.log(19*(lineInfo-1));
+            const re = new RegExp('line [0-9]*','g');
+            console.log(errorContentTemp.match(re));
+            let errorLineInfo = errorContentTemp.match(re)[errorContentTemp.match(re).length - 1].split(' ');
+            let lineInfo = Number(errorLineInfo[1]);
             return {
                 ...state,
                 isError: action.is_error,
                 errorContent: {
                     content: action.errorContent,
                     line: lineInfo,
-                    top: 19*(lineInfo-1)
+                    top: 19*(lineInfo),
+                    
                 }
             };
 

@@ -771,8 +771,11 @@ export const EditorBackground = ({
                     )
                   : activeIndexChart === READABILITY && (
                       <div style={{ width: "600px", height: "300px" }}>
-                        {" "}
-                        현재 가독성 채점 기능은 python만 지원합니다.
+                        {
+                          repoSelector.selectedModel.language=='python'?
+                          "현재 가독성 채점 기능은 python만 지원합니다.":
+                          "제출 코드에서 에러가 발생했습니다."
+                        }
                       </div>
                     )}
                 {content.efficiency_result
@@ -784,19 +787,29 @@ export const EditorBackground = ({
                     )
                   : activeIndexChart === EFFICIENCY && (
                       <div style={{ width: "600px", height: "300px" }}>
-                        {" "}
-                        현재 효율성 채점 기능은 python만 지원합니다.{" "}
+                        {
+                          repoSelector.selectedModel.language=='python'?
+                          "현재 효율성 채점 기능은 python만 지원합니다.":
+                          "제출 코드에서 에러가 발생했습니다."
+                        }
                       </div>
                     )}
-                {activeIndexChart === FUNCTIONALITY &&
-                  content.functionality_result && (
-                    <ResultVis
+                {
+                  content.functionality_result ? 
+                  activeIndexChart === FUNCTIONALITY && <ResultVis
                       data={content.functionality_result.testcase_results}
                       chartColor="#52C0E7"
                       radial={true}
                     />
-                  )}
-
+                  :
+                  activeIndexChart === FUNCTIONALITY && <div style={{ width: "600px", height: "300px" }}>
+                    {
+                      repoSelector.selectedModel.language=='python'?
+                      "현재 기능 채점 기능은 python만 지원합니다.":
+                      "제출 코드에서 에러가 발생했습니다."
+                    }
+                  </div>
+                }
                 {/* pie chart selector */}
                 <>
                   {/* Three colors
@@ -985,7 +998,11 @@ export const EditorBackground = ({
                       .map((line) => (
                         <div style={{ marginBottom: "11px" }}>{line}</div>
                       ))
-                  : "현재 코드 설명 기능은 python만 지원합니다."}
+                  : 
+                    repoSelector.selectedModel.language=='python'?
+                    "현재 코드 설명 기능은 python만 지원합니다.":
+                    "제출 코드에서 에러가 발생했습니다."
+                  }
               </CodeDescriptor>
               ;
             </div>

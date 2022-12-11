@@ -21,6 +21,8 @@ import {
 import { getTimeDiff } from "../../modules/organisms/AssignmentOverview/AssignmentOverview";
 import { COLOR_SET } from "./../../service/GetColor";
 import { setTestcaseOff } from './EditorAction';
+import { SETTING_BACKGROUND_WHITE } from './../../reducers/SettingReducer';
+import { Img } from './../../modules/atoms/Img/index';
 
 const Testbox = styled.div`
   background: #000000;
@@ -72,11 +74,12 @@ const customStyles = {
   content: {
     top: '50%',
     left: '50%',
-    right: 'auto',
-    bottom: 'auto',
-    marginRight: '-50%',
     transform: 'translate(-50%, -50%)',
-
+    width:'750px',
+    height:'500px',
+    boxShadow: '-2px 8px 99px rgba(0, 0, 0, 0.25)',
+    borderRadius: '20px',
+    border:'none'
   },
 };
 // Modal.setAppElement('#yourAppElement');
@@ -98,7 +101,7 @@ export const EditorPage = () => {
   let subtitle;
   const [modalIsOpen, setIsOpen] = React.useState(false);
   const testcaseSelector = useSelector((state) => state.testcaseReducer);
-
+  const repoSelector = useSelector((state) => state.editorReducer);
   function openModal() {
     setIsOpen(true);
   }
@@ -192,18 +195,75 @@ export const EditorPage = () => {
         onAfterOpen={afterOpenModal}
         onRequestClose={closeModal}
         style={customStyles}
-        contentLabel="Example Modal"
+        // contentLabel="Example Modal"
       >
-        {/* <h2 ref={(_subtitle) => (subtitle = _subtitle)}>Hello</h2> */}
+        {/* <h2 >에러 발생</h2> */}
+        <div style={{display:"flex", justifyContent:"center", alignItems:"center", 
+            margin: '30px 0'
+          }}>
+          <div style={{margin:"0 10px"}}>
+            <Img src="/images/error.svg" alt="error indicator" />
+          </div>
+            <div
+          style={{
+            fontFamily: 'Gmarket Sans TTF',
+            fontStyle: 'normal',
+            fontWeight: '500',
+            fontSize: '22px',
+            lineHeight: '25px',
+            textAlign: 'center',
+            color: '#000000',
+          }}
+          >에러 발생</div>
+          <div style={{margin:"0 10px"}}>
+            <Img src="/images/error.svg" alt="error indicator" />
+          </div>
+        </div>
+        
         {/* <button onClick={closeModal}>close</button> */}
-        <div>{testcaseSelector.errorContent.content}</div>
-        {/* <form>
-          <input />
-          <button>tab navigation</button>
-          <button>stays</button>
-          <button>inside</button>
-          <button>the modal</button>
-        </form> */}
+        {repoSelector.selectedModel && <Editor
+          width='700px'
+          height='350px'
+          options={{
+            readOnly: true,
+            lineNumbers: ((lineNumber)=>{
+              return testcaseSelector.errorContent.line -6 +lineNumber;
+            }),
+            scrollBeyondLastLine:false,
+            scrollbar:{
+              alwaysConsumeMouseWheel: false, // defaults is true, false enables the behavior you describe
+            }
+          }}
+              language={repoSelector.selectedModel.content.language.toLowerCase()}
+              theme={settingSelector.backgroundColor === SETTING_BACKGROUND_WHITE ? 'light': 'vs-dark'}
+              value={(repoSelector.selectedModel.content.code.split("\n").map((line, findex) => {
+                let index = findex + 1;
+                if(Math.abs(index - testcaseSelector.errorContent.line)  <= 5) {
+                  console.log(line);
+                  return line;
+                }
+              }).join(""))}
+            />}
+          {
+            repoSelector.selectedModel && testcaseSelector.isOnTestcase && testcaseSelector.isError &&
+            <div style={{
+              position:"absolute", 
+              top: `calc(19px * 6 + 40px + 60px)`, 
+              zIndex: 100, }}>
+              <div style={{backgroundColor:"rgba(249, 86, 86, 0.1)", width: "100%",  height:"19px", maxWidth: '688px',}}>
+              </div>
+              {
+                testcaseSelector.errorContent.content.split("\n").map((line, index) => {
+                  return (
+                    <div style={{paddingLeft:"83px", backgroundColor:"rgba(204, 229, 198, 1.0)", width: "100vw", maxWidth: '688px',}}>
+                      {line}
+                    </div>
+                  )
+                })
+              }
+            </div>
+          }
+        
       </Modal>
 
       {/* Banner */}

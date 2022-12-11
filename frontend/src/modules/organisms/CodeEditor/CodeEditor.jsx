@@ -487,92 +487,10 @@ export const CodeEditor = ({
               }} onScroll={()=>{
                 console.log("?/");
               }}>
-                {/* {
-                  repoSelector.repoList.map((repo) => {
-                    return (
-                      <div style={{color:"white"}}>
-                        {
-                          repo.content.code
-                        }
-                      </div>
-                    )
-                  })
-                }
-                <h1 style={{color:"white"}}>{JSON.stringify(changeRepo)}</h1>
-                
-                <div style={{color:"white"}}>
-                    {
-                      JSON.stringify(repoSelector.repoCreateInfo + "fdf")
-                    }
-                  </div>
-
-                  <div style={{color:"white"}}>
-                    {
-                      JSON.stringify(repoSelector.selectedModel.content.code)
-                    }
-                  </div> */}
-
                 {repoSelector.selectedModel && (
                       
                       <Editor
                       height={`calc(100% - 130px)`}
-                      beforeMount={(monaco2)=>{
-                        // let editor = monaco2.editor.getEditors();
-                       
-                        // console.log(editor);
-                      }}
-                      
-                        onMount={(editor, monaco2) => {
-                          // monaco.editor
-                          // console.log(monaco.editor.deltaDecorations);
-                          // monaco.editor.getEditors();
-                          editor.onDidScrollChange=()=>{
-                            dispatch(setTestcaseOff());
-                            console.log("??????????");
-                          }
-
-                          editor.deltaDecorations(
-                            [],
-                            [
-                              {
-                                range: new monaco.Range(1, 1, 10, 1),
-                                options: {
-                                  isWholeLine: true,
-                                  className: 'myContentClass',
-                                  glyphMarginClassName: 'myGlyphMarginClass',
-                                  zIndex: 1000,
-                                  minimap:false
-                                }
-                              }
-                            ]
-                          );
-                          setTimeout(()=>{
-                            editor.deltaDecorations(
-                              [],
-                              [
-                                {
-                                  range: new monaco.Range(1, 1, 10, 1),
-                                  options: {
-                                    isWholeLine: true,
-                                    className: 'myContentClass',
-                                    glyphMarginClassName: 'myGlyphMarginClass',
-                                    zIndex: 1000,
-                                    minimap:false
-                                  }
-                                }
-                              ]
-                            );
-                          }, 1000);
-                          
-
-                          // alert(JSON.stringify(editor.getLineDecorations(2)));
-                          console.log(editor.getLineDecorations(2));
-                        }}
-
-                        // beforeMount={(monaco)=>{
-                        //   monaco.editor.edit
-                        // }}
-                        
                         options={{
                           glyphMargin: true,
                           scrollBeyondLastLine:false,
@@ -584,9 +502,6 @@ export const CodeEditor = ({
                         language={repoSelector.selectedModel.content.language.toLowerCase()}
                         theme={settingSelector.backgroundColor === SETTING_BACKGROUND_WHITE ? 'light': 'vs-dark'}
                         value={repoSelector.selectedModel.content.code}
-                        onScroll={()=>{
-                          console.log("??");
-                        }}
                         onChange={(e,ev) => {
                           console.log(repoSelector.selectedModel);
                           dispatch(setTestcaseOff());
