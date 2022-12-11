@@ -9,6 +9,7 @@ import {
   setTestcaseOn,
 } from "./../../../pages/EditorPage/EditorAction";
 import { apiClient } from "./../../../api/axios";
+import { stringify } from "querystring";
 
 const READABILITY = 0;
 const EFFICIENCY = 1;
@@ -297,17 +298,17 @@ const TestCaseSeparator = styled.div`
 const TestCaseMasterGrid = styled.div`
   display: grid;
   grid-gap: 10px;
-  grid-template-columns: [col] 150px [col] 150px [col] 150px [col] 150px;
+  grid-template-columns: [col] 1fr [col] 1fr [col] 1fr [col] 1fr;
   grid-template-rows: auto;
 `;
 const TestCaseIOContainer = styled.div`
   display: flex;
   flex-direction: column;
 
-  justify-content: space-around;
+  justify-content: center;
 
   min-height: 80px;
-
+  padding-top: 11px;
   grid-column: col 1 / span 3;
   border-top: 4px solid #bfbfbf;
   border-bottom: 4px solid #bfbfbf;
@@ -438,7 +439,21 @@ align-items:center;
 `;
 
 const DescriptionContainer = styled.div`
-  overflow-wrap: break-word;
+  width: 100%
+  overflow-y: auto;
+  
+  ::-webkit-scrollbar {
+    -webkit-appearance: none;
+    width: 9.76px;
+    background-color: ${(props) => (props.darkMode ? "#131323" : "#f6f6f6")};
+  }
+
+  ::-webkit-scrollbar-thumb {
+    border-radius: 975.505px;
+    background-color: #d3d3da;
+    /* box-shadow: 0 0 1px
+      ${(props) => (props.darkMode ? "#d3d3da" : "rgba(0, 0, 0, 0.5)")}; */
+  }
 `;
 
 // const TextShadower = styled.div`
@@ -460,9 +475,9 @@ export const EditorBackground = ({
 }) => {
   const dispatch = useDispatch();
   const settingSelector = useSelector((state) => state.SettingReducer);
+  const testcaseSelector = useSelector((state) => state.testcaseReducer);
   // redability result
   let readabilityResult = [];
-
   const [pfListLocal, setPfListLocal] = useState(pfList);
   const [testCaseData, setTestCaseData] = useState(testCaseValue);
 
@@ -559,8 +574,20 @@ export const EditorBackground = ({
       >
         <TestCaseMasterGrid>
           <TestCaseIOContainer>
-            <TestCaseInput>Input: {content.input}</TestCaseInput>
-            <TestCaseOutput>Output: {content.output}</TestCaseOutput>
+            <TestCaseInput style={{ marginBottom: "11px" }}>
+              Input: {content.input}
+            </TestCaseInput>
+            <TestCaseOutput style={{ marginBottom: "11px" }}>
+              Expected Output: {content.output}
+            </TestCaseOutput>
+            <TestCaseOutput style={{ marginBottom: "11px" }}>
+              Actual Output:
+              {testCaseData.actual_output}
+            </TestCaseOutput>
+
+            {/* <ul>Input: {testcase.input}</ul>
+            <ul>Expected Output: {testcase.expected_output}</ul>
+            <ul>Actual Output: {testcase.actual_output}</ul> */}
           </TestCaseIOContainer>
 
           <TestCaseResult
@@ -583,6 +610,7 @@ export const EditorBackground = ({
                   ...result.data.data,
                   id: testCaseData.id,
                 });
+                console.log("!!!!asdf");
                 console.log(result.data.data);
                 // console.log(result);
                 // let tempPfList = [...testCaseData];
@@ -599,7 +627,9 @@ export const EditorBackground = ({
             }}
           >
             {testCaseData.is_pass != null
-              ? JSON.stringify(testCaseData.is_pass)
+              ? testCaseData.is_pass
+                ? "PASS"
+                : "FAIL"
               : "RESULT HERE"}
           </TestCaseResult>
         </TestCaseMasterGrid>
@@ -870,16 +900,43 @@ export const EditorBackground = ({
                     content.functionality_result && (
                       <DescriptionContainer>
                         {/*여러 테스트케이스가 어레이 형태로 있음, 다른 형태로 처리 필요 */}
+                        {console.log(
+                          JSON.stringify(
+                            content.functionality_result.testcase_results
+                          )
+                        )}
                         {content.functionality_result.testcase_results.map(
                           (testcase, index) => {
                             if (!testcase.input) {
+                              if (testcase.is_hidden) {
+                                return (
+                                  <>
+                                    <div style={{ marginBottm: "11px" }}>
+                                      {testcase.is_hidden ? "히든" : "공개"}{" "}
+                                      테스트케이스 {index + 1} :{" "}
+                                      {testcase.is_pass ? "PASS" : "FAIL"}
+                                    </div>
+                                    <div style={{ marginBottm: "0px" }}>
+                                      <ul>Input: {testcase.input}</ul>
+                                      <ul>
+                                        Expected Output:{" "}
+                                        {testcase.expected_output}
+                                      </ul>
+                                      <ul>
+                                        Actual Output: {testcase.actual_output}
+                                      </ul>
+                                    </div>
+                                  </>
+                                );
+                              }
+
                               return <></>;
                             }
                             return (
                               <>
                                 <div style={{ marginBottm: "11px" }}>
                                   {testcase.is_hidden ? "히든" : "공개"}{" "}
-                                  테스트케이스 {index} :{" "}
+                                  테스트케이스 {index + 1} :{" "}
                                   {testcase.is_pass ? "PASS" : "FAIL"}
                                 </div>
                                 <div style={{ marginBottm: "0px" }}>
