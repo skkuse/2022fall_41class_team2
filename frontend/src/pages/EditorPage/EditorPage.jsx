@@ -17,31 +17,35 @@ import {
   Problem,
 } from "../../modules/organisms/CodeEditor";
 import { getTimeDiff } from "../../modules/organisms/AssignmentOverview/AssignmentOverview";
-import { COLOR_SET } from './../../service/GetColor';
+import { COLOR_SET } from "./../../service/GetColor";
+
+const Testbox = styled.div`
+  background: #000000;
+`;
 
 const EditorPageGrid = styled.div`
-  display: inline-grid;
-  grid-template:
-    "a c"
-    "b c";
-  grid-auto-columns: 0.5fr 1fr;
-  grid-template-rows: repeat(2, 1fr);
+  display: grid;
+  grid-gap: 10px;
+  grid-template-columns: [col] 1fr [col] 1fr [col] 1fr;
+  grid-template-rows: [row] 1fr [row] 1fr;
 
   width: 100vw;
   height: 100vh;
 `;
 
 const ProblemWrapper = styled.div`
-  grid-area: a;
+  grid-column: col 1;
+  grid-row: row 1;
   min-width: 360px;
-  
 `;
 const TestcaseWrapper = styled.div`
-  grid-area: b;
+  grid-column: col 1;
+  grid-row: row 2;
+  min-width: 360px;
 `;
 const CodeEditorWrapper = styled.div`
-  grid-area: c;
-  grid-row: 1 / 3;
+  grid-column: col 2 / span 2;
+  grid-row: row 1 / span 2;
 `;
 
 const GeneralContainer = styled.div`
@@ -80,7 +84,7 @@ export const EditorPage = () => {
   }, [monaco]);
 
   useEffect(() => {
-    if(!location.state) {
+    if (!location.state) {
       return;
     }
     setLecture(location.state.lecture);
@@ -125,7 +129,9 @@ export const EditorPage = () => {
     <GeneralContainer>
       <Helmet
         bodyAttributes={{
-          style: `background : ${COLOR_SET['MAIN_BACKGROUND'][settingSelector.backgroundColor]}`,
+          style: `background : ${
+            COLOR_SET["MAIN_BACKGROUND"][settingSelector.backgroundColor]
+          }`,
         }}
       />
 
