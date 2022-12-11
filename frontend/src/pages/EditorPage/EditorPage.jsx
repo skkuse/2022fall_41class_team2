@@ -18,6 +18,7 @@ import {
 } from "../../modules/organisms/CodeEditor";
 import { getTimeDiff } from "../../modules/organisms/AssignmentOverview/AssignmentOverview";
 import { COLOR_SET } from "./../../service/GetColor";
+import { Img } from "../../modules/atoms";
 
 const Testbox = styled.div`
   background: #000000;
@@ -29,23 +30,26 @@ const EditorPageGrid = styled.div`
   grid-template-columns: [col] 1fr [col] 1fr [col] 1fr;
   grid-template-rows: [row] 1fr [row] 1fr;
 
-  width: 100vw;
-  height: 100vh;
+  width: 97%;
+  height: 97%;
 `;
 
 const ProblemWrapper = styled.div`
-  grid-column: col 1;
+  grid-column: ${(props) =>
+    props.magnified ? "col 1 / span 3" : "col 1 / span 1"};
+
   grid-row: row 1;
   min-width: 360px;
 `;
 const TestcaseWrapper = styled.div`
-  grid-column: col 1;
+  grid-column: ${(props) =>
+    props.magnified ? "col 1 / span 3" : "col 1 / span 1"};
   grid-row: row 2;
   min-width: 360px;
 `;
 const CodeEditorWrapper = styled.div`
-  grid-column: col 2 / span 2;
-  grid-row: row 1 / span 2;
+  grid-column: ${(props) => (props.magnified ? "" : "col 2 / span 2")};
+  grid-row: ${(props) => (props.magnified ? "" : "row 1 / span 2")};
 `;
 
 const GeneralContainer = styled.div`
@@ -78,6 +82,9 @@ export const EditorPage = () => {
 
   const settingSelector = useSelector((state) => state.SettingReducer);
   const [editMode, setEditMode] = useState({ edit: true, altMode: "none" });
+
+  // Magnifier
+  const [magnified1, setMagnified1] = useState(false);
 
   useEffect(() => {
     if (!monaco) return;
@@ -149,16 +156,25 @@ export const EditorPage = () => {
       />
       {/* Problem section*/}
       <EditorPageGrid>
-        <ProblemWrapper style={{ marginLeft: "43px", marginTop: "25px" }}>
+        <ProblemWrapper
+          magnified={magnified1}
+          style={{ marginLeft: "43px", marginTop: "25px" }}
+        >
+
           {/* scroll test */}
           <Problem
             prob={ass.question}
             restr={ass.constraints}
             darkMode={darkMode}
+            magnified={magnified1}
+            setMagnified={setMagnified1}
           />
         </ProblemWrapper>
         {/* TestCase */}
-        <TestcaseWrapper style={{ marginLeft: "43px", marginTop: "10px" }}>
+        <TestcaseWrapper
+          style={{ marginLeft: "43px", marginTop: "10px" }}
+          magnified={magnified1}
+        >
           <Testcase
             // // TODO: 오브젝트 형태로 변경해서 표시
             bodyContent={`테스트케이스 1>
@@ -174,8 +190,8 @@ export const EditorPage = () => {
           style={{
             marginLeft: "12.72px",
             marginTop: "25px",
-            marginRight: "43px",
           }}
+          magnified={magnified1}
         >
           <CodeEditor
             assignment={ass}

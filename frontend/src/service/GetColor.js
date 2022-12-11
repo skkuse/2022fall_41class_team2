@@ -54,10 +54,10 @@ export const ICON_SET = {
     },
     MAIN_BOTTOM: {
         SETTING_BACKGROUND_WHITE : "/images/Line_24.svg",
-        SETTING_BACKGROUND_BLACK : "images/line1_black.svg",
+        SETTING_BACKGROUND_BLACK : "/images/line1_black.svg",
     },
     MAIN_LINE: {
         SETTING_BACKGROUND_WHITE : "/images/Line_23.svg",
-        SETTING_BACKGROUND_BLACK : "images/line2_black.svg",     
+        SETTING_BACKGROUND_BLACK : "/images/line2_black.svg",     
     }
 }
