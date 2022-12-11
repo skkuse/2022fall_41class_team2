@@ -79,7 +79,7 @@ function TestcaseMaster({ bodyContent, testCases, darkMode, ...restProps }) {
       const result = await apiClient.post(
         `/api/outputs/testcases/${testcase_id}/`,
         {
-          language: settingSelector.language.toLowerCase(),
+          language: repoSelector.selectedModel.content.language.toLowerCase(),
           code: repoSelector.selectedModel.content.code,
         }
       );
