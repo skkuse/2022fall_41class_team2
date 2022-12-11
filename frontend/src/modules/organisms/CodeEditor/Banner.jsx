@@ -42,6 +42,7 @@ import musicIcon from "../../../assets/images/music.svg";
 import playIcon from "../../../assets/images/play.svg";
 import { COLOR_SET } from './../../../service/GetColor';
 import { SettingsButtonBlack } from "../../molecules/SettingsButton";
+import { setItemWithExpireTime } from './../../../service/localStorage';
 
 const SampleAudioList = [
   {
@@ -542,6 +543,7 @@ const SaveButtonComp = ({
       style={{ marginLeft: "14.86px" }}
       onClick={async () => {
         setEditMode({ edit: true, altMode:  "none" });
+        setItemWithExpireTime(`ass${assignment.id}`, repoSelector.repoList[index].id, 60*60*1000);
         // * 코드 저장
         if (
           isSaved &&

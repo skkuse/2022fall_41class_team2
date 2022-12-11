@@ -388,8 +388,8 @@ export const CodeEditor = ({
 
   const handleRepo = async () => {
     repoList = await fetchRepoList();
-    dispatch(saveRepoListAction(repoList));
-    dispatch(changeRepoAction(repoList[repoList.length - 1]));
+    dispatch(saveRepoListAction(repoList, assignment.id));
+    // dispatch(changeRepoAction(repoList[repoList.length - 1]));
   };
 
   useEffect(() => {

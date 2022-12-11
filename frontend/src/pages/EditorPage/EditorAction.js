@@ -45,11 +45,12 @@ export const createRepoAction =(repo) => {
     }
 }
 
-export const saveRepoListAction = (repoList) => {
+export const saveRepoListAction = (repoList, assId) => {
     console.log("saveRepoListAction");
     return {
         type: SAVE_REPO_LIST,
-        payload: repoList
+        payload: repoList,
+        assignmentId: assId
     }
 }
 

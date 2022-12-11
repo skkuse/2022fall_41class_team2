@@ -1,4 +1,5 @@
 import { CHANGE_REPO, CLEAR_SELECTED_REPO, READY_CHANGE_SELECTED_REPO, SAVE_REPO, SAVE_REPO_LIST, TESTCASE_OFF, UPDATE_REPO } from "../pages/EditorPage/EditorAction";
+import { getItemWithExpireTime } from "../service/localStorage";
 import { GET_REPO, CREATE_REPO, CLEAR_REPO, READY_CREATE_SELECTED_REPO, TESTCASE_ON, TESTCASE_ERROR } from './../pages/EditorPage/EditorAction';
 
 let editorInitState = {
@@ -18,17 +19,19 @@ export function editorReducer(state = editorInitState, action) {
     switch (action.type) {
         case SAVE_REPO_LIST:
             console.log("SAVE_REPO_LIST");
-            if(state.selectedModel) {
-                return { 
-                    ...state, 
-                    repoList : action.payload,
-                };
-            }
+            console.log(action);
+            // if(state.selectedModel) {
+            //     return { 
+            //         ...state, 
+            //         repoList : action.payload,
+            //     };
+            // }
+            console.log(getItemWithExpireTime(`ass${action.assignmentId}`));
 
             return { 
                 ...state, 
                 repoList : action.payload,
-                selectedModel: action.payload[action.payload.length - 1]
+                selectedModel: action.payload.find((repo)=>repo.id == getItemWithExpireTime(`ass${action.assignmentId}`))
             };
         
         // * 다른 과제로 들어갈 때 저장된 코드 비우기
