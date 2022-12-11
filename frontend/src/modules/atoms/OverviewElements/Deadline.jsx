@@ -65,7 +65,7 @@ export const Deadline = ({
             )}
           </Wrapper>
         </div>
-        <div style={{ marginRight: "11px" }}>{remainingTime}</div>
+        <div style={{ marginRight: "11px" }}>{remainingTime == "0d 0h 0m" || remainingTime == "0d 0h 0m 0s"? "지각 제출" : remainingTime}</div>
         <div style={{ marginRight: "11.32px" }}>
           <Wrapper>
             {/* 남은 시간에 따른 표시 변화 */}

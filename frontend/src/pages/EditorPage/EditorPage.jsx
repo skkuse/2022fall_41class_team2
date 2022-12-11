@@ -251,7 +251,7 @@ export const EditorPage = () => {
                   console.log(line);
                   return line;
                 }
-              }).join(""))}
+              }).join("\n"))}
             />}
           {
             repoSelector.selectedModel && testcaseSelector.isOnTestcase && testcaseSelector.isError &&
