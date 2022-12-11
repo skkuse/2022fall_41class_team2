@@ -153,7 +153,7 @@ export const CodeEditor = ({
 
   // const [editMode, setEditMode] = useState({ edit: true, altMode: "none" });
   const editorRef = createRef();
-
+  const monaco = useMonaco();
   const [repo, setRepo] = useState();
   const [monacoOption, setMonacoOption] = useState();
   const dispatch = useDispatch();
@@ -165,6 +165,19 @@ export const CodeEditor = ({
 
   const [submitResult, setSubmitResult] = useState(null);
   const [submitLoading, setSubmitLoading] = useState(null);
+
+  const [scrollPosition, setScrollPosition] = useState(0);
+  const handleScroll = () => {
+      const position = window.pageYOffset;
+      setScrollPosition(position);
+      console.log(position);
+  };
+  useEffect(() => {
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => {
+        window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
 
   const changeMode = ({ src, ...restProps }) => {
     // altMode : none, grading, execution, submission
@@ -185,7 +198,7 @@ export const CodeEditor = ({
     try {
       const result = await apiClient.post("/api/outputs/results/", {
         repo_id: repoSelector.selectedModel.id,
-        language: settingSelector.language.toLowerCase(),
+        language: repoSelector.selectedModel.content.language.toLowerCase(),
         code: repoSelector.selectedModel.content.code,
       });
 
@@ -224,7 +237,7 @@ export const CodeEditor = ({
       const result = await apiClient.post(
         `/api/outputs/testcases/${testcase_id}/`,
         {
-          language: settingSelector.language.toLowerCase(),
+          language: repoSelector.selectedModel.content.language.toLowerCase(),
           code: repoSelector.selectedModel.content.code,
         }
       );
@@ -240,7 +253,7 @@ export const CodeEditor = ({
       const result = await apiClient.post(
         `/api/outputs/testcases/`,
         {
-          language: settingSelector.language.toLowerCase(),
+          language: repoSelector.selectedModel.content.language.toLowerCase(),
           code: repoSelector.selectedModel.content.code,
           assignment_id: assignment.id
         }
@@ -332,8 +345,14 @@ export const CodeEditor = ({
     console.log(editMode);
   }, [editMode]);
 
-  const findByLanguage = (contents) => {
+  const findByLanguageDefault = (contents) => {
     const userLanguage = settingSelector.language.toLowerCase();
+    console.log(contents.find((content) => content.language == userLanguage));
+    return contents.find((content) => content.language == userLanguage);
+  };
+
+  const findByLanguageUsed = (contents) => {
+    const userLanguage = repoSelector.selectedModel.content.language.toLowerCase();
     console.log(contents.find((content) => content.language == userLanguage));
     return contents.find((content) => content.language == userLanguage);
   };
@@ -344,7 +363,7 @@ export const CodeEditor = ({
     );
     console.log(result.data.data.results);
     if (!result.data.data.results.length) {
-      const userSkeleton = findByLanguage(assignment.contents);
+      const userSkeleton = findByLanguageDefault(assignment.contents);
       const postResult = await addRepo(userSkeleton.skeleton_code);
       result = await apiClient.get(
         `/api/repos/?assignment_id=${assignment.id}`
@@ -381,9 +400,14 @@ export const CodeEditor = ({
     };
   }, []);
 
+
   useEffect(() => {
     if (!monaco) return;
   }, [monaco]);
+
+  if(!monaco) {
+    return <></>
+  }
 
   if (
     !(
@@ -402,6 +426,7 @@ export const CodeEditor = ({
 
   // TODO: 에러 표시
   const error = true;
+  
 
   return (
     <>
@@ -420,9 +445,9 @@ export const CodeEditor = ({
                 {
                   testcaseSelector.isOnTestcase && testcaseSelector.isError && <Img src="/images/error.svg" alt="error indicator" />
                 }
-                {
-                  testcaseSelector.isOnTestcase && testcaseSelector.isError && testcaseSelector.errorContent
-                }
+                {/* {
+                  testcaseSelector.isOnTestcase && testcaseSelector.isError && JSON.stringify(testcaseSelector.errorContent)
+                } */}
                 
               </div>
               <div style={{ marginRight: "27.78px" }}>
@@ -455,7 +480,13 @@ export const CodeEditor = ({
               </div>
             </EditorHeaderWrapper>
             <div style={{ marginLeft: "12.42px", marginTop: "24.83px" }}>
-              <EditorWrapper style={{ position: "relative" }}>
+              <EditorWrapper style={{ position: "relative" }} 
+              onScrollCapture={()=>{
+                dispatch(setTestcaseOff());
+                console.log("?/");
+              }} onScroll={()=>{
+                console.log("?/");
+              }}>
                 {/* {
                   repoSelector.repoList.map((repo) => {
                     return (
@@ -482,14 +513,82 @@ export const CodeEditor = ({
                   </div> */}
 
                 {repoSelector.selectedModel && (
+                      
                       <Editor
-                        // width="1180px"
-                        // height="820px"
+                      height={`calc(100% - 130px)`}
+                      beforeMount={(monaco2)=>{
+                        // let editor = monaco2.editor.getEditors();
+                       
+                        // console.log(editor);
+                      }}
+                      
+                        onMount={(editor, monaco2) => {
+                          // monaco.editor
+                          // console.log(monaco.editor.deltaDecorations);
+                          // monaco.editor.getEditors();
+                          editor.onDidScrollChange=()=>{
+                            dispatch(setTestcaseOff());
+                            console.log("??????????");
+                          }
+
+                          editor.deltaDecorations(
+                            [],
+                            [
+                              {
+                                range: new monaco.Range(1, 1, 10, 1),
+                                options: {
+                                  isWholeLine: true,
+                                  className: 'myContentClass',
+                                  glyphMarginClassName: 'myGlyphMarginClass',
+                                  zIndex: 1000,
+                                  minimap:false
+                                }
+                              }
+                            ]
+                          );
+                          setTimeout(()=>{
+                            editor.deltaDecorations(
+                              [],
+                              [
+                                {
+                                  range: new monaco.Range(1, 1, 10, 1),
+                                  options: {
+                                    isWholeLine: true,
+                                    className: 'myContentClass',
+                                    glyphMarginClassName: 'myGlyphMarginClass',
+                                    zIndex: 1000,
+                                    minimap:false
+                                  }
+                                }
+                              ]
+                            );
+                          }, 1000);
+                          
+
+                          // alert(JSON.stringify(editor.getLineDecorations(2)));
+                          console.log(editor.getLineDecorations(2));
+                        }}
+
+                        // beforeMount={(monaco)=>{
+                        //   monaco.editor.edit
+                        // }}
                         
-                        language={settingSelector.language.toLowerCase()}
+                        options={{
+                          glyphMargin: true,
+                          scrollBeyondLastLine:false,
+                          scrollbar:{
+                            alwaysConsumeMouseWheel: false, // defaults is true, false enables the behavior you describe
+                        }
+                        }}
+                        glyphMargin={true}
+                        language={repoSelector.selectedModel.content.language.toLowerCase()}
                         theme={settingSelector.backgroundColor === SETTING_BACKGROUND_WHITE ? 'light': 'vs-dark'}
                         value={repoSelector.selectedModel.content.code}
-                        onChange={(e) => {
+                        onScroll={()=>{
+                          console.log("??");
+                        }}
+                        onChange={(e,ev) => {
+                          console.log(repoSelector.selectedModel);
                           dispatch(setTestcaseOff());
                           if (
                             repoSelector.repoChangeInfo.isChanging ||
@@ -505,24 +604,33 @@ export const CodeEditor = ({
                           const result = apiClient.put(
                             `/api/repos/${repoSelector.selectedModel.id}/`,
                             {
-                              language: settingSelector.language.toLowerCase(),
+                              language: repoSelector.selectedModel.content.language.toLowerCase(),
                               code: repoSelector.selectedModel.content.code,
                               assignment_id: assignment.id,
                             }
                           );
                         }}
                       />
-
-                      
-                  
                 )}
 
                 {
                     repoSelector.selectedModel && testcaseSelector.isOnTestcase && testcaseSelector.isError &&
-                    <div style={{position:"absolute", top: 10, zIndex: 100}}>
+                    <div style={{position:"absolute", top: testcaseSelector.errorContent.top, zIndex: 100, }}>
+                      <div style={{backgroundColor:"rgba(249, 86, 86, 0.1)", width: "100%", height:"19px"}}>
+
+                      </div>
+
                       {
-                        testcaseSelector.errorContent
+                        testcaseSelector.errorContent.content.split("\n").map((line) => {
+                          return (
+                            <div style={{paddingLeft:"83px", backgroundColor:"rgba(204, 229, 198, 1.0)", width: "100vw"}}>
+                              {line}
+                            </div>
+                          )
+                        })
                       }
+                      
+
                     </div>
                   }
 
@@ -581,9 +689,9 @@ export const CodeEditor = ({
                       // TODO : inline diff로 변경?
                       // width="560px"
                       // height="820px"
-                      language={settingSelector.language.toLowerCase()}
+                      language={repoSelector.selectedModel.content.language.toLowerCase()}
                       original={repoSelector.selectedModel.content.code}
-                      modified={ findByLanguage(assignment.contents).answer_code}
+                      modified={ findByLanguageUsed(assignment.contents).answer_code}
                       theme={settingSelector.backgroundColor === SETTING_BACKGROUND_WHITE ? 'light': 'vs-dark'}
                       options={{
                         renderSideBySide: false,
@@ -596,7 +704,7 @@ export const CodeEditor = ({
                       // height="820px"
                       theme={settingSelector.backgroundColor === SETTING_BACKGROUND_WHITE ? 'light': 'vs-dark'}
                       value={repoSelector.selectedModel.content.code}
-                      language={settingSelector.language.toLowerCase()}
+                      language={repoSelector.selectedModel.content.language.toLowerCase()}
                     />
                   )}
                 </EditorWrapper>
