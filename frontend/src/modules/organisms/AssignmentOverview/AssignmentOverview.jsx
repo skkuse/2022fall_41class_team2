@@ -381,5 +381,6 @@ export const getTimeDiff = (time1, now) => {
             _MS_PER_SECOND
         )
       : 0;
-  return `${diffDate}d ${diffHour}h ${diffMin}m ${diffSec}s`;
+      // return `${diffDate}d ${diffHour}h ${diffMin}m ${diffSec}s`;
+  return `${diffDate}d ${diffHour}h ${diffMin}m`;
 };
