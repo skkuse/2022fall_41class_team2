@@ -35,7 +35,7 @@ export const Deadline = ({
   ...restProps
 }) => {
   // const danger = true;
-  const danger = remainingTime.split(" ")[0].slice(-1) === "d" ? false : true;
+  const danger = remainingTime.split(" ")[0] === "0d" ? true : false;
   // console.log(`deadline ${remainingTime.split(" ")[0].slice(-1)}`);
   // console.log(danger);
   if (submission) {

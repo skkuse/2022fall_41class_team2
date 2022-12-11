@@ -269,6 +269,7 @@ export const AssignmentOverview = ({ className, darkMode, ...restProps }) => {
 
 const LectureGroupComp = ({ lecture, color }) => {
   // console.log(JSON.stringify(lecture));
+
   return (
     <LectureGroup numAssignment={`${lecture.assignments.results.length}`}>
       {/* <>
@@ -283,6 +284,8 @@ const LectureGroupComp = ({ lecture, color }) => {
 
       <AssignmentGrid numAssignment={`${lecture.assignments.results.length}`}>
         {lecture.assignments.results.map((ass) => {
+          // console.log(Date.parse(ass.deadline));
+          // console.log(Date());
           return (
             <>
               <Link
@@ -330,13 +333,53 @@ const LectureGroupComp = ({ lecture, color }) => {
 };
 
 export const getTimeDiff = (time1, now) => {
-  let diff = new Date(time1 - now);
-  // console.log(time1);
+  // console.log(typeof time1)
+  // console.log(Date.parse(time1));
+  // console.log(Date.parse(now));
   // console.log(diff.getFullYear() - 1970);
   // console.log(diff.getMonth());
-  const diffDate = diff.getDate();
-  const diffHour = diff.getHours();
-  const diffMin = diff.getMinutes();
-  const diffSec = diff.getSeconds();
+
+  const _MS_PER_DAY = 1000 * 60 * 60 * 24;
+  const _MS_PER_HOUR = 1000 * 60 * 60;
+  const _MS_PER_MINUTE = 1000 * 60;
+  const _MS_PER_SECOND = 1000;
+
+  // Discard the time and time-zone information.
+  let utc1 = Date.UTC(
+    time1.getFullYear(),
+    time1.getMonth(),
+    time1.getDate(),
+    time1.getHours(),
+    time1.getMinutes(),
+    time1.getSeconds()
+  );
+  let utc2 = Date.UTC(
+    now.getFullYear(),
+    now.getMonth(),
+    now.getDate(),
+    now.getHours(),
+    now.getMinutes(),
+    now.getSeconds()
+  );
+
+  const diffDate =
+    utc1 - utc2 > 0 ? Math.floor((utc1 - utc2) / _MS_PER_DAY) : 0;
+  const diffHour =
+    utc1 - utc2 > 0
+      ? Math.floor(((utc1 - utc2) % _MS_PER_DAY) / _MS_PER_HOUR)
+      : 0;
+  const diffMin =
+    utc1 - utc2 > 0
+      ? Math.floor(
+          (((utc1 - utc2) % _MS_PER_DAY) % _MS_PER_HOUR) / _MS_PER_MINUTE
+        )
+      : 0;
+  const diffSec =
+    utc1 - utc2 > 0
+      ? Math.floor(
+          ((((utc1 - utc2) % _MS_PER_DAY) % _MS_PER_HOUR) % _MS_PER_MINUTE) /
+            _MS_PER_SECOND
+        )
+      : 0;
   return `${diffDate}d ${diffHour}h ${diffMin}m ${diffSec}s`;
 };

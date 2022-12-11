@@ -239,23 +239,23 @@ export const SettingsBox = ({ className, ...restProps }) => {
                 <div style={{ justifyContent: "center" }}>
                   <Text>배경 색</Text>
                 </div>
-                <div style={{ marginLeft: "90px" }} onClick={() => {
-                      restProps.theme = "#ffffff"; // TODO: setting theme props
-                      setCurrentBack(SETTING_BACKGROUND_WHITE);
-                    }}>
-                  <ColorIcon
-                    color="#ffffff"
-                  />
+                <div
+                  style={{ marginLeft: "90px" }}
+                  onClick={() => {
+                    restProps.theme = "#ffffff"; // TODO: setting theme props
+                    setCurrentBack(SETTING_BACKGROUND_WHITE);
+                  }}
+                >
+                  <ColorIcon color="#ffffff" />
                 </div>
-                <div onClick={() => {
-                      restProps.theme = "#1a0505"; // TODO: setting theme props
-                      setCurrentBack(SETTING_BACKGROUND_BLACK);
-                    }}>
-                  <ColorIcon
-                    color="#1a0505"
-                  />
+                <div
+                  onClick={() => {
+                    restProps.theme = "#1a0505"; // TODO: setting theme props
+                    setCurrentBack(SETTING_BACKGROUND_BLACK);
+                  }}
+                >
+                  <ColorIcon color="#1a0505" />
                 </div>
-                
               </BackgroundColorSelectorContainer>
               <div style={{ marginTop: "60px" }}>
                 <SettingsSelectorContainer>

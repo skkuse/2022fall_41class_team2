@@ -12,7 +12,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import { getLectureAction } from "./../MainPage/MainAction";
 import { apiClient } from "./../../api/axios";
-import { COLOR_SET } from './../../service/GetColor';
+import { COLOR_SET } from "./../../service/GetColor";
 
 const GeneralContainer = styled.div`
   height: 100vh;
@@ -51,8 +51,8 @@ export const OverviewPage = (...restProps) => {
 
   useEffect(() => {
     console.log(settingSelector.backgroundColor);
-    console.log(COLOR_SET['MAIN_TOP'][settingSelector.backgroundColor]);
-  }, [settingSelector.backgroundColor])
+    console.log(COLOR_SET["MAIN_TOP"][settingSelector.backgroundColor]);
+  }, [settingSelector.backgroundColor]);
 
   if (lectureSelector) {
     return (
