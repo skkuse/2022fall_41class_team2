@@ -7,8 +7,16 @@
 
 import ProblemMaster from "../../molecules/ProblemMaster/ProblemMaster";
 
-export const Problem = ({ headerContent, bodyContent, darkMode, prob , restr, ...restProps }) => {
-  
+export const Problem = ({
+  headerContent,
+  bodyContent,
+  darkMode,
+  prob,
+  restr,
+  magnified,
+  setMagnified,
+  ...restProps
+}) => {
   return (
     <ProblemMaster
       headerContent={headerContent}
@@ -16,6 +24,8 @@ export const Problem = ({ headerContent, bodyContent, darkMode, prob , restr, ..
       darkMode={darkMode}
       prob={prob}
       restr={restr}
+      magnified={magnified}
+      setMagnified={setMagnified}
     />
   );
 };
