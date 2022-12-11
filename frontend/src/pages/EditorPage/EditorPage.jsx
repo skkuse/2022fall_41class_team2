@@ -40,12 +40,14 @@ const ProblemWrapper = styled.div`
 
   grid-row: row 1;
   min-width: 360px;
+  max-width: 1800px;
 `;
 const TestcaseWrapper = styled.div`
   grid-column: ${(props) =>
     props.magnified ? "col 1 / span 3" : "col 1 / span 1"};
   grid-row: row 2;
   min-width: 360px;
+  max-width: 1800px;
 `;
 const CodeEditorWrapper = styled.div`
   grid-column: ${(props) => (props.magnified ? "" : "col 2 / span 2")};

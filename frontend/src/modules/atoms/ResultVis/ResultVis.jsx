@@ -147,7 +147,7 @@ const renderActiveShape = (props) => {
   );
 };
 
-export const ResultVis = ({ data, chartColor, radial, ...restProps }) => {
+export const ResultVis = ({ data, chartColor, radial, x, y, ...restProps }) => {
   // radial := functionality result visulaization 위한 boolean
   console.log(JSON.stringify(data));
 

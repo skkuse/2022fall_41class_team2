@@ -9,7 +9,7 @@ const DescWrapper = styled.div`
   flex-direction: column;
 
   height: 100%;
-  max-width: 605px;
+  
 `;
 
 const PlagiarismIndicator = styled.div`

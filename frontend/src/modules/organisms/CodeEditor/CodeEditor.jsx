@@ -158,7 +158,7 @@ export const CodeEditor = ({
 
   // Magnifier
   const [magnified2, setMagnified2] = useState(false);
-  const [magnified3, setMagnified3] = useState(true);
+  const [magnified3, setMagnified3] = useState(false);
 
   const headerContent = "코드 입력";
   const testcaseSelector = useSelector((state) => state.testcaseReducer);
