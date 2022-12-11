@@ -45,11 +45,6 @@ def generate_testcase_results(base_dir: str, language: str, raw_code: str, testc
             actual_output = execution_output.get('output')
             is_pass = string_compare_considered_type(actual_output, expected_output)
 
-        if testcase.is_hidden:
-            testcase_input = None
-            expected_output = None
-            actual_output = None
-
         instance = {
             'id': testcase.id,
             'is_hidden': testcase.is_hidden,
