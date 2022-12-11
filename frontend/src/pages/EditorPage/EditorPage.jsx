@@ -20,7 +20,6 @@ import {
 } from "../../modules/organisms/CodeEditor";
 import { getTimeDiff } from "../../modules/organisms/AssignmentOverview/AssignmentOverview";
 import { COLOR_SET } from "./../../service/GetColor";
-<<<<<<< HEAD
 import { setTestcaseOff } from './EditorAction';
 import { SETTING_BACKGROUND_WHITE } from './../../reducers/SettingReducer';
 import { Img } from './../../modules/atoms/Img/index';
