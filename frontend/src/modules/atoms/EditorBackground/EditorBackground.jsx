@@ -2,10 +2,13 @@ import styled from "styled-components";
 import { ResultVis } from "../../atoms";
 import React, { useEffect, useCallback, useState } from "react";
 import { Text } from "../../atoms";
-import { useSelector, useDispatch } from 'react-redux';
-import { COLOR_SET } from './../../../service/GetColor';
-import { setTestcaseError, setTestcaseOn } from './../../../pages/EditorPage/EditorAction';
-import { apiClient } from './../../../api/axios';
+import { useSelector, useDispatch } from "react-redux";
+import { COLOR_SET } from "./../../../service/GetColor";
+import {
+  setTestcaseError,
+  setTestcaseOn,
+} from "./../../../pages/EditorPage/EditorAction";
+import { apiClient } from "./../../../api/axios";
 
 const READABILITY = 0;
 const EFFICIENCY = 1;
@@ -80,7 +83,6 @@ const Bg = styled.div`
       ${(props) => (props.darkMode ? "#d3d3da" : "rgba(0, 0, 0, 0.5)")}; */
   }
 `;
-
 
 const BgTestCase = styled.div`
   width: 100%;
@@ -272,6 +274,13 @@ const TestCaseOutput = styled.div`
 `;
 const TestCaseResult = styled.div`
   display: flex;
+  grid-column: col 4;
+  display: flex;
+  flex-direction: column;
+
+  justify-content: center;
+  align-items: center;
+
 `;
 
 const TestCaseSeparator = styled.div`
@@ -285,11 +294,11 @@ const TestCaseSeparator = styled.div`
   transform: rotate(180deg);
 `;
 
-const TestCaseMasterContainer = styled.div`
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
+const TestCaseMasterGrid = styled.div`
+  display: grid;
+  grid-gap: 10px;
+  grid-template-columns: [col] 150px [col] 150px [col] 150px [col] 150px;
+  grid-template-rows: auto;
 `;
 const TestCaseIOContainer = styled.div`
   display: flex;
@@ -298,6 +307,10 @@ const TestCaseIOContainer = styled.div`
   justify-content: space-around;
 
   min-height: 80px;
+
+  grid-column: col 1 / span 3;
+  border-top: 4px solid #bfbfbf;
+  border-bottom: 4px solid #bfbfbf;
 `;
 // const TestCaseResultContainer = styled.div`
 //   display: flex;
@@ -384,18 +397,18 @@ const GradingHighlighter = styled.div`
       : "0"};
 `;
 const DescriptionHighlighter = styled.div`
-width: 195px;
-height: 30px;
-display:flex;
-justify-content: center;
-align-items:center;
+  width: 195px;
+  height: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   border-radius: 5px;
-  display:flex
-  flex-direction:column;
-  align-items:stretch;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
   background: ${(props) => (props.darkMode ? "#666681" : "#d9d9d9")};
   color: ${(props) => (props.darkMode ? "#d8d8d8" : "#3c3c3c")};
-  box-sizing:border-box;
+  box-sizing: border-box;
   border: ${(props) =>
     props.active
       ? props.darkMode
@@ -452,12 +465,12 @@ export const EditorBackground = ({
   const [pfListLocal, setPfListLocal] = useState(pfList);
   const [testCaseData, setTestCaseData] = useState(testCaseValue);
 
-  useEffect(()=>{
+  useEffect(() => {
     console.log("!!!!");
     console.log(testCaseValue);
-    setTestCaseData(testCaseValue)
+    setTestCaseData(testCaseValue);
     console.log(testCaseData);
-  },[testCaseValue])
+  }, [testCaseValue]);
 
   const repoSelector = useSelector((state) => state.editorReducer);
   // visualizing functionality result
@@ -531,29 +544,43 @@ export const EditorBackground = ({
   if (mode === "testcase") {
     // console.log(content.input);
     return (
-      <BgTestCase style={{
-        backgroundColor:COLOR_SET['EDITOR_EXPLAIN_CONTENT'][settingSelector.backgroundColor],
-        color: COLOR_SET['EDITOR_EXPLAIN_CONTENT_FONT'][settingSelector.backgroundColor]
-      }}>
-        <TestCaseMasterContainer>
+      <BgTestCase
+        style={{
+          backgroundColor:
+            COLOR_SET["EDITOR_EXPLAIN_CONTENT"][
+              settingSelector.backgroundColor
+            ],
+          color:
+            COLOR_SET["EDITOR_EXPLAIN_CONTENT_FONT"][
+              settingSelector.backgroundColor
+            ],
+        }}
+      >
+        <TestCaseMasterGrid>
           <TestCaseIOContainer>
             <TestCaseInput>Input: {content.input}</TestCaseInput>
             <TestCaseOutput>Output: {content.output}</TestCaseOutput>
           </TestCaseIOContainer>
 
-          <TestCaseResult onClick={async()=>{
+          <TestCaseResult
+            onClick={async () => {
               console.log("??");
               console.log(id);
               console.log(pfListLocal);
               console.log(testCaseData);
 
-              if(testCaseData.is_pass == null && testCaseData.id) {
+              if (testCaseData.is_pass == null && testCaseData.id) {
                 dispatch(setTestcaseOn());
                 const result = await executeTestCase(testCaseData.id);
-                dispatch(setTestcaseError(result.data.data.is_error, result.data.data.actual_output));
+                dispatch(
+                  setTestcaseError(
+                    result.data.data.is_error,
+                    result.data.data.actual_output
+                  )
+                );
                 setTestCaseData({
                   ...result.data.data,
-                  id: testCaseData.id
+                  id: testCaseData.id,
                 });
                 console.log(result.data.data);
                 // console.log(result);
@@ -568,37 +595,57 @@ export const EditorBackground = ({
                 // }
                 // testCaseData(tempPfList);
               }
-          }}>{testCaseData.is_pass != null ? JSON.stringify(testCaseData.is_pass) : "RESULT HERE"}</TestCaseResult>
-        </TestCaseMasterContainer>
+            }}
+          >
+            {testCaseData.is_pass != null
+              ? JSON.stringify(testCaseData.is_pass)
+              : "RESULT HERE"}
+          </TestCaseResult>
+        </TestCaseMasterGrid>
       </BgTestCase>
     );
     // return <Bg darkMode={darkMode}>{content}</Bg>;
   } else if (mode === "gradingAndExecution") {
     // console.log(content.input);
-    const score = (pfListLocal.filter((pf) => pf.is_pass).length / pfListLocal.length)*100;
-  
+    const score =
+      (pfListLocal.filter((pf) => pf.is_pass).length / pfListLocal.length) *
+      100;
+
     return (
-      <SubmitResultBg style={{
-        backgroundColor:COLOR_SET['EDITOR_EXPLAIN_CONTENT'][settingSelector.backgroundColor],
-        color: COLOR_SET['EDITOR_EXPLAIN_CONTENT_FONT'][settingSelector.backgroundColor]
-      }}>
-        <WindowWrapper style={{
-            backgroundColor:COLOR_SET['EDITOR_EXPLAIN_CONTENT'][settingSelector.backgroundColor],
-            color: COLOR_SET['EDITOR_EXPLAIN_CONTENT_FONT'][settingSelector.backgroundColor]
-          }}>
+      <SubmitResultBg
+        style={{
+          backgroundColor:
+            COLOR_SET["EDITOR_EXPLAIN_CONTENT"][
+              settingSelector.backgroundColor
+            ],
+          color:
+            COLOR_SET["EDITOR_EXPLAIN_CONTENT_FONT"][
+              settingSelector.backgroundColor
+            ],
+        }}
+      >
+        <WindowWrapper
+          style={{
+            backgroundColor:
+              COLOR_SET["EDITOR_EXPLAIN_CONTENT"][
+                settingSelector.backgroundColor
+              ],
+            color:
+              COLOR_SET["EDITOR_EXPLAIN_CONTENT_FONT"][
+                settingSelector.backgroundColor
+              ],
+          }}
+        >
           <div>{`총점: ${score}점`}</div>
-          {
-             pfListLocal.map((pf, index) => {
-              let content = "";
-              if(pf.is_hidden) {
-                content = `히든 테스트케이스${index+1}: ${pf.is_pass}`;
-              }
-              else{
-                content = `공개 테스트케이스${index+1}: ${pf.is_pass}`;
-              }
-              return <div style={{marginTop: "16px"}}>{content} </div>;
-            })
-          }
+          {pfListLocal.map((pf, index) => {
+            let content = "";
+            if (pf.is_hidden) {
+              content = `히든 테스트케이스${index + 1}: ${pf.is_pass}`;
+            } else {
+              content = `공개 테스트케이스${index + 1}: ${pf.is_pass}`;
+            }
+            return <div style={{ marginTop: "16px" }}>{content} </div>;
+          })}
         </WindowWrapper>
       </SubmitResultBg>
     );
@@ -606,22 +653,42 @@ export const EditorBackground = ({
     // SPECIAL CASE: ASSIGNMENT SUBMITTED
 
     return (
-      <SubmitResultBg  style={{
-        backgroundColor:COLOR_SET['EDITOR_EXPLAIN_CONTENT'][settingSelector.backgroundColor],
-        color: COLOR_SET['EDITOR_EXPLAIN_CONTENT_FONT'][settingSelector.backgroundColor]
-      }}>
+      <SubmitResultBg
+        style={{
+          backgroundColor:
+            COLOR_SET["EDITOR_EXPLAIN_CONTENT"][
+              settingSelector.backgroundColor
+            ],
+          color:
+            COLOR_SET["EDITOR_EXPLAIN_CONTENT_FONT"][
+              settingSelector.backgroundColor
+            ],
+        }}
+      >
         <ResultVisContainer>
           {/* Separator */}
-          <Separator  style={{
-        backgroundColor:COLOR_SET['EDITOR_EXPLAIN_CONTENT'][settingSelector.backgroundColor],
-        color: COLOR_SET['EDITOR_EXPLAIN_CONTENT_FONT'][settingSelector.backgroundColor]
-      }}>
+          <Separator
+            style={{
+              backgroundColor:
+                COLOR_SET["EDITOR_EXPLAIN_CONTENT"][
+                  settingSelector.backgroundColor
+                ],
+              color:
+                COLOR_SET["EDITOR_EXPLAIN_CONTENT_FONT"][
+                  settingSelector.backgroundColor
+                ],
+            }}
+          >
             {/* TODO */}
             <GradingHighlighter
               active={activeIndexDesc === GRADING}
               style={{
-                backgroundColor:COLOR_SET['EDITOR_EXPLAIN'][settingSelector.backgroundColor],
-                color: COLOR_SET['EDITOR_EXPLAIN_FONT'][settingSelector.backgroundColor]
+                backgroundColor:
+                  COLOR_SET["EDITOR_EXPLAIN"][settingSelector.backgroundColor],
+                color:
+                  COLOR_SET["EDITOR_EXPLAIN_FONT"][
+                    settingSelector.backgroundColor
+                  ],
               }}
             >
               <Button onClick={() => onButtonClickDesc(GRADING)}>
@@ -631,8 +698,12 @@ export const EditorBackground = ({
             <DescriptionHighlighter
               active={activeIndexDesc === DESCRIPTION}
               style={{
-                backgroundColor:COLOR_SET['EDITOR_EXPLAIN'][settingSelector.backgroundColor],
-                color: COLOR_SET['EDITOR_EXPLAIN_FONT'][settingSelector.backgroundColor]
+                backgroundColor:
+                  COLOR_SET["EDITOR_EXPLAIN"][settingSelector.backgroundColor],
+                color:
+                  COLOR_SET["EDITOR_EXPLAIN_FONT"][
+                    settingSelector.backgroundColor
+                  ],
               }}
             >
               <Button onClick={() => onButtonClickDesc(DESCRIPTION)}>
@@ -642,8 +713,12 @@ export const EditorBackground = ({
             <RecommendationHighlighter
               active={activeIndexDesc === RECOMMENDATION}
               style={{
-                backgroundColor:COLOR_SET['EDITOR_EXPLAIN'][settingSelector.backgroundColor],
-                color: COLOR_SET['EDITOR_EXPLAIN_FONT'][settingSelector.backgroundColor]
+                backgroundColor:
+                  COLOR_SET["EDITOR_EXPLAIN"][settingSelector.backgroundColor],
+                color:
+                  COLOR_SET["EDITOR_EXPLAIN_FONT"][
+                    settingSelector.backgroundColor
+                  ],
               }}
             >
               <Button onClick={() => onButtonClickDesc(RECOMMENDATION)}>
@@ -656,33 +731,40 @@ export const EditorBackground = ({
           {activeIndexDesc === GRADING && (
             <div style={{ marginTop: "20px" }}>
               <ChartContainer>
-                {
-                    content.readability_result
-                    ?
-                    activeIndexChart === READABILITY && <ResultVis
+                {content.readability_result
+                  ? activeIndexChart === READABILITY && (
+                      <ResultVis
                         data={content.readability_result}
                         chartColor="#FF9A3C"
                       />
-                  :
-                  activeIndexChart === READABILITY &&  <div style={{width:"600px", height: "300px"}}> 현재 가독성 채점 기능은 python만 지원합니다.</div>
-                }
-                {
-                  content.efficiency_result
-                  ?
-                  activeIndexChart === EFFICIENCY && <ResultVis
-                    data={content.efficiency_result}
-                    chartColor="#98D964"
-                  />
-                  :
-                  activeIndexChart === EFFICIENCY &&  <div style={{width:"600px", height: "300px"}}> 현재 효율성 채점 기능은 python만 지원합니다. </div>
-                }
-                {activeIndexChart === FUNCTIONALITY && content.functionality_result && (
-                  <ResultVis
-                    data={content.functionality_result.testcase_results}
-                    chartColor="#52C0E7"
-                    radial={true}
-                  />
-                )}
+                    )
+                  : activeIndexChart === READABILITY && (
+                      <div style={{ width: "600px", height: "300px" }}>
+                        {" "}
+                        현재 가독성 채점 기능은 python만 지원합니다.
+                      </div>
+                    )}
+                {content.efficiency_result
+                  ? activeIndexChart === EFFICIENCY && (
+                      <ResultVis
+                        data={content.efficiency_result}
+                        chartColor="#98D964"
+                      />
+                    )
+                  : activeIndexChart === EFFICIENCY && (
+                      <div style={{ width: "600px", height: "300px" }}>
+                        {" "}
+                        현재 효율성 채점 기능은 python만 지원합니다.{" "}
+                      </div>
+                    )}
+                {activeIndexChart === FUNCTIONALITY &&
+                  content.functionality_result && (
+                    <ResultVis
+                      data={content.functionality_result.testcase_results}
+                      chartColor="#52C0E7"
+                      radial={true}
+                    />
+                  )}
 
                 {/* pie chart selector */}
                 <>
@@ -690,11 +772,14 @@ export const EditorBackground = ({
         가독성 : #FF9A3C
         효율 : #98D964
         기능 : #52C0E7 */}
-                  <Selector >
+                  <Selector>
                     <ReadabilityHighlighter
                       active={activeIndexChart === READABILITY}
                       style={{
-                        backgroundColor:COLOR_SET['EDITOR_EXPLAIN'][settingSelector.backgroundColor],
+                        backgroundColor:
+                          COLOR_SET["EDITOR_EXPLAIN"][
+                            settingSelector.backgroundColor
+                          ],
                       }}
                     >
                       <Button onClick={() => onButtonClickChart(READABILITY)}>
@@ -704,7 +789,10 @@ export const EditorBackground = ({
                     <EfficiencyHighlighter
                       active={activeIndexChart === EFFICIENCY}
                       style={{
-                        backgroundColor:COLOR_SET['EDITOR_EXPLAIN'][settingSelector.backgroundColor],
+                        backgroundColor:
+                          COLOR_SET["EDITOR_EXPLAIN"][
+                            settingSelector.backgroundColor
+                          ],
                       }}
                     >
                       <Button onClick={() => onButtonClickChart(EFFICIENCY)}>
@@ -714,7 +802,10 @@ export const EditorBackground = ({
                     <FunctionalityHighlighter
                       active={activeIndexChart === FUNCTIONALITY}
                       style={{
-                        backgroundColor:COLOR_SET['EDITOR_EXPLAIN'][settingSelector.backgroundColor],
+                        backgroundColor:
+                          COLOR_SET["EDITOR_EXPLAIN"][
+                            settingSelector.backgroundColor
+                          ],
                       }}
                     >
                       <Button onClick={() => onButtonClickChart(FUNCTIONALITY)}>
@@ -733,67 +824,78 @@ export const EditorBackground = ({
                 }}
               >
                 {/* TODO: activeIndexDesc state 받아서 표시  */}
-                <ScoreDescriptor style={{
-                backgroundColor:COLOR_SET['EDITOR_RESULT'][settingSelector.backgroundColor],
-                color: COLOR_SET['EDITOR_EXPLAIN_FONT'][settingSelector.backgroundColor]
-              }}>
-                  {activeIndexChart === READABILITY && content.readability_result && (
+                <ScoreDescriptor
+                  style={{
+                    backgroundColor:
+                      COLOR_SET["EDITOR_RESULT"][
+                        settingSelector.backgroundColor
+                      ],
+                    color:
+                      COLOR_SET["EDITOR_EXPLAIN_FONT"][
+                        settingSelector.backgroundColor
+                      ],
+                  }}
+                >
+                  {activeIndexChart === READABILITY &&
+                    content.readability_result && (
                       <DescriptionContainer>
-                      {/* {JSON.stringify(content.readability_result, null, 2)} */}
-                      {
-                      Object.keys(content.readability_result)
-                        .filter((k) => k !== "id")
-                        .map(function (key) {
-                          return (
-                            <div style={{ marginBottom: "11px" }}>
-                              {key} : {content.readability_result[key]}
-                            </div>
-                          );
-                        })
-                        
-                      }
-                    </DescriptionContainer>
-                  )}
-                  {activeIndexChart === EFFICIENCY && content.efficiency_result && (
-                    <DescriptionContainer>
-                      {Object.keys(content.efficiency_result)
-                        .filter((k) => k !== "id")
-                        .map(function (key) {
-                          return (
-                            <div style={{ marginBottom: "11px" }}>
-                              {key} : {content.efficiency_result[key]}
-                            </div>
-                          );
-                        })}
-                    </DescriptionContainer>
-                  )}
-                  {activeIndexChart === FUNCTIONALITY && content.functionality_result && (
-                    <DescriptionContainer>
-                      {/*여러 테스트케이스가 어레이 형태로 있음, 다른 형태로 처리 필요 */}
-                      {content.functionality_result.testcase_results.map(
-                        (testcase, index) => {
-                          if(!testcase.input) {
-                            return(<></>);
+                        {/* {JSON.stringify(content.readability_result, null, 2)} */}
+                        {Object.keys(content.readability_result)
+                          .filter((k) => k !== "id")
+                          .map(function (key) {
+                            return (
+                              <div style={{ marginBottom: "11px" }}>
+                                {key} : {content.readability_result[key]}
+                              </div>
+                            );
+                          })}
+                      </DescriptionContainer>
+                    )}
+                  {activeIndexChart === EFFICIENCY &&
+                    content.efficiency_result && (
+                      <DescriptionContainer>
+                        {Object.keys(content.efficiency_result)
+                          .filter((k) => k !== "id")
+                          .map(function (key) {
+                            return (
+                              <div style={{ marginBottom: "11px" }}>
+                                {key} : {content.efficiency_result[key]}
+                              </div>
+                            );
+                          })}
+                      </DescriptionContainer>
+                    )}
+                  {activeIndexChart === FUNCTIONALITY &&
+                    content.functionality_result && (
+                      <DescriptionContainer>
+                        {/*여러 테스트케이스가 어레이 형태로 있음, 다른 형태로 처리 필요 */}
+                        {content.functionality_result.testcase_results.map(
+                          (testcase, index) => {
+                            if (!testcase.input) {
+                              return <></>;
+                            }
+                            return (
+                              <>
+                                <div style={{ marginBottm: "11px" }}>
+                                  {testcase.is_hidden ? "히든" : "공개"}{" "}
+                                  테스트케이스 {index} :{" "}
+                                  {testcase.is_pass ? "PASS" : "FAIL"}
+                                </div>
+                                <div style={{ marginBottm: "0px" }}>
+                                  <ul>Input: {testcase.input}</ul>
+                                  <ul>
+                                    Expected Output: {testcase.expected_output}
+                                  </ul>
+                                  <ul>
+                                    Actual Output: {testcase.actual_output}
+                                  </ul>
+                                </div>
+                              </>
+                            );
                           }
-                          return (
-                          <>
-                            <div style={{ marginBottm: "11px" }}>
-                              {testcase.is_hidden ? "히든" : "공개"}{" "}
-                              테스트케이스 {index} :{" "}
-                              {testcase.is_pass ? "PASS" : "FAIL"}
-                            </div>
-                            <div style={{ marginBottm: "0px" }}>
-                              <ul>Input: {testcase.input}</ul>
-                              <ul>
-                                Expected Output: {testcase.expected_output}
-                              </ul>
-                              <ul>Actual Output: {testcase.actual_output}</ul>
-                            </div>
-                          </>
                         )}
-                      )}
-                    </DescriptionContainer>
-                  )}
+                      </DescriptionContainer>
+                    )}
                 </ScoreDescriptor>
               </div>
             </div>
@@ -807,18 +909,25 @@ export const EditorBackground = ({
                 marginRight: "7.5px",
               }}
             >
-              <CodeDescriptor  style={{
-        backgroundColor:COLOR_SET['EDITOR_EXPLAIN_CONTENT'][settingSelector.backgroundColor],
-        color: COLOR_SET['EDITOR_EXPLAIN_CONTENT_FONT'][settingSelector.backgroundColor]
-      }}>
-                {
-                content.code_description?
-                content.code_description.split("\n").map((line) => (
-                  <div style={{ marginBottom: "11px" }}>{line}</div>
-                ))
-                :
-                "현재 코드 설명 기능은 python만 지원합니다."
-                }
+              <CodeDescriptor
+                style={{
+                  backgroundColor:
+                    COLOR_SET["EDITOR_EXPLAIN_CONTENT"][
+                      settingSelector.backgroundColor
+                    ],
+                  color:
+                    COLOR_SET["EDITOR_EXPLAIN_CONTENT_FONT"][
+                      settingSelector.backgroundColor
+                    ],
+                }}
+              >
+                {content.code_description
+                  ? content.code_description
+                      .split("\n")
+                      .map((line) => (
+                        <div style={{ marginBottom: "11px" }}>{line}</div>
+                      ))
+                  : "현재 코드 설명 기능은 python만 지원합니다."}
               </CodeDescriptor>
               ;
             </div>
@@ -831,24 +940,41 @@ export const EditorBackground = ({
                 marginRight: "7.5px",
               }}
             >
-              <CodeDescriptor  style={{
-        backgroundColor:COLOR_SET['EDITOR_EXPLAIN_CONTENT'][settingSelector.backgroundColor],
-        color: COLOR_SET['EDITOR_EXPLAIN_CONTENT_FONT'][settingSelector.backgroundColor]
-      }}>
-
-            {
-              content.references.map((ref, index) => {
-                return (
-                  <div style={{ marginBottom: "50px" }}>
-                    <div >
-                      {index+1}. 
-                      <a href={ref} target="_blank"> {ref} </a>
+              <CodeDescriptor
+                style={{
+                  backgroundColor:
+                    COLOR_SET["EDITOR_EXPLAIN_CONTENT"][
+                      settingSelector.backgroundColor
+                    ],
+                  color:
+                    COLOR_SET["EDITOR_EXPLAIN_CONTENT_FONT"][
+                      settingSelector.backgroundColor
+                    ],
+                }}
+              >
+                {content.references.map((ref, index) => {
+                  return (
+                    <div style={{ marginBottom: "50px" }}>
+                      <div>
+                        {index + 1}.
+                        <a href={ref} target="_blank">
+                          {" "}
+                          {ref}{" "}
+                        </a>
+                      </div>
+                      {!ref.includes("youtu.be") &&
+                        !ref.includes("namu.wiki") && (
+                          <iframe
+                            width={"100%"}
+                            scrolling="no"
+                            height={"300px"}
+                            src={ref}
+                            seamless
+                          ></iframe>
+                        )}
                     </div>
-                    {!ref.includes('youtu.be') && !ref.includes('namu.wiki') && <iframe width={'100%'} scrolling="no" height={"300px"} src={ref} seamless></iframe> }
-                  </div>
-                );
-              })
-            }
+                  );
+                })}
                 {/* {Object.keys(content.references)
                   .filter((k) => k !== "id")
                   .map(function (key) {
@@ -870,9 +996,21 @@ export const EditorBackground = ({
     );
   } else {
     // general display
-    return <Bg  style={{
-      backgroundColor:COLOR_SET['EDITOR_EXPLAIN_CONTENT'][settingSelector.backgroundColor],
-      color: COLOR_SET['EDITOR_EXPLAIN_CONTENT_FONT'][settingSelector.backgroundColor]
-    }}>{content}</Bg>;
+    return (
+      <Bg
+        style={{
+          backgroundColor:
+            COLOR_SET["EDITOR_EXPLAIN_CONTENT"][
+              settingSelector.backgroundColor
+            ],
+          color:
+            COLOR_SET["EDITOR_EXPLAIN_CONTENT_FONT"][
+              settingSelector.backgroundColor
+            ],
+        }}
+      >
+        {content}
+      </Bg>
+    );
   }
 };
