@@ -9,9 +9,9 @@ import { apiClient } from "../../api/axios";
 
 import { render } from "react-dom";
 import MonacoEditor from "react-monaco-editor";
-import React from 'react';
-import ReactDOM from 'react-dom';
-import Modal from 'react-modal';
+import React from "react";
+import ReactDOM from "react-dom";
+import Modal from "react-modal";
 import {
   Banner,
   CodeEditor,
@@ -20,9 +20,9 @@ import {
 } from "../../modules/organisms/CodeEditor";
 import { getTimeDiff } from "../../modules/organisms/AssignmentOverview/AssignmentOverview";
 import { COLOR_SET } from "./../../service/GetColor";
-import { setTestcaseOff } from './EditorAction';
-import { SETTING_BACKGROUND_WHITE } from './../../reducers/SettingReducer';
-import { Img } from './../../modules/atoms/Img/index';
+import { setTestcaseOff } from "./EditorAction";
+import { SETTING_BACKGROUND_WHITE } from "./../../reducers/SettingReducer";
+import { Img } from "./../../modules/atoms/Img/index";
 
 const Testbox = styled.div`
   background: #000000;
@@ -77,14 +77,14 @@ const GeneralContainer = styled.div`
 
 const customStyles = {
   content: {
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    width:'750px',
-    height:'500px',
-    boxShadow: '-2px 8px 99px rgba(0, 0, 0, 0.25)',
-    borderRadius: '20px',
-    border:'none'
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    width: "750px",
+    height: "500px",
+    boxShadow: "-2px 8px 99px rgba(0, 0, 0, 0.25)",
+    borderRadius: "20px",
+    border: "none",
   },
 };
 // Modal.setAppElement('#yourAppElement');
@@ -113,28 +113,27 @@ export const EditorPage = () => {
 
   function afterOpenModal() {
     // references are now sync'd and can be accessed.
-    subtitle.style.color = '#f00';
+    subtitle.style.color = "#f00";
   }
 
   function closeModal() {
     setIsOpen(false);
   }
 
-  useEffect(()=>{
-    if(!modalIsOpen) {
+  useEffect(() => {
+    if (!modalIsOpen) {
       dispatch(setTestcaseOff());
     }
-  }, [modalIsOpen])
+  }, [modalIsOpen]);
 
-  useEffect(()=>{
-      if(testcaseSelector.isOnTestcase && testcaseSelector.isError) {
-        console.log(testcaseSelector.errorContent);
-        openModal();
-      }
-      else{
-        closeModal();
-      }
-  }, [testcaseSelector.isOnTestcase, testcaseSelector.isError])
+  useEffect(() => {
+    if (testcaseSelector.isOnTestcase && testcaseSelector.isError) {
+      console.log(testcaseSelector.errorContent);
+      openModal();
+    } else {
+      closeModal();
+    }
+  }, [testcaseSelector.isOnTestcase, testcaseSelector.isError]);
   // Magnifier
   const [magnified1, setMagnified1] = useState(false);
 
@@ -197,7 +196,7 @@ export const EditorPage = () => {
       {/* {
         JSON.stringify(testcaseSelector)
       } */}
-    <Modal
+      <Modal
         isOpen={modalIsOpen}
         onAfterOpen={afterOpenModal}
         onRequestClose={closeModal}
@@ -205,77 +204,114 @@ export const EditorPage = () => {
         // contentLabel="Example Modal"
       >
         {/* <h2 >에러 발생</h2> */}
-        <div style={{display:"flex", justifyContent:"center", alignItems:"center", 
-            margin: '30px 0'
-          }}>
-          <div style={{margin:"0 10px"}}>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            margin: "30px 0",
+          }}
+        >
+          <div style={{ margin: "0 10px" }}>
             <Img src="/images/error.svg" alt="error indicator" />
           </div>
-            <div
-          style={{
-            fontFamily: 'Gmarket Sans TTF',
-            fontStyle: 'normal',
-            fontWeight: '500',
-            fontSize: '22px',
-            lineHeight: '25px',
-            textAlign: 'center',
-            color: '#000000',
-          }}
-          >에러 발생</div>
-          <div style={{margin:"0 10px"}}>
+          <div
+            style={{
+              fontFamily: "Gmarket Sans TTF",
+              fontStyle: "normal",
+              fontWeight: "500",
+              fontSize: "22px",
+              lineHeight: "25px",
+              textAlign: "center",
+              color: "#000000",
+            }}
+          >
+            에러 발생
+          </div>
+          <div style={{ margin: "0 10px" }}>
             <Img src="/images/error.svg" alt="error indicator" />
           </div>
         </div>
-        
+
         {/* <button onClick={closeModal}>close</button> */}
-        {repoSelector.selectedModel && <Editor
-          width='700px'
-          height='350px'
-          options={{
-            readOnly: true,
-            lineNumbers: ((lineNumber)=>{
-              return  testcaseSelector.errorContent.line >= 6 ? 
-                      testcaseSelector.errorContent.line -6 +lineNumber : 
-                      lineNumber;
-            }),
-            scrollBeyondLastLine:false,
-            scrollbar:{
-              alwaysConsumeMouseWheel: false, // defaults is true, false enables the behavior you describe
+        {repoSelector.selectedModel && (
+          <Editor
+            width="700px"
+            height="350px"
+            options={{
+              readOnly: true,
+              lineNumbers: (lineNumber) => {
+                return testcaseSelector.errorContent.line >= 6
+                  ? testcaseSelector.errorContent.line - 6 + lineNumber
+                  : lineNumber;
+              },
+              scrollBeyondLastLine: false,
+              scrollbar: {
+                alwaysConsumeMouseWheel: false, // defaults is true, false enables the behavior you describe
+              },
+            }}
+            language={repoSelector.selectedModel.content.language.toLowerCase()}
+            theme={
+              settingSelector.backgroundColor === SETTING_BACKGROUND_WHITE
+                ? "light"
+                : "vs-dark"
             }
-          }}
-              language={repoSelector.selectedModel.content.language.toLowerCase()}
-              theme={settingSelector.backgroundColor === SETTING_BACKGROUND_WHITE ? 'light': 'vs-dark'}
-              value={(repoSelector.selectedModel.content.code.split("\n").map((line, findex) => {
+            value={repoSelector.selectedModel.content.code
+              .split("\n")
+              .map((line, findex) => {
                 let index = findex + 1;
-                if(Math.abs(index - testcaseSelector.errorContent.line)  <= 5) {
+                if (Math.abs(index - testcaseSelector.errorContent.line) <= 5) {
                   console.log(line);
                   return line;
                 }
-              }).join("\n"))}
-            />}
-          {
-            repoSelector.selectedModel && testcaseSelector.isOnTestcase && testcaseSelector.isError &&
-            <div style={{
-              position:"absolute", 
-              top: `calc(19px * ${testcaseSelector.errorContent.line >= 6 ? 6 : testcaseSelector.errorContent.line} + 40px + 60px)`, 
-              zIndex: 100, }}>
-              <div style={{backgroundColor:"rgba(249, 86, 86, 0.1)", width: "100%",  height:"19px", maxWidth: '688px',}}>
-              </div>
-              {
-                testcaseSelector.errorContent.content.split("\n").map((line, index) => {
+              })
+              .join("\n")}
+          />
+        )}
+        {repoSelector.selectedModel &&
+          testcaseSelector.isOnTestcase &&
+          testcaseSelector.isError && (
+            <div
+              style={{
+                position: "absolute",
+                top: `calc(19px * ${
+                  testcaseSelector.errorContent.line >= 6
+                    ? 6
+                    : testcaseSelector.errorContent.line
+                } + 40px + 60px)`,
+                zIndex: 100,
+              }}
+            >
+              <div
+                style={{
+                  backgroundColor: "rgba(249, 86, 86, 0.1)",
+                  width: "100%",
+                  height: "19px",
+                  maxWidth: "688px",
+                }}
+              ></div>
+              {testcaseSelector.errorContent.content
+                .split("\n")
+                .map((line, index) => {
                   return (
-                    <div style={{paddingLeft:"83px", backgroundColor:"rgba(204, 229, 198, 1.0)", width: "100vw", maxWidth: '688px',}}>
+                    <div
+                      style={{
+                        paddingLeft: "83px",
+                        backgroundColor: "rgba(204, 229, 198, 1.0)",
+                        width: "100vw",
+                        maxWidth: "688px",
+                      }}
+                    >
                       {line}
                     </div>
-                  )
-                })
-              }
+                  );
+                })}
             </div>
-          }
-        
+          )}
       </Modal>
       {
-        JSON.stringify(testcaseSelector.errorContent)
+        // debugging
+        // JSON.stringify(testcaseSelector.errorContent)
       }
 
       {/* Banner */}
