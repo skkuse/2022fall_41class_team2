@@ -497,8 +497,8 @@ const SaveButtonComp = ({
   };
 
   const findByLanguageDefault = (contents) => {
-    const userLanguage =
-    settingSelector.language.toLowerCase();
+    const userLanguage = settingSelector.language.toLowerCase();
+    console.log(contents);
     return contents.find((content) => content.language == userLanguage);
   };
 
