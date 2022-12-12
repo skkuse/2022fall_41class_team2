@@ -167,9 +167,23 @@ export function testcaseReducer(state = testcaseInitState, action) {
         case TESTCASE_ERROR:
             console.log(action);
             let errorContentTemp = action.errorContent;
-            const re = new RegExp('line [0-9]*','g');
-            console.log(errorContentTemp.match(re));
-            let errorLineInfo = errorContentTemp.match(re)[errorContentTemp.match(re).length - 1].split(' ');
+            const rePython = new RegExp('line [0-9]+','g');
+            const reC = new RegExp('code:[0-9]+','g');
+
+            console.log(errorContentTemp.match(rePython));
+            let errorLineInfo ;
+            console.log(errorContentTemp.match(reC));
+            if(errorContentTemp.match(rePython) && errorContentTemp.match(rePython).length){
+                errorLineInfo = errorContentTemp.match(rePython)[errorContentTemp.match(rePython).length - 1].split(' ')
+            }
+            else if(errorContentTemp.match(reC) && errorContentTemp.match(reC).length) {
+                errorLineInfo = errorContentTemp.match(reC)[0].split(':')
+            }
+            else{
+                errorLineInfo = ["line", "1"]
+            }
+            
+
             let lineInfo = Number(errorLineInfo[1]);
             return {
                 ...state,

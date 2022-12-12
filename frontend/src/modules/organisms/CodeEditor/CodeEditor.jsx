@@ -442,6 +442,7 @@ export const CodeEditor = ({
   return (
     <>
       <EditorWindowWrapper>
+        
         {/* 코드 수정 상황 */}
         {editMode.edit && (
           <>
@@ -633,7 +634,6 @@ export const CodeEditor = ({
                     }}
                   />
                 )}
-
                 {/* {
                     repoSelector.selectedModel && testcaseSelector.isOnTestcase && testcaseSelector.isError &&
                     <div style={{position:"absolute", top: testcaseSelector.errorContent.top, zIndex: 100, }}>
